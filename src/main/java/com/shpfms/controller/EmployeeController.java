@@ -33,7 +33,7 @@ public class EmployeeController {
 	}
 	
 	// Modify Exist Employee
-	@PutMapping
+	@PutMapping("/{employeeId}")
 	public ResponseEntity<String> modifyEmployee(
 			@PathVariable long employeeId,
 			@RequestBody EmployeeRequestBody requestBody) {
