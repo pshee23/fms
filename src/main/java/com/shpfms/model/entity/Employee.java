@@ -5,6 +5,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import lombok.Getter;
@@ -41,5 +43,8 @@ public class Employee {
 	@Column(name="STATUS")
 	private String status;
 	
-	// TODO table 관계성
+	// N:1
+	@ManyToOne
+	@JoinColumn(name="BRANCH_ID")
+	private Branch branch;
 }

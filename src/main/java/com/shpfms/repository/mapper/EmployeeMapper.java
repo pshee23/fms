@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 
 import com.shpfms.model.EmployeeInfo;
+import com.shpfms.model.entity.Branch;
 import com.shpfms.model.entity.Employee;
 import com.shpfms.model.request.EmployeeRequestBody;
 
@@ -15,6 +16,7 @@ public class EmployeeMapper {
 
 	public EmployeeInfo mapToEmployeeInfo(Employee employee) {
 		return EmployeeInfo.builder()
+				.branchId(employee.getBranch().getBranchId())
 				.employeeId(employee.getEmployeeId())
 				.name(employee.getName())
 				.address(employee.getAddress())
@@ -25,8 +27,9 @@ public class EmployeeMapper {
 				.build();
 	}
 	
-	public Employee mapToEmployee(EmployeeRequestBody registerInfo) {
+	public Employee mapToEmployee(EmployeeRequestBody registerInfo, Branch branch) {
 		Employee employee = new Employee();
+		employee.setBranch(branch);
 		employee.setName(registerInfo.getName());
 		employee.setAddress(registerInfo.getAddress());
 		employee.setPhoneNumber(registerInfo.getPhoneNumber());
@@ -35,7 +38,8 @@ public class EmployeeMapper {
 		return employee;
 	}
 	
-	public Employee mapToEmployee(Employee originEmployee, EmployeeRequestBody modifyInfo) {
+	public Employee mapToEmployee(Employee originEmployee, EmployeeRequestBody modifyInfo, Branch branch) {
+		originEmployee.setBranch(branch);
 		originEmployee.setName(modifyInfo.getName());
 		originEmployee.setAddress(modifyInfo.getAddress());
 		originEmployee.setPhoneNumber(modifyInfo.getPhoneNumber());
