@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.shpfms.model.MemberInfo;
 import com.shpfms.model.request.MemberRequestBody;
+import com.shpfms.model.response.MemberResponse;
 import com.shpfms.service.MemberService;
 
 import lombok.AllArgsConstructor;
@@ -27,36 +28,36 @@ public class MemberController {
 	
 	// Create New Member
 	@PostMapping
-	public ResponseEntity<String> registerMember(@RequestBody MemberRequestBody requestBody) {
+	public ResponseEntity<MemberResponse> registerMember(@RequestBody MemberRequestBody requestBody) {
 		MemberInfo memberInfo = memberService.registerMember(requestBody);
-		return ResponseEntity.ok().build();
+		return ResponseEntity.ok(new MemberResponse().successResponse(memberInfo));
 	}
 	
 	// Modify Exist Member
 	@PutMapping("/{memberId}")
-	public ResponseEntity<String> modifyMember(
+	public ResponseEntity<MemberResponse> modifyMember(
 			@PathVariable long memberId,
 			@RequestBody MemberRequestBody requestBody) {
 		MemberInfo memberInfo = memberService.modifyMember(memberId, requestBody);
-		return ResponseEntity.ok().build();
+		return ResponseEntity.ok(new MemberResponse().successResponse(memberInfo));
 	}
 	
 	@DeleteMapping("/{memberId}")
-	public ResponseEntity<String> deleteMember(@PathVariable long memberId) {
-		boolean deleteSuccess = memberService.deleteMember(memberId);
-		return ResponseEntity.ok().build();
+	public ResponseEntity<MemberResponse> deleteMember(@PathVariable long memberId) {
+		boolean isDeleted = memberService.deleteMember(memberId);
+		return ResponseEntity.ok(new MemberResponse().deleteResponse(isDeleted));
 	}
 	
 	@GetMapping("/list")
-	public ResponseEntity<String> getAllMember() {
+	public ResponseEntity<MemberResponse> getAllMember() {
 		List<MemberInfo> memberInfoList = memberService.getAllMember();
-		return ResponseEntity.ok().build();
+		return ResponseEntity.ok(new MemberResponse().successResponse(memberInfoList));
 	}
 	
 	@GetMapping("/list/{memberId}")
-	public ResponseEntity<String> getMemberById(@PathVariable long memberId) {
+	public ResponseEntity<MemberResponse> getMemberById(@PathVariable long memberId) {
 		MemberInfo memberInfo = memberService.getMemberById(memberId);
-		return ResponseEntity.ok().build();
+		return ResponseEntity.ok(new MemberResponse().successResponse(memberInfo));
 	}
 	
 }

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.shpfms.model.EmployeeInfo;
 import com.shpfms.model.request.EmployeeRequestBody;
+import com.shpfms.model.response.EmployeeResponse;
 import com.shpfms.service.EmployeeService;
 
 import lombok.AllArgsConstructor;
@@ -27,36 +28,36 @@ public class EmployeeController {
 	
 	// Create New Employee
 	@PostMapping
-	public ResponseEntity<String> registerEmployee(@RequestBody EmployeeRequestBody requestBody) {
+	public ResponseEntity<EmployeeResponse> registerEmployee(@RequestBody EmployeeRequestBody requestBody) {
 		EmployeeInfo employeeInfo = employeeService.registerEmployee(requestBody);
-		return ResponseEntity.ok().build();
+		return ResponseEntity.ok(new EmployeeResponse().successResponse(employeeInfo));
 	}
 	
 	// Modify Exist Employee
 	@PutMapping("/{employeeId}")
-	public ResponseEntity<String> modifyEmployee(
+	public ResponseEntity<EmployeeResponse> modifyEmployee(
 			@PathVariable long employeeId,
 			@RequestBody EmployeeRequestBody requestBody) {
 		EmployeeInfo employeeInfo = employeeService.modifyEmployee(employeeId, requestBody);
-		return ResponseEntity.ok().build();
+		return ResponseEntity.ok(new EmployeeResponse().successResponse(employeeInfo));
 	}
 	
 	@DeleteMapping("/{employeeId}")
-	public ResponseEntity<String> deleteEmployee(@PathVariable long employeeId) {
-		boolean deleteSuccess = employeeService.deleteEmployee(employeeId);
-		return ResponseEntity.ok().build();
+	public ResponseEntity<EmployeeResponse> deleteEmployee(@PathVariable long employeeId) {
+		boolean isDeleted = employeeService.deleteEmployee(employeeId);
+		return ResponseEntity.ok(new EmployeeResponse().deleteResponse(isDeleted));
 	}
 	
 	@GetMapping("/list")
-	public ResponseEntity<String> getAllEmployee() {
+	public ResponseEntity<EmployeeResponse> getAllEmployee() {
 		List<EmployeeInfo> employeeInfoList = employeeService.getAllEmployee();
-		return ResponseEntity.ok().build();
+		return ResponseEntity.ok(new EmployeeResponse().successResponse(employeeInfoList));
 	}
 	
 	@GetMapping("/list/{employeeId}")
-	public ResponseEntity<String> getEmployeeById(@PathVariable long employeeId) {
+	public ResponseEntity<EmployeeResponse> getEmployeeById(@PathVariable long employeeId) {
 		EmployeeInfo employeeInfo = employeeService.getEmployeeById(employeeId);
-		return ResponseEntity.ok().build();
+		return ResponseEntity.ok(new EmployeeResponse().successResponse(employeeInfo));
 	}
 	
 }

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.shpfms.model.BranchInfo;
 import com.shpfms.model.request.BranchRequestBody;
+import com.shpfms.model.response.BranchResponse;
 import com.shpfms.service.BranchService;
 
 import lombok.AllArgsConstructor;
@@ -25,40 +26,38 @@ public class BranchController {
 	
 	private final BranchService branchService;
 	
-	// TODO return response
-	
 	// Create New Branch
 	@PostMapping
-	public ResponseEntity<String> registerBranch(@RequestBody BranchRequestBody requestBody) {
+	public ResponseEntity<BranchResponse> registerBranch(@RequestBody BranchRequestBody requestBody) {
 		BranchInfo branchInfo = branchService.registerBranch(requestBody);
-		return ResponseEntity.ok().build();
+		return ResponseEntity.ok(new BranchResponse().successResponse(branchInfo));
 	}
 	
 	// Modify Exist Branch
 	@PutMapping("/{branchId}")
-	public ResponseEntity<String> modifyBranch(
+	public ResponseEntity<BranchResponse> modifyBranch(
 			@PathVariable long branchId,
 			@RequestBody BranchRequestBody requestBody) {
 		BranchInfo branchInfo = branchService.modifyBranch(branchId, requestBody);
-		return ResponseEntity.ok().build();
+		return ResponseEntity.ok(new BranchResponse().successResponse(branchInfo));
 	}
 	
 	@DeleteMapping("/{branchId}")
-	public ResponseEntity<String> deleteBranch(@PathVariable long branchId) {
-		boolean deleteSuccess = branchService.deleteBranch(branchId);
-		return ResponseEntity.ok().build();
+	public ResponseEntity<BranchResponse> deleteBranch(@PathVariable long branchId) {
+		boolean isDeleted = branchService.deleteBranch(branchId);
+		return ResponseEntity.ok(new BranchResponse().deleteResponse(isDeleted));	
 	}
 	
 	// TODO list by 5
 	@GetMapping("/list")
-	public ResponseEntity<String> getAllBranch() {
+	public ResponseEntity<BranchResponse> getAllBranch() {
 		List<BranchInfo> branchInfoList = branchService.getAllBranch();
-		return ResponseEntity.ok().build();
+		return ResponseEntity.ok(new BranchResponse().successResponse(branchInfoList));
 	}
 	
 	@GetMapping("/list/{branchId}")
-	public ResponseEntity<String> getBranchById(@PathVariable long branchId) {
+	public ResponseEntity<BranchResponse> getBranchById(@PathVariable long branchId) {
 		BranchInfo branchInfo = branchService.getBranchById(branchId);
-		return ResponseEntity.ok().build();
+		return ResponseEntity.ok(new BranchResponse().successResponse(branchInfo));
 	}
 }
