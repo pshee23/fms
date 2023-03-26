@@ -7,6 +7,7 @@ import lombok.Data;
 @Builder
 public class MemberInfo {
 	private long memberId;
+	private long branchId;
 	private String name;
 	private String address;
 	private String phoneNumber;

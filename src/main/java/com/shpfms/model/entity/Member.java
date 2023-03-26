@@ -5,6 +5,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import lombok.Getter;
@@ -18,6 +20,7 @@ public class Member {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name="MEMBER_ID")
 	private Long memberId;
 	
 	@Column(name="NAME", nullable=false)
@@ -35,5 +38,8 @@ public class Member {
 	@Column(name="LOGIN_PW")
 	private String loginPw;
 	
-	// TODO table 관계성
+	// N:1
+	@ManyToOne
+	@JoinColumn(name="BRANCH_ID")
+	private Branch branch;
 }

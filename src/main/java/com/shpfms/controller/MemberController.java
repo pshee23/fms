@@ -33,7 +33,7 @@ public class MemberController {
 	}
 	
 	// Modify Exist Member
-	@PutMapping
+	@PutMapping("/{memberId}")
 	public ResponseEntity<String> modifyMember(
 			@PathVariable long memberId,
 			@RequestBody MemberRequestBody requestBody) {

@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 
 import com.shpfms.model.MemberInfo;
+import com.shpfms.model.entity.Branch;
 import com.shpfms.model.entity.Member;
 import com.shpfms.model.request.MemberRequestBody;
 
@@ -15,6 +16,7 @@ public class MemberMapper {
 
 	public MemberInfo mapToMemberInfo(Member member) {
 		return MemberInfo.builder()
+				.branchId(member.getBranch().getBranchId())
 				.memberId(member.getMemberId())
 				.name(member.getName())
 				.address(member.getAddress())
@@ -23,15 +25,17 @@ public class MemberMapper {
 				.build();
 	}
 	
-	public Member mapToMember(MemberRequestBody registerInfo) {
+	public Member mapToMember(MemberRequestBody registerInfo, Branch branch) {
 		Member member = new Member();
+		member.setBranch(branch);
 		member.setName(registerInfo.getName());
 		member.setAddress(registerInfo.getAddress());
 		member.setPhoneNumber(registerInfo.getPhoneNumber());
 		return member;
 	}
 	
-	public Member mapToMember(Member originMember, MemberRequestBody modifyInfo) {
+	public Member mapToMember(Member originMember, MemberRequestBody modifyInfo, Branch branch) {
+		originMember.setBranch(branch);
 		originMember.setName(modifyInfo.getName());
 		originMember.setAddress(modifyInfo.getAddress());
 		originMember.setPhoneNumber(modifyInfo.getPhoneNumber());
