@@ -1,0 +1,13 @@
+package com.shpfms.model;
+
+import lombok.Builder;
+import lombok.Data;
+
+@Data
+@Builder
+public class BranchInfo {
+	private long branchId;
+	private String name;
+	private String address;
+	private String phoneNumber;
+}
