@@ -37,7 +37,7 @@ public class MemberController {
 	public ResponseEntity<String> modifyMember(
 			@PathVariable long memberId,
 			@RequestBody MemberRequestBody requestBody) {
-		MemberInfo memeberInfo = memberService.modifyMember(memberId, requestBody);
+		MemberInfo memberInfo = memberService.modifyMember(memberId, requestBody);
 		return ResponseEntity.ok().build();
 	}
 	
@@ -53,7 +53,7 @@ public class MemberController {
 		return ResponseEntity.ok().build();
 	}
 	
-	@GetMapping("/list/{memeberId}")
+	@GetMapping("/list/{memberId}")
 	public ResponseEntity<String> getMemberById(@PathVariable long memberId) {
 		MemberInfo memberInfo = memberService.getMemberById(memberId);
 		return ResponseEntity.ok().build();
