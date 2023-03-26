@@ -6,9 +6,11 @@ import org.springframework.stereotype.Service;
 
 import com.shpfms.model.MemberInfo;
 import com.shpfms.model.entity.Branch;
+import com.shpfms.model.entity.Employee;
 import com.shpfms.model.entity.Member;
 import com.shpfms.model.request.MemberRequestBody;
 import com.shpfms.repository.adapter.BranchPersistenceAdapter;
+import com.shpfms.repository.adapter.EmployeePersistenceAdapter;
 import com.shpfms.repository.adapter.MemberPersistenceAdapter;
 import com.shpfms.repository.mapper.MemberMapper;
 
@@ -22,11 +24,14 @@ public class MemberService {
 
 	private final BranchPersistenceAdapter branchAdapter;
 	
+	private final EmployeePersistenceAdapter employeeAdapter;
+	
 	private final MemberMapper memberMapper;
 
 	public MemberInfo registerMember(MemberRequestBody registerInfo) {
 		Branch branch = branchAdapter.findBranchInfoById(registerInfo.getBranchId());
-		Member member = memberMapper.mapToMember(registerInfo, branch);
+		Employee employee = employeeAdapter.findEmployeeInfoById(registerInfo.getEmployeeId());
+		Member member = memberMapper.mapToMember(registerInfo, branch, employee);
 		member = memberAdapter.saveMember(member);
 		return memberMapper.mapToMemberInfo(member);
 	}
@@ -34,7 +39,8 @@ public class MemberService {
 	public MemberInfo modifyMember(long memberId, MemberRequestBody modifyInfo) {
 		Member member = memberAdapter.findMemberInfoById(memberId);
 		Branch branch = branchAdapter.findBranchInfoById(modifyInfo.getBranchId());
-		member = memberMapper.mapToMember(member, modifyInfo, branch);
+		Employee employee = employeeAdapter.findEmployeeInfoById(modifyInfo.getEmployeeId());
+		member = memberMapper.mapToMember(member, modifyInfo, branch, employee);
 		member = memberAdapter.saveMember(member);
 		return memberMapper.mapToMemberInfo(member);
 	}

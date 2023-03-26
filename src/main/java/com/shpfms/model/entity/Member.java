@@ -42,4 +42,9 @@ public class Member {
 	@ManyToOne
 	@JoinColumn(name="BRANCH_ID")
 	private Branch branch;
+	
+	// N:1
+	@ManyToOne
+	@JoinColumn(name="EMPLOYEE_ID")
+	private Employee employee;
 }
