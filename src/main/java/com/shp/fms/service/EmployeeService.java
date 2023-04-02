@@ -1,6 +1,7 @@
 package com.shp.fms.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -8,7 +9,7 @@ import com.shp.fms.model.EmployeeInfo;
 import com.shp.fms.model.entity.Branch;
 import com.shp.fms.model.entity.Employee;
 import com.shp.fms.model.request.EmployeeRequestBody;
-import com.shp.fms.repository.adapter.EmployeePersistenceAdapter;
+import com.shp.fms.repository.EmployeeRepository;
 import com.shp.fms.repository.mapper.EmployeeMapper;
 
 import lombok.AllArgsConstructor;
@@ -17,7 +18,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class EmployeeService {
 	
-	private final EmployeePersistenceAdapter employeeAdapter;
+	private final EmployeeRepository employeeRepository;
 	
 	private final BranchService branchService;
 	
@@ -26,34 +27,48 @@ public class EmployeeService {
 	public EmployeeInfo registerEmployee(EmployeeRequestBody registerInfo) {
 		Branch branch = branchService.getBranchById(registerInfo.getBranchId());
 		Employee employee = employeeMapper.mapToEmployee(registerInfo, branch);
-		employee = employeeAdapter.saveEmployee(employee);
+		employee = employeeRepository.save(employee);
 		return employeeMapper.mapToEmployeeInfo(employee);
 	}
 	
 	public EmployeeInfo modifyEmployee(long employeeId, EmployeeRequestBody modifyInfo) {
-		Employee employee = employeeAdapter.findEmployeeInfoById(employeeId);
+		Optional<Employee> optionalEmployee = employeeRepository.findById(employeeId);
+		if(optionalEmployee.isEmpty()) {
+			// TODO throw exception
+		}
 		Branch branch = branchService.getBranchById(modifyInfo.getBranchId());
-		employee = employeeMapper.mapToEmployee(employee, modifyInfo, branch);
-		employee = employeeAdapter.saveEmployee(employee);
+		Employee employee = employeeMapper.mapToEmployee(optionalEmployee.get(), modifyInfo, branch);
+		employee = employeeRepository.save(employee);
 		return employeeMapper.mapToEmployeeInfo(employee);
 	}
 	
 	public boolean deleteEmployee(long employeeId) {
-		employeeAdapter.deleteEmployee(employeeId);
-		if(employeeAdapter.isEmployeeExist(employeeId)) {
+		employeeRepository.deleteById(employeeId);
+		if(employeeRepository.existsById(employeeId)) {
 			return false;
 		} else {
 			return true;
 		}
 	}
 	
-	public List<EmployeeInfo> getAllEmployee() {
-		List<Employee> employeeList = employeeAdapter.findAllEmployee();
+	public List<EmployeeInfo> getAllEmployeeInfo() {
+		List<Employee> employeeList = employeeRepository.findAll();
 		return employeeMapper.mapToEmployeeInfoList(employeeList);
 	}
 	
-	public EmployeeInfo getEmployeeById(long employeeId) {
-		Employee employee = employeeAdapter.findEmployeeInfoById(employeeId);
-		return employeeMapper.mapToEmployeeInfo(employee);
+	public Employee getEmployeeById(long employeeId) {
+		Optional<Employee> employee = employeeRepository.findById(employeeId);
+		if(employee.isEmpty()) {
+			// TODO throw exception
+		}
+		return employee.get();
+	}
+	
+	public EmployeeInfo getEmployeeInfoById(long employeeId) {
+		Optional<Employee> employee = employeeRepository.findById(employeeId);
+		if(employee.isEmpty()) {
+			// TODO throw exception
+		}
+		return employeeMapper.mapToEmployeeInfo(employee.get());
 	}
 }

@@ -50,13 +50,13 @@ public class EmployeeController {
 	
 	@GetMapping("/list")
 	public ResponseEntity<EmployeeResponse> getAllEmployee() {
-		List<EmployeeInfo> employeeInfoList = employeeService.getAllEmployee();
+		List<EmployeeInfo> employeeInfoList = employeeService.getAllEmployeeInfo();
 		return ResponseEntity.ok(new EmployeeResponse().successResponse(employeeInfoList));
 	}
 	
 	@GetMapping("/list/{employeeId}")
 	public ResponseEntity<EmployeeResponse> getEmployeeById(@PathVariable long employeeId) {
-		EmployeeInfo employeeInfo = employeeService.getEmployeeById(employeeId);
+		EmployeeInfo employeeInfo = employeeService.getEmployeeInfoById(employeeId);
 		return ResponseEntity.ok(new EmployeeResponse().successResponse(employeeInfo));
 	}
 	
