@@ -9,7 +9,6 @@ import com.shp.fms.model.entity.Branch;
 import com.shp.fms.model.entity.Employee;
 import com.shp.fms.model.entity.Member;
 import com.shp.fms.model.request.MemberRequestBody;
-import com.shp.fms.repository.adapter.BranchPersistenceAdapter;
 import com.shp.fms.repository.adapter.EmployeePersistenceAdapter;
 import com.shp.fms.repository.adapter.MemberPersistenceAdapter;
 import com.shp.fms.repository.mapper.MemberMapper;
@@ -22,14 +21,14 @@ public class MemberService {
 	
 	private final MemberPersistenceAdapter memberAdapter;
 
-	private final BranchPersistenceAdapter branchAdapter;
+	private final BranchService branchService;
 	
 	private final EmployeePersistenceAdapter employeeAdapter;
 	
 	private final MemberMapper memberMapper;
 
 	public MemberInfo registerMember(MemberRequestBody registerInfo) {
-		Branch branch = branchAdapter.findBranchInfoById(registerInfo.getBranchId());
+		Branch branch = branchService.getBranchById(registerInfo.getBranchId());
 		Employee employee = employeeAdapter.findEmployeeInfoById(registerInfo.getEmployeeId());
 		Member member = memberMapper.mapToMember(registerInfo, branch, employee);
 		member = memberAdapter.saveMember(member);
@@ -38,7 +37,7 @@ public class MemberService {
 	
 	public MemberInfo modifyMember(long memberId, MemberRequestBody modifyInfo) {
 		Member member = memberAdapter.findMemberInfoById(memberId);
-		Branch branch = branchAdapter.findBranchInfoById(modifyInfo.getBranchId());
+		Branch branch = branchService.getBranchById(modifyInfo.getBranchId());
 		Employee employee = employeeAdapter.findEmployeeInfoById(modifyInfo.getEmployeeId());
 		member = memberMapper.mapToMember(member, modifyInfo, branch, employee);
 		member = memberAdapter.saveMember(member);

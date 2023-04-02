@@ -51,13 +51,13 @@ public class BranchController {
 	// TODO list by 5
 	@GetMapping("/list")
 	public ResponseEntity<BranchResponse> getAllBranch() {
-		List<BranchInfo> branchInfoList = branchService.getAllBranch();
+		List<BranchInfo> branchInfoList = branchService.getAllBranchInfo();
 		return ResponseEntity.ok(new BranchResponse().successResponse(branchInfoList));
 	}
 	
 	@GetMapping("/list/{branchId}")
 	public ResponseEntity<BranchResponse> getBranchById(@PathVariable long branchId) {
-		BranchInfo branchInfo = branchService.getBranchById(branchId);
+		BranchInfo branchInfo = branchService.getBranchInfoById(branchId);
 		return ResponseEntity.ok(new BranchResponse().successResponse(branchInfo));
 	}
 }

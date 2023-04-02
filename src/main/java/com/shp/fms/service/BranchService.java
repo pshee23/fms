@@ -1,13 +1,14 @@
 package com.shp.fms.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
 import com.shp.fms.model.BranchInfo;
 import com.shp.fms.model.entity.Branch;
 import com.shp.fms.model.request.BranchRequestBody;
-import com.shp.fms.repository.adapter.BranchPersistenceAdapter;
+import com.shp.fms.repository.BranchRepository;
 import com.shp.fms.repository.mapper.BranchMapper;
 
 import lombok.AllArgsConstructor;
@@ -16,41 +17,55 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class BranchService {
 
-	private final BranchPersistenceAdapter branchAdapter;
+	private final BranchRepository branchRepository;
 	
 	private final BranchMapper branchMapper;
-	
+		
 	public BranchInfo registerBranch(BranchRequestBody registerInfo) {
 		Branch branch = branchMapper.mapToBranch(registerInfo);
-		branch = branchAdapter.saveBranch(branch);
+		branch = branchRepository.save(branch);
 		return branchMapper.mapToBranchInfo(branch);
 	}
 	
 	// TODO custom Exception
 	public BranchInfo modifyBranch(long branchId, BranchRequestBody modifyInfo) {
-		Branch branch = branchAdapter.findBranchInfoById(branchId);
-		branch = branchMapper.mapToBranch(branch, modifyInfo);
-		branch = branchAdapter.saveBranch(branch);
+		Optional<Branch> optionalBranch = branchRepository.findById(branchId);
+		if(optionalBranch.isEmpty()) {
+			// TODO throw exception
+		}
+		Branch branch = branchMapper.mapToBranch(optionalBranch.get(), modifyInfo);
+		branch = branchRepository.save(branch);
 		return branchMapper.mapToBranchInfo(branch);
 	}
 	
 	// TODO find a safe and right way to delete data
 	public boolean deleteBranch(long branchId) {
-		branchAdapter.deleteBranch(branchId);
-		if(branchAdapter.isBranchExist(branchId)) {
+		branchRepository.deleteById(branchId);
+		if(branchRepository.existsById(branchId)) {
 			return false;
 		} else {
 			return true;
 		}
 	}
 	
-	public List<BranchInfo> getAllBranch() {
-		List<Branch> branchList = branchAdapter.findAllBranch();
+	public List<BranchInfo> getAllBranchInfo() {
+		List<Branch> branchList = branchRepository.findAll();
 		return branchMapper.mapToBranchInfoList(branchList);
 	}
 	
-	public BranchInfo getBranchById(long branchId) {
-		Branch branch = branchAdapter.findBranchInfoById(branchId);
-		return branchMapper.mapToBranchInfo(branch);
+	public Branch getBranchById(long branchId) {
+		Optional<Branch> branch = branchRepository.findById(branchId);
+		if(branch.isEmpty()) {
+			// TODO throw exception
+		}
+		return branch.get();
+	}
+	
+	public BranchInfo getBranchInfoById(long branchId) {
+		Optional<Branch> branch = branchRepository.findById(branchId);
+		if(branch.isEmpty()) {
+			// TODO throw exception
+		}
+		return branchMapper.mapToBranchInfo(branch.get());
 	}
 }
