@@ -71,4 +71,9 @@ public class EmployeeService {
 		}
 		return employeeMapper.mapToEmployeeInfo(employee.get());
 	}
+
+	public List<EmployeeInfo> getEmployeeInfoListByBranchId(long branchId) {
+		List<Employee> employeeList = employeeRepository.findByBranch_BranchId(branchId);
+		return employeeMapper.mapToEmployeeInfoList(employeeList);
+	}
 }

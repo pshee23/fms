@@ -60,4 +60,9 @@ public class EmployeeController {
 		return ResponseEntity.ok(new EmployeeResponse().successResponse(employeeInfo));
 	}
 	
+	@GetMapping("/list/branch/{branchId}")
+	public ResponseEntity<EmployeeResponse> getEmployeeListByBranchId(@PathVariable long branchId) {
+		List<EmployeeInfo> employeeInfo = employeeService.getEmployeeInfoListByBranchId(branchId);
+		return ResponseEntity.ok(new EmployeeResponse().successResponse(employeeInfo));
+	}
 }

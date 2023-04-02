@@ -73,4 +73,9 @@ public class MemberService {
 		}
 		return memberMapper.mapToMemberInfo(member.get());
 	}
+	
+	public List<MemberInfo> getMemberInfoListByBranchId(long branchId) {
+		List<Member> memberList = memberRepository.findByBranch_BranchId(branchId);
+		return memberMapper.mapToMemberInfoList(memberList);
+	}
 }

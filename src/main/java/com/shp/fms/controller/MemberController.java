@@ -60,4 +60,9 @@ public class MemberController {
 		return ResponseEntity.ok(new MemberResponse().successResponse(memberInfo));
 	}
 	
+	@GetMapping("/list/branch/{branchId}")
+	public ResponseEntity<MemberResponse> getMemberListByBranchId(@PathVariable long branchId) {
+		List<MemberInfo> memberInfo = memberService.getMemberInfoListByBranchId(branchId);
+		return ResponseEntity.ok(new MemberResponse().successResponse(memberInfo));
+	}
 }
