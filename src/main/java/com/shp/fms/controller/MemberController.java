@@ -50,13 +50,13 @@ public class MemberController {
 	
 	@GetMapping("/list")
 	public ResponseEntity<MemberResponse> getAllMember() {
-		List<MemberInfo> memberInfoList = memberService.getAllMember();
+		List<MemberInfo> memberInfoList = memberService.getAllMemberInfo();
 		return ResponseEntity.ok(new MemberResponse().successResponse(memberInfoList));
 	}
 	
 	@GetMapping("/list/{memberId}")
 	public ResponseEntity<MemberResponse> getMemberById(@PathVariable long memberId) {
-		MemberInfo memberInfo = memberService.getMemberById(memberId);
+		MemberInfo memberInfo = memberService.getMemberInfoById(memberId);
 		return ResponseEntity.ok(new MemberResponse().successResponse(memberInfo));
 	}
 	
