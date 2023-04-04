@@ -5,10 +5,10 @@ import java.util.List;
 
 import org.springframework.stereotype.Component;
 
+import com.shp.fms.controller.request.EmployeeRequestBody;
 import com.shp.fms.model.EmployeeInfo;
 import com.shp.fms.model.entity.Branch;
 import com.shp.fms.model.entity.Employee;
-import com.shp.fms.model.request.EmployeeRequestBody;
 
 @Component
 public class EmployeeMapper {

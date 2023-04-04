@@ -1,4 +1,4 @@
-package com.shp.fms.model.response;
+package com.shp.fms.controller.response;
 
 import java.util.List;
 

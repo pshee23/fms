@@ -1,4 +1,4 @@
-package com.shp.fms.model.request;
+package com.shp.fms.controller.request;
 
 import lombok.Data;
 

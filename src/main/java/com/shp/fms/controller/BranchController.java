@@ -12,9 +12,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.shp.fms.controller.request.BranchRequestBody;
+import com.shp.fms.controller.response.BranchResponse;
 import com.shp.fms.model.BranchInfo;
-import com.shp.fms.model.request.BranchRequestBody;
-import com.shp.fms.model.response.BranchResponse;
 import com.shp.fms.service.BranchService;
 
 import lombok.AllArgsConstructor;
