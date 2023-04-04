@@ -4,10 +4,8 @@ import java.time.LocalDate;
 
 import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.ToString;
 
-@Setter
 @Getter
 @ToString
 public class LockerInfo {
@@ -27,14 +25,14 @@ public class LockerInfo {
 		this.branchId = branchId;
 		this.startDate = startDate;
 		this.endDate = endDate;
-		this.status = getStatus(); 
+		this.status = makeStatus(); 
 	}
 	
 	public enum Status {
 		BEFORE_USE, IN_USE, ALERT, EXPIRED, EMPTY
 	}
 	
-	public String getStatus() { // TODO need test all case
+	public String makeStatus() { // TODO need test all case
 		if(startDate == null || endDate == null) {
 			return Status.EMPTY.name();
 		}
