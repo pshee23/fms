@@ -5,7 +5,6 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import com.shp.fms.controller.request.LessonRequestBody;
 import com.shp.fms.model.LessonInfo;
 import com.shp.fms.model.entity.Lesson;
 import com.shp.fms.model.entity.Member;
@@ -24,9 +23,9 @@ public class LessonService {
 	
 	private final LessonMapper lessonMapper;
 
-	public LessonInfo registerLesson(LessonRequestBody registerInfo) {
-		Member member = memberService.getMemberById(registerInfo.getMemberId());
-		Lesson lesson = lessonMapper.mapToLesson(registerInfo, member);
+	public LessonInfo registerLesson(long memberId, int totalCount) {
+		Member member = memberService.getMemberById(memberId);
+		Lesson lesson = lessonMapper.mapToLesson(member, totalCount);
 		lesson = lessonRepository.save(lesson);
 		return lessonMapper.mapToLessonInfo(lesson);
 	}

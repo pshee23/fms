@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 
 import org.springframework.stereotype.Component;
 
-import com.shp.fms.controller.request.LessonRequestBody;
 import com.shp.fms.model.LessonInfo;
 import com.shp.fms.model.entity.Lesson;
 import com.shp.fms.model.entity.Member;
@@ -23,10 +22,10 @@ public class LessonMapper {
 				.build();
 	}
 	
-	public Lesson mapToLesson(LessonRequestBody registerInfo, Member member) {
+	public Lesson mapToLesson(Member member, int totalCount) {
 		Lesson lesson = new Lesson();
 		lesson.setMember(member);
-		lesson.setTotalCount(registerInfo.getTotalCount());
+		lesson.setTotalCount(totalCount);
 		return lesson;
 	}
 	
