@@ -58,13 +58,14 @@ class BranchServiceTest {
 		long dummyBranchId = 1l;
 		BranchRequestBody requestBody = firstRequestBody();
 		Branch firstBranch = makeBranch(requestBody);
+		Branch firstReturnedBranch = makeReturnedBranch(requestBody);
 		BranchInfo firstBranchInfo = makeBranchInfo(firstBranch);
-		Optional<Branch> opBranch = Optional.of(firstBranch);
+		Optional<Branch> opBranch = Optional.of(firstReturnedBranch);
 		
 		when(branchRepository.findById(dummyBranchId)).thenReturn(opBranch);
-		when(branchMapper.mapToBranchInfo(firstBranch)).thenReturn(firstBranchInfo);
-		when(branchRepository.save(firstBranch)).thenReturn(firstBranch);
-		when(branchMapper.mapToBranchInfo(firstBranch)).thenReturn(firstBranchInfo);
+		when(branchMapper.mapToBranch(opBranch.get(), requestBody)).thenReturn(firstReturnedBranch);
+		when(branchRepository.save(firstReturnedBranch)).thenReturn(firstReturnedBranch);
+		when(branchMapper.mapToBranchInfo(firstReturnedBranch)).thenReturn(firstBranchInfo);
 		
 		BranchInfo returnInfo = branchService.modifyBranch(dummyBranchId, requestBody);
 		
@@ -84,7 +85,8 @@ class BranchServiceTest {
 
 	@Test
 	void testGetAllBranchInfo() {
-		Branch firstBranch = makeBranchWithFirstRequest();
+		BranchRequestBody requestBody = firstRequestBody();
+		Branch firstBranch = makeBranch(requestBody);
 		BranchInfo firstBranchInfo = makeBranchInfo(firstBranch);
 		List<Branch> branchList = new ArrayList<>();
 		branchList.add(firstBranch);
@@ -102,29 +104,31 @@ class BranchServiceTest {
 	@Test
 	void testGetBranchById() {
 		Long dummyId = 1L;
-		Branch firstBranch = makeBranchWithFirstRequest();
-		Optional<Branch> opBranch = Optional.of(firstBranch);
+		BranchRequestBody requestBody = firstRequestBody();
+		Branch firstReturnedBranch = makeReturnedBranch(requestBody);
+		Optional<Branch> opBranch = Optional.of(firstReturnedBranch);
 		
 		when(branchRepository.findById(dummyId)).thenReturn(opBranch);
 		
 		Branch returnBranch = branchService.getBranchById(dummyId);
 		
-		assertEquals(firstBranch, returnBranch);
+		assertEquals(opBranch.get(), returnBranch);
 	}
 
 	@Test
 	void testGetBranchInfoById() {
 		Long dummyId = 1L;
-		Branch firstBranch = makeBranchWithFirstRequest();
-		Optional<Branch> opBranch = Optional.of(firstBranch);
-		BranchInfo firstBranchInfo = makeBranchInfo(firstBranch);
+		BranchRequestBody requestBody = firstRequestBody();
+		Branch firstReturnedBranch = makeReturnedBranch(requestBody);
+		Optional<Branch> opBranch = Optional.of(firstReturnedBranch);
+		BranchInfo firstBranchInfo = makeBranchInfo(opBranch.get());
 		
 		when(branchRepository.findById(dummyId)).thenReturn(opBranch);
-		when(branchMapper.mapToBranchInfo(firstBranch)).thenReturn(firstBranchInfo);
+		when(branchMapper.mapToBranchInfo(opBranch.get())).thenReturn(firstBranchInfo);
 		
 		BranchInfo returnBranchInfo = branchService.getBranchInfoById(dummyId);
 		
-		assertEquals(firstBranch, returnBranchInfo);
+		assertEquals(firstBranchInfo, returnBranchInfo);
 	}
 
 	
@@ -144,9 +148,13 @@ class BranchServiceTest {
 		return branch;
 	}
 	
-	private Branch makeBranchWithFirstRequest() {
-		BranchRequestBody requestBody = firstRequestBody();
-		return makeBranch(requestBody);
+	private Branch makeReturnedBranch(BranchRequestBody requestBody) {
+		Branch branch = new Branch();
+		branch.setBranchId(1L);
+		branch.setName(requestBody.getName());
+		branch.setAddress(requestBody.getAddress());
+		branch.setPhoneNumber(requestBody.getPhoneNumber());
+		return branch;
 	}
 	
 	private BranchInfo makeBranchInfo(Branch branch) {
