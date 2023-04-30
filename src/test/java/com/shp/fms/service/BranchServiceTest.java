@@ -8,9 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -29,12 +29,8 @@ class BranchServiceTest {
 	@Mock
 	BranchMapper branchMapper;
 	
+	@InjectMocks
 	BranchService branchService;
-	
-	@BeforeEach
-	void setUp() {
-		this.branchService = new BranchService(branchRepository, branchMapper);
-	}
 	
 	@Test
 	void testRegisterBranch() {
