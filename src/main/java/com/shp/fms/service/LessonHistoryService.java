@@ -1,5 +1,6 @@
 package com.shp.fms.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -44,5 +45,21 @@ public class LessonHistoryService {
 	public List<LessonHistoryInfo> getAllLessonHistoryInfo(long memberId) {
 		List<LessonHistory> lessonHistoryList = lessonHistoryRepository.findByMember_MemberId(memberId);
 		return lessonHistoryMapper.mapToLessonHistoryInfoList(lessonHistoryList);
+	}
+	
+	public List<LessonHistory> getLessonHistoryByEmployeeId(long employeeId) {
+		List<LessonHistory> lessonHistoryList = lessonHistoryRepository.findByEmployee_EmployeeId(employeeId);
+		if(lessonHistoryList.isEmpty()) {
+			// TODO throw Exception
+		}
+		return lessonHistoryList;
+	}
+	
+	public List<LessonHistory> getAllByEmployeeIdAndDate(long employeeId, LocalDateTime startDate, LocalDateTime endDate) {
+		List<LessonHistory> lessonHistoryList = lessonHistoryRepository.findAllByEmployee_EmployeeIdAndLessonDateTimeBetween(employeeId, startDate, endDate);
+		if(lessonHistoryList.isEmpty()) {
+			// TODO throw Exception
+		}
+		return lessonHistoryList;
 	}
 }

@@ -5,6 +5,8 @@ import java.time.LocalDate;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -20,7 +22,12 @@ import lombok.Setter;
 @Table(name = "Membership")
 public class Membership {
 
+	// TODO if no Id, Composite-id class must implement Serializable??
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name="MEMBERSHIP_ID")
+	private long membershipId;
+	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="MEMBER_ID")
 	private Member member;
