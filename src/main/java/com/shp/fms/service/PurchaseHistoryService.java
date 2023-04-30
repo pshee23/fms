@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.shp.fms.common.exception.NoDataReturnedException;
+import com.shp.fms.common.type.ServiceType;
 import com.shp.fms.controller.request.PurchaseHistoryRequestBody;
 import com.shp.fms.model.PurchaseHistoryInfo;
 import com.shp.fms.model.entity.Employee;
@@ -41,6 +43,9 @@ public class PurchaseHistoryService {
 		
 	public List<PurchaseHistoryInfo> getAllPurchaseHistoryInfo() {
 		List<PurchaseHistory> purchaseHistoryList = purchaseHistoryRepository.findAll();
+		if(purchaseHistoryList.isEmpty()) {
+			throw new NoDataReturnedException(ServiceType.PURCHASE_HISTORY.getName());
+		}
 		return productHistoryMapper.mapToPurchaseHistoryInfoList(purchaseHistoryList);
 	}
 }

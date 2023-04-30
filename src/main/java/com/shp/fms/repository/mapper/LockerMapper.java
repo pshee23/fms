@@ -41,18 +41,14 @@ public class LockerMapper {
 		return originLocker;
 	}
 	
-	public List<LockerInfo> mapToLockerInfoList(List<Locker> LockerList) {
-		List<LockerInfo> LockerInfoList = new ArrayList<>();
+	public List<LockerInfo> mapToLockerInfoList(List<Locker> lockerList) {
+		List<LockerInfo> lockerInfoList = new ArrayList<>();
 		
-		if(LockerList.isEmpty()) {
-			return LockerInfoList;
+		for(Locker locker : lockerList) {
+			LockerInfo lockerInfo = mapToLockerInfo(locker);
+			lockerInfoList.add(lockerInfo);
 		}
 		
-		for(Locker Locker : LockerList) {
-			LockerInfo LockerInfo = mapToLockerInfo(Locker);
-			LockerInfoList.add(LockerInfo);
-		}
-		
-		return LockerInfoList;
+		return lockerInfoList;
 	}
 }

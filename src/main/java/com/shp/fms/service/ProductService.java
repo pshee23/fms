@@ -5,6 +5,8 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.shp.fms.common.exception.NoResultByIdException;
+import com.shp.fms.common.type.ServiceType;
 import com.shp.fms.controller.request.ProductRequestBody;
 import com.shp.fms.model.ProductInfo;
 import com.shp.fms.model.entity.Branch;
@@ -59,24 +61,23 @@ public class ProductService {
 		return productMapper.mapToProductInfoList(lockerList);
 	}
 	
-	public Product getProductById(long lockerId) {
-		Optional<Product> locker = productRepository.findById(lockerId);
-		if(locker.isEmpty()) {
-			// TODO throw exception
+	public Product getProductById(long productId) {
+		Optional<Product> product = productRepository.findById(productId);
+		if(product.isEmpty()) {
+			throw new NoResultByIdException(productId, ServiceType.PRODUCT.getName());
 		}
-		return locker.get();
+		return product.get();
 	}
 	
-	public ProductInfo getProductInfoById(long lockerId) {
-		Optional<Product> locker = productRepository.findById(lockerId);
-		if(locker.isEmpty()) {
-			// TODO throw exception
-		}
-		return productMapper.mapToProductInfo(locker.get());
+	public ProductInfo getProductInfoById(long productId) {
+		return productMapper.mapToProductInfo(getProductById(productId));
 	}
 	
 	public List<ProductInfo> getProductInfoListByBranchId(long branchId) {
-		List<Product> lockerList = productRepository.findByBranch_BranchId(branchId);
-		return productMapper.mapToProductInfoList(lockerList);
+		List<Product> productList = productRepository.findByBranch_BranchId(branchId);
+		if(productList.isEmpty()) {
+			throw new NoResultByIdException(ServiceType.BRANCH.getName(), branchId, ServiceType.PRODUCT.getName());
+		}
+		return productMapper.mapToProductInfoList(productList);
 	}
 }

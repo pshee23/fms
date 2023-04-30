@@ -38,11 +38,7 @@ public class LessonHistoryMapper {
 
 	public List<LessonHistoryInfo> mapToLessonHistoryInfoList(List<LessonHistory> lessonHistoryList) {
 		List<LessonHistoryInfo> lessonHistoryInfoList = new ArrayList<>();
-		
-		if(lessonHistoryList.isEmpty()) {
-			return lessonHistoryInfoList;
-		}
-		
+
 		for(LessonHistory lessonHistory : lessonHistoryList) {
 			LessonHistoryInfo lessonHistoryInfo = mapToLessonHistoryInfo(lessonHistory);
 			lessonHistoryInfoList.add(lessonHistoryInfo);

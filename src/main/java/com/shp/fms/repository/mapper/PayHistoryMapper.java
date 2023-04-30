@@ -37,10 +37,6 @@ public class PayHistoryMapper {
 	public List<PayHistoryInfo> mapToPayHistoryInfoList(List<PayHistory> payHistoryList) {
 		List<PayHistoryInfo> payHistoryInfoList = new ArrayList<>();
 		
-		if(payHistoryList.isEmpty()) {
-			return payHistoryInfoList;
-		}
-		
 		for(PayHistory payHistory : payHistoryList) {
 			PayHistoryInfo payHistoryInfo = mapToPayHistoryInfo(payHistory);
 			payHistoryInfoList.add(payHistoryInfo);

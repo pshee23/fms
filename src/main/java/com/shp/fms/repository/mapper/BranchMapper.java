@@ -40,10 +40,6 @@ public class BranchMapper {
 	public List<BranchInfo> mapToBranchInfoList(List<Branch> branchList) {
 		List<BranchInfo> branchInfoList = new ArrayList<>();
 		
-		if(branchList.isEmpty()) {
-			return branchInfoList;
-		}
-		
 		for(Branch branch : branchList) {
 			BranchInfo branchInfo = mapToBranchInfo(branch);
 			branchInfoList.add(branchInfo);

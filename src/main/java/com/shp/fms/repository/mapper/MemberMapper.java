@@ -47,18 +47,14 @@ public class MemberMapper {
 		return originMember;
 	}
 	
-	public List<MemberInfo> mapToMemberInfoList(List<Member> MemberList) {
-		List<MemberInfo> MemberInfoList = new ArrayList<>();
+	public List<MemberInfo> mapToMemberInfoList(List<Member> memberList) {
+		List<MemberInfo> memberInfoList = new ArrayList<>();
 		
-		if(MemberList.isEmpty()) {
-			return MemberInfoList;
+		for(Member member : memberList) {
+			MemberInfo memberInfo = mapToMemberInfo(member);
+			memberInfoList.add(memberInfo);
 		}
 		
-		for(Member Member : MemberList) {
-			MemberInfo MemberInfo = mapToMemberInfo(Member);
-			MemberInfoList.add(MemberInfo);
-		}
-		
-		return MemberInfoList;
+		return memberInfoList;
 	}
 }

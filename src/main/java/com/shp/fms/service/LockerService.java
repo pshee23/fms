@@ -5,6 +5,9 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.shp.fms.common.exception.NoDataReturnedException;
+import com.shp.fms.common.exception.NoResultByIdException;
+import com.shp.fms.common.type.ServiceType;
 import com.shp.fms.controller.request.LockerRequestBody;
 import com.shp.fms.model.LockerInfo;
 import com.shp.fms.model.entity.Branch;
@@ -55,27 +58,29 @@ public class LockerService {
 	
 	public List<LockerInfo> getAllLockerInfo() {
 		List<Locker> lockerList = lockerRepository.findAll();
+		if(lockerList.isEmpty()) {
+			throw new NoDataReturnedException(ServiceType.LOCKER.getName());
+		}
 		return lockerMapper.mapToLockerInfoList(lockerList);
 	}
 	
 	public Locker getLockerById(long lockerId) {
 		Optional<Locker> locker = lockerRepository.findById(lockerId);
 		if(locker.isEmpty()) {
-			// TODO throw exception
+			throw new NoResultByIdException(lockerId, ServiceType.LOCKER.getName());
 		}
 		return locker.get();
 	}
 	
 	public LockerInfo getLockerInfoById(long lockerId) {
-		Optional<Locker> locker = lockerRepository.findById(lockerId);
-		if(locker.isEmpty()) {
-			// TODO throw exception
-		}
-		return lockerMapper.mapToLockerInfo(locker.get());
+		return lockerMapper.mapToLockerInfo(getLockerById(lockerId));
 	}
 	
 	public List<LockerInfo> getLockerInfoListByBranchId(long branchId) {
 		List<Locker> lockerList = lockerRepository.findByBranch_BranchId(branchId);
+		if(lockerList.isEmpty()) {
+			throw new NoResultByIdException(ServiceType.BRANCH.getName(), branchId, ServiceType.LOCKER.getName());
+		}
 		return lockerMapper.mapToLockerInfoList(lockerList);
 	}
 }

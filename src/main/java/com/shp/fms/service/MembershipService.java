@@ -5,6 +5,8 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.shp.fms.common.exception.NoResultByIdException;
+import com.shp.fms.common.type.ServiceType;
 import com.shp.fms.model.entity.Member;
 import com.shp.fms.model.entity.Membership;
 import com.shp.fms.repository.MembershipRepository;
@@ -45,7 +47,7 @@ public class MembershipService {
 	public Membership getMembershipById(long memberId) {
 		Optional<Membership> membership = membershipRepository.findById(memberId);
 		if(membership.isEmpty()) {
-			// TODO throw exception
+			throw new NoResultByIdException(memberId, ServiceType.MEMBERSHIP.getName());
 		}
 		return membership.get();
 	}

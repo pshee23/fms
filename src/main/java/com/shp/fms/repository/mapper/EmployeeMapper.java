@@ -49,18 +49,14 @@ public class EmployeeMapper {
 		return originEmployee;
 	}
 	
-	public List<EmployeeInfo> mapToEmployeeInfoList(List<Employee> EmployeeList) {
-		List<EmployeeInfo> EmployeeInfoList = new ArrayList<>();
+	public List<EmployeeInfo> mapToEmployeeInfoList(List<Employee> employeeList) {
+		List<EmployeeInfo> employeeInfoList = new ArrayList<>();
 		
-		if(EmployeeList.isEmpty()) {
-			return EmployeeInfoList;
+		for(Employee employee : employeeList) {
+			EmployeeInfo employeeInfo = mapToEmployeeInfo(employee);
+			employeeInfoList.add(employeeInfo);
 		}
 		
-		for(Employee Employee : EmployeeList) {
-			EmployeeInfo EmployeeInfo = mapToEmployeeInfo(Employee);
-			EmployeeInfoList.add(EmployeeInfo);
-		}
-		
-		return EmployeeInfoList;
+		return employeeInfoList;
 	}
 }

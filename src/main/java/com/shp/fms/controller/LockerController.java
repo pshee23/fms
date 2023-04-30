@@ -58,4 +58,10 @@ public class LockerController {
 		LockerInfo lockerInfo = lockerService.getLockerInfoById(lockerId);
 		return ResponseEntity.ok(new LockerResponse().successResponse(lockerInfo));
 	}
+	
+	@GetMapping("/list/branch/{branchId}")
+	public ResponseEntity<LockerResponse> getLockerByBranchId(@PathVariable long branchId) {
+		List<LockerInfo> lockerInfoList = lockerService.getLockerInfoListByBranchId(branchId);
+		return ResponseEntity.ok(new LockerResponse().successResponse(lockerInfoList));
+	}
 }

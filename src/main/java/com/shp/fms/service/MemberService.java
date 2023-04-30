@@ -5,6 +5,9 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.shp.fms.common.exception.NoDataReturnedException;
+import com.shp.fms.common.exception.NoResultByIdException;
+import com.shp.fms.common.type.ServiceType;
 import com.shp.fms.controller.request.MemberRequestBody;
 import com.shp.fms.model.MemberInfo;
 import com.shp.fms.model.entity.Branch;
@@ -55,27 +58,29 @@ public class MemberService {
 	
 	public List<MemberInfo> getAllMemberInfo() {
 		List<Member> memberList = memberRepository.findAll();
+		if(memberList.isEmpty()) {
+			throw new NoDataReturnedException(ServiceType.MEMBER.getName());
+		}
 		return memberMapper.mapToMemberInfoList(memberList);
 	}
 	
 	public Member getMemberById(long memberId) {
 		Optional<Member> member = memberRepository.findById(memberId);
 		if(member.isEmpty()) {
-			// TODO throw exception
+			throw new NoResultByIdException(memberId, ServiceType.MEMBER.getName());
 		}
 		return member.get();
 	}
 	
 	public MemberInfo getMemberInfoById(long memberId) {
-		Optional<Member> member = memberRepository.findById(memberId);
-		if(member.isEmpty()) {
-			// TODO throw exception
-		}
-		return memberMapper.mapToMemberInfo(member.get());
+		return memberMapper.mapToMemberInfo(getMemberById(memberId));
 	}
 	
 	public List<MemberInfo> getMemberInfoListByBranchId(long branchId) {
 		List<Member> memberList = memberRepository.findByBranch_BranchId(branchId);
+		if(memberList.isEmpty()) {
+			throw new NoResultByIdException(ServiceType.BRANCH.getName(), branchId, ServiceType.MEMBER.getName());
+		}
 		return memberMapper.mapToMemberInfoList(memberList);
 	}
 }

@@ -5,6 +5,9 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.shp.fms.common.exception.NoDataReturnedException;
+import com.shp.fms.common.exception.NoResultByIdException;
+import com.shp.fms.common.type.ServiceType;
 import com.shp.fms.controller.request.EmployeeRequestBody;
 import com.shp.fms.model.EmployeeInfo;
 import com.shp.fms.model.entity.Branch;
@@ -32,14 +35,11 @@ public class EmployeeService {
 	}
 	
 	public EmployeeInfo modifyEmployee(long employeeId, EmployeeRequestBody modifyInfo) {
-		Optional<Employee> optionalEmployee = employeeRepository.findById(employeeId);
-		if(optionalEmployee.isEmpty()) {
-			// TODO throw exception
-		}
+		Employee employee = getEmployeeById(employeeId);
 		Branch branch = branchService.getBranchById(modifyInfo.getBranchId());
-		Employee employee = employeeMapper.mapToEmployee(optionalEmployee.get(), modifyInfo, branch);
-		employee = employeeRepository.save(employee);
-		return employeeMapper.mapToEmployeeInfo(employee);
+		Employee modifiedEmployee = employeeMapper.mapToEmployee(employee, modifyInfo, branch);
+		modifiedEmployee = employeeRepository.save(modifiedEmployee);
+		return employeeMapper.mapToEmployeeInfo(modifiedEmployee);
 	}
 	
 	public boolean deleteEmployee(long employeeId) {
@@ -53,27 +53,29 @@ public class EmployeeService {
 	
 	public List<EmployeeInfo> getAllEmployeeInfo() {
 		List<Employee> employeeList = employeeRepository.findAll();
+		if(employeeList.isEmpty()) {
+			throw new NoDataReturnedException(ServiceType.EMPLOYEE.getName());
+		}
 		return employeeMapper.mapToEmployeeInfoList(employeeList);
 	}
 	
 	public Employee getEmployeeById(long employeeId) {
 		Optional<Employee> employee = employeeRepository.findById(employeeId);
 		if(employee.isEmpty()) {
-			// TODO throw exception
+			throw new NoResultByIdException(employeeId, ServiceType.EMPLOYEE.getName());
 		}
 		return employee.get();
 	}
 	
 	public EmployeeInfo getEmployeeInfoById(long employeeId) {
-		Optional<Employee> employee = employeeRepository.findById(employeeId);
-		if(employee.isEmpty()) {
-			// TODO throw exception
-		}
-		return employeeMapper.mapToEmployeeInfo(employee.get());
+		return employeeMapper.mapToEmployeeInfo(getEmployeeById(employeeId));
 	}
 
 	public List<EmployeeInfo> getEmployeeInfoListByBranchId(long branchId) {
 		List<Employee> employeeList = employeeRepository.findByBranch_BranchId(branchId);
+		if(employeeList.isEmpty()) {
+			throw new NoResultByIdException(ServiceType.BRANCH.getName(), branchId, ServiceType.EMPLOYEE.getName());
+		}
 		return employeeMapper.mapToEmployeeInfoList(employeeList);
 	}
 }

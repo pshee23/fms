@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.shp.fms.common.exception.NoDataReturnedException;
+import com.shp.fms.common.type.ServiceType;
 import com.shp.fms.controller.request.PayHistoryRequestBody;
 import com.shp.fms.model.PayHistoryInfo;
 import com.shp.fms.model.entity.Employee;
@@ -46,6 +48,9 @@ public class PayHistoryService {
 		
 	public List<PayHistoryInfo> getAllPayHistoryInfo() {
 		List<PayHistory> payHistoryList = payHistoryRepository.findAll();
+		if(payHistoryList.isEmpty()) {
+			throw new NoDataReturnedException(ServiceType.PAY_HISTORY.getName());
+		}
 		return payHistoryMapper.mapToPayHistoryInfoList(payHistoryList);
 	}
 	

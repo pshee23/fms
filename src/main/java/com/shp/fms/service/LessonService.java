@@ -5,6 +5,8 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.shp.fms.common.exception.NoResultByIdException;
+import com.shp.fms.common.type.ServiceType;
 import com.shp.fms.model.LessonInfo;
 import com.shp.fms.model.entity.Lesson;
 import com.shp.fms.model.entity.Member;
@@ -48,7 +50,7 @@ public class LessonService {
 	public Lesson getLessonById(long lessonId) {
 		Optional<Lesson> lesson = lessonRepository.findById(lessonId);
 		if(lesson.isEmpty()) {
-			// TODO throw exception
+			throw new NoResultByIdException(lessonId, ServiceType.LESSON.getName());
 		}
 		return lesson.get();
 	}

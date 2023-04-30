@@ -20,4 +20,11 @@ public class CommonResponse {
 		response.setMessage("fail");
 		return response;
 	}
+	
+	public CommonResponse failExceptionResponse(String message) {
+		CommonResponse response = new CommonResponse();
+		response.setCode(-1);
+		response.setMessage(message);
+		return response;
+	}
 }

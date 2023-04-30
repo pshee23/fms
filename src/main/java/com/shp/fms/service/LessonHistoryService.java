@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.shp.fms.common.exception.NoResultByIdException;
+import com.shp.fms.common.type.ServiceType;
 import com.shp.fms.controller.request.LessonHistoryRequestBody;
 import com.shp.fms.model.LessonHistoryInfo;
 import com.shp.fms.model.entity.Employee;
@@ -44,13 +46,16 @@ public class LessonHistoryService {
 		
 	public List<LessonHistoryInfo> getAllLessonHistoryInfo(long memberId) {
 		List<LessonHistory> lessonHistoryList = lessonHistoryRepository.findByMember_MemberId(memberId);
+		if(lessonHistoryList.isEmpty()) {
+			throw new NoResultByIdException(ServiceType.MEMBER.getName(), memberId, ServiceType.LESSON_HISTORY.getName());
+		}
 		return lessonHistoryMapper.mapToLessonHistoryInfoList(lessonHistoryList);
 	}
 	
 	public List<LessonHistory> getLessonHistoryByEmployeeId(long employeeId) {
 		List<LessonHistory> lessonHistoryList = lessonHistoryRepository.findByEmployee_EmployeeId(employeeId);
 		if(lessonHistoryList.isEmpty()) {
-			// TODO throw Exception
+			throw new NoResultByIdException(ServiceType.EMPLOYEE.getName(), employeeId, ServiceType.LESSON_HISTORY.getName());
 		}
 		return lessonHistoryList;
 	}
@@ -58,7 +63,8 @@ public class LessonHistoryService {
 	public List<LessonHistory> getAllByEmployeeIdAndDate(long employeeId, LocalDateTime startDate, LocalDateTime endDate) {
 		List<LessonHistory> lessonHistoryList = lessonHistoryRepository.findAllByEmployee_EmployeeIdAndLessonDateTimeBetween(employeeId, startDate, endDate);
 		if(lessonHistoryList.isEmpty()) {
-			// TODO throw Exception
+			// TODO 다른 리턴 방식?
+			throw new NoResultByIdException(ServiceType.EMPLOYEE.getName(), employeeId, ServiceType.LESSON_HISTORY.getName());
 		}
 		return lessonHistoryList;
 	}

@@ -50,18 +50,14 @@ public class ProductMapper {
 		return originProduct;
 	}
 	
-	public List<ProductInfo> mapToProductInfoList(List<Product> ProductList) {
-		List<ProductInfo> ProductInfoList = new ArrayList<>();
-		
-		if(ProductList.isEmpty()) {
-			return ProductInfoList;
+	public List<ProductInfo> mapToProductInfoList(List<Product> productList) {
+		List<ProductInfo> productInfoList = new ArrayList<>();
+
+		for(Product product : productList) {
+			ProductInfo productInfo = mapToProductInfo(product);
+			productInfoList.add(productInfo);
 		}
 		
-		for(Product Product : ProductList) {
-			ProductInfo ProductInfo = mapToProductInfo(Product);
-			ProductInfoList.add(ProductInfo);
-		}
-		
-		return ProductInfoList;
+		return productInfoList;
 	}
 }

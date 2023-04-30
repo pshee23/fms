@@ -5,6 +5,9 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.shp.fms.common.exception.NoDataReturnedException;
+import com.shp.fms.common.exception.NoResultByIdException;
+import com.shp.fms.common.type.ServiceType;
 import com.shp.fms.controller.request.BranchRequestBody;
 import com.shp.fms.model.BranchInfo;
 import com.shp.fms.model.entity.Branch;
@@ -27,15 +30,11 @@ public class BranchService {
 		return branchMapper.mapToBranchInfo(branch);
 	}
 	
-	// TODO custom Exception
 	public BranchInfo modifyBranch(long branchId, BranchRequestBody modifyInfo) {
-		Optional<Branch> optionalBranch = branchRepository.findById(branchId);
-		if(optionalBranch.isEmpty()) {
-			// TODO throw exception
-		}
-		Branch branch = branchMapper.mapToBranch(optionalBranch.get(), modifyInfo);
-		branch = branchRepository.save(branch);
-		return branchMapper.mapToBranchInfo(branch);
+		Branch branch = getBranchById(branchId);
+		Branch modifiedBranch = branchMapper.mapToBranch(branch, modifyInfo);
+		modifiedBranch = branchRepository.save(modifiedBranch);
+		return branchMapper.mapToBranchInfo(modifiedBranch);
 	}
 	
 	// TODO find a safe and right way to delete data
@@ -50,22 +49,21 @@ public class BranchService {
 	
 	public List<BranchInfo> getAllBranchInfo() {
 		List<Branch> branchList = branchRepository.findAll();
+		if(branchList.isEmpty()) {
+			throw new NoDataReturnedException(ServiceType.BRANCH.getName());
+		}
 		return branchMapper.mapToBranchInfoList(branchList);
 	}
 	
 	public Branch getBranchById(long branchId) {
 		Optional<Branch> branch = branchRepository.findById(branchId);
 		if(branch.isEmpty()) {
-			// TODO throw exception
+			throw new NoResultByIdException(branchId, ServiceType.BRANCH.getName());
 		}
 		return branch.get();
 	}
 	
 	public BranchInfo getBranchInfoById(long branchId) {
-		Optional<Branch> branch = branchRepository.findById(branchId);
-		if(branch.isEmpty()) {
-			// TODO throw exception
-		}
-		return branchMapper.mapToBranchInfo(branch.get());
+		return branchMapper.mapToBranchInfo(getBranchById(branchId));
 	}
 }

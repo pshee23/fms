@@ -40,14 +40,10 @@ public class PurchaseHistoryMapper {
 		return purchaseHistory;
 	}
 	
-	public List<PurchaseHistoryInfo> mapToPurchaseHistoryInfoList(List<PurchaseHistory> PurchaseHistoryList) {
+	public List<PurchaseHistoryInfo> mapToPurchaseHistoryInfoList(List<PurchaseHistory> purchaseHistoryList) {
 		List<PurchaseHistoryInfo> purchaseHistoryInfoList = new ArrayList<>();
 		
-		if(PurchaseHistoryList.isEmpty()) {
-			return purchaseHistoryInfoList;
-		}
-		
-		for(PurchaseHistory purchaseHistory : PurchaseHistoryList) {
+		for(PurchaseHistory purchaseHistory : purchaseHistoryList) {
 			PurchaseHistoryInfo purchaseHistoryInfo = mapToPurchaseHistoryInfo(purchaseHistory);
 			purchaseHistoryInfoList.add(purchaseHistoryInfo);
 		}
