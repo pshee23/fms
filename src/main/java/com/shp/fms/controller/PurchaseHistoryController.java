@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.shp.fms.controller.request.PurchaseHistoryRequestBody;
-import com.shp.fms.controller.response.PurchaseHistoryResponse;
 import com.shp.fms.model.PurchaseHistoryInfo;
+import com.shp.fms.model.request.PurchaseHistoryRequestBody;
+import com.shp.fms.model.response.PurchaseHistoryResponse;
 import com.shp.fms.service.PurchaseHistoryService;
 
 import lombok.AllArgsConstructor;

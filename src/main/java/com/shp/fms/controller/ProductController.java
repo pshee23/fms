@@ -12,9 +12,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.shp.fms.controller.request.ProductRequestBody;
-import com.shp.fms.controller.response.ProductResponse;
 import com.shp.fms.model.ProductInfo;
+import com.shp.fms.model.request.ProductRequestBody;
+import com.shp.fms.model.response.ProductResponse;
 import com.shp.fms.service.ProductService;
 
 import lombok.AllArgsConstructor;

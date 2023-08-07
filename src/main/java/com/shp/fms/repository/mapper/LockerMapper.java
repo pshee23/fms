@@ -5,11 +5,11 @@ import java.util.List;
 
 import org.springframework.stereotype.Component;
 
-import com.shp.fms.controller.request.LockerRequestBody;
 import com.shp.fms.model.LockerInfo;
 import com.shp.fms.model.entity.Branch;
 import com.shp.fms.model.entity.Locker;
 import com.shp.fms.model.entity.Member;
+import com.shp.fms.model.request.LockerRequestBody;
 
 @Component
 public class LockerMapper {

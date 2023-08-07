@@ -5,9 +5,9 @@ import java.util.List;
 
 import org.springframework.stereotype.Component;
 
-import com.shp.fms.controller.request.BranchRequestBody;
 import com.shp.fms.model.BranchInfo;
 import com.shp.fms.model.entity.Branch;
+import com.shp.fms.model.request.BranchRequestBody;
 
 @Component
 public class BranchMapper {

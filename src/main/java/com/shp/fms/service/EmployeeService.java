@@ -8,10 +8,10 @@ import org.springframework.stereotype.Service;
 import com.shp.fms.common.exception.NoDataReturnedException;
 import com.shp.fms.common.exception.NoResultByIdException;
 import com.shp.fms.common.type.ServiceType;
-import com.shp.fms.controller.request.EmployeeRequestBody;
 import com.shp.fms.model.EmployeeInfo;
 import com.shp.fms.model.entity.Branch;
 import com.shp.fms.model.entity.Employee;
+import com.shp.fms.model.request.EmployeeRequestBody;
 import com.shp.fms.repository.EmployeeRepository;
 import com.shp.fms.repository.mapper.EmployeeMapper;
 

@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.shp.fms.controller.request.PayHistoryRequestBody;
-import com.shp.fms.controller.response.PayHistoryResponse;
 import com.shp.fms.model.PayHistoryInfo;
+import com.shp.fms.model.request.PayHistoryRequestBody;
+import com.shp.fms.model.response.PayHistoryResponse;
 import com.shp.fms.service.PayHistoryService;
 
 import lombok.AllArgsConstructor;

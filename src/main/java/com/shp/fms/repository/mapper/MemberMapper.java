@@ -5,11 +5,11 @@ import java.util.List;
 
 import org.springframework.stereotype.Component;
 
-import com.shp.fms.controller.request.MemberRequestBody;
 import com.shp.fms.model.MemberInfo;
 import com.shp.fms.model.entity.Branch;
 import com.shp.fms.model.entity.Employee;
 import com.shp.fms.model.entity.Member;
+import com.shp.fms.model.request.MemberRequestBody;
 
 @Component
 public class MemberMapper {
@@ -24,6 +24,8 @@ public class MemberMapper {
 				.address(member.getAddress())
 				.phoneNumber(member.getPhoneNumber())
 				.loginId(member.getLoginId())
+				.loginPw(member.getLoginPw())
+				.role(member.getRole())
 				.build();
 	}
 	
@@ -34,6 +36,9 @@ public class MemberMapper {
 		member.setName(registerInfo.getName());
 		member.setAddress(registerInfo.getAddress());
 		member.setPhoneNumber(registerInfo.getPhoneNumber());
+		member.setLoginId(registerInfo.getLoginId());
+		member.setLoginPw(registerInfo.getLoginPw());
+		member.setRole(registerInfo.getRole());
 		return member;
 	}
 	

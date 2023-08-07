@@ -8,11 +8,11 @@ import org.springframework.stereotype.Service;
 import com.shp.fms.common.exception.NoDataReturnedException;
 import com.shp.fms.common.exception.NoResultByIdException;
 import com.shp.fms.common.type.ServiceType;
-import com.shp.fms.controller.request.MemberRequestBody;
 import com.shp.fms.model.MemberInfo;
 import com.shp.fms.model.entity.Branch;
 import com.shp.fms.model.entity.Employee;
 import com.shp.fms.model.entity.Member;
+import com.shp.fms.model.request.MemberRequestBody;
 import com.shp.fms.repository.MemberRepository;
 import com.shp.fms.repository.mapper.MemberMapper;
 
@@ -82,5 +82,21 @@ public class MemberService {
 			throw new NoResultByIdException(ServiceType.BRANCH.getName(), branchId, ServiceType.MEMBER.getName());
 		}
 		return memberMapper.mapToMemberInfoList(memberList);
+	}
+	
+	public MemberInfo getMemberInfoByLoginId(String loginId) {
+		Optional<Member> member = memberRepository.findByLoginId(loginId);
+		if(member.isEmpty()) {
+			return null;
+		}
+		return memberMapper.mapToMemberInfo(member.get());
+	}
+	
+	// TODO 세부 검색
+	public boolean isMemberExist(String loginId) {
+		boolean isExist = false;
+		Optional<Member> member = memberRepository.findByLoginId(loginId);
+		System.out.println(member);
+		return isExist;
 	}
 }

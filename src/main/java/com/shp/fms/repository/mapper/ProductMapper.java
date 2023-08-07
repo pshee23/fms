@@ -5,11 +5,11 @@ import java.util.List;
 
 import org.springframework.stereotype.Component;
 
-import com.shp.fms.controller.request.ProductRequestBody;
 import com.shp.fms.model.ProductInfo;
 import com.shp.fms.model.entity.Branch;
 import com.shp.fms.model.entity.Company;
 import com.shp.fms.model.entity.Product;
+import com.shp.fms.model.request.ProductRequestBody;
 
 @Component
 public class ProductMapper {

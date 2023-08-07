@@ -12,9 +12,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.shp.fms.controller.request.LockerRequestBody;
-import com.shp.fms.controller.response.LockerResponse;
 import com.shp.fms.model.LockerInfo;
+import com.shp.fms.model.request.LockerRequestBody;
+import com.shp.fms.model.response.LockerResponse;
 import com.shp.fms.service.LockerService;
 
 import lombok.AllArgsConstructor;

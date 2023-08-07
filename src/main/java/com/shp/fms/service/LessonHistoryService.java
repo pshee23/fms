@@ -7,12 +7,12 @@ import org.springframework.stereotype.Service;
 
 import com.shp.fms.common.exception.NoResultByIdException;
 import com.shp.fms.common.type.ServiceType;
-import com.shp.fms.controller.request.LessonHistoryRequestBody;
 import com.shp.fms.model.LessonHistoryInfo;
 import com.shp.fms.model.entity.Employee;
 import com.shp.fms.model.entity.Lesson;
 import com.shp.fms.model.entity.LessonHistory;
 import com.shp.fms.model.entity.Member;
+import com.shp.fms.model.request.LessonHistoryRequestBody;
 import com.shp.fms.repository.LessonHistoryRepository;
 import com.shp.fms.repository.mapper.LessonHistoryMapper;
 

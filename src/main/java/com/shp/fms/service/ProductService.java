@@ -7,11 +7,11 @@ import org.springframework.stereotype.Service;
 
 import com.shp.fms.common.exception.NoResultByIdException;
 import com.shp.fms.common.type.ServiceType;
-import com.shp.fms.controller.request.ProductRequestBody;
 import com.shp.fms.model.ProductInfo;
 import com.shp.fms.model.entity.Branch;
 import com.shp.fms.model.entity.Company;
 import com.shp.fms.model.entity.Product;
+import com.shp.fms.model.request.ProductRequestBody;
 import com.shp.fms.repository.CompanyRepository;
 import com.shp.fms.repository.ProductRepository;
 import com.shp.fms.repository.mapper.ProductMapper;

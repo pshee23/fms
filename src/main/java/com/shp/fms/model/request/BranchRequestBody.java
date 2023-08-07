@@ -1,9 +1,9 @@
-package com.shp.fms.controller.request;
+package com.shp.fms.model.request;
 
 import lombok.Data;
 
 @Data
-public class CompanyRequestBody {
+public class BranchRequestBody {
 	private String name;
 	private String address;
 	private String phoneNumber;

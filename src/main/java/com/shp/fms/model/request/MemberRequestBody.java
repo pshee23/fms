@@ -1,4 +1,4 @@
-package com.shp.fms.controller.request;
+package com.shp.fms.model.request;
 
 import lombok.Data;
 
@@ -11,4 +11,5 @@ public class MemberRequestBody {
 	private String phoneNumber;
 	private String loginId;
 	private String loginPw;
+	private String role;
 }

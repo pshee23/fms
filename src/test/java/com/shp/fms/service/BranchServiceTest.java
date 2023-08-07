@@ -14,9 +14,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.shp.fms.controller.request.BranchRequestBody;
 import com.shp.fms.model.BranchInfo;
 import com.shp.fms.model.entity.Branch;
+import com.shp.fms.model.request.BranchRequestBody;
 import com.shp.fms.repository.BranchRepository;
 import com.shp.fms.repository.mapper.BranchMapper;
 

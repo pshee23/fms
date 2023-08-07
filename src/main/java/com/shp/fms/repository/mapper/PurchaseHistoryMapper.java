@@ -5,12 +5,12 @@ import java.util.List;
 
 import org.springframework.stereotype.Component;
 
-import com.shp.fms.controller.request.PurchaseHistoryRequestBody;
 import com.shp.fms.model.PurchaseHistoryInfo;
 import com.shp.fms.model.entity.Employee;
 import com.shp.fms.model.entity.Member;
 import com.shp.fms.model.entity.Product;
 import com.shp.fms.model.entity.PurchaseHistory;
+import com.shp.fms.model.request.PurchaseHistoryRequestBody;
 
 @Component
 public class PurchaseHistoryMapper {

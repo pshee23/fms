@@ -8,9 +8,9 @@ import org.springframework.stereotype.Service;
 import com.shp.fms.common.exception.NoDataReturnedException;
 import com.shp.fms.common.exception.NoResultByIdException;
 import com.shp.fms.common.type.ServiceType;
-import com.shp.fms.controller.request.BranchRequestBody;
 import com.shp.fms.model.BranchInfo;
 import com.shp.fms.model.entity.Branch;
+import com.shp.fms.model.request.BranchRequestBody;
 import com.shp.fms.repository.BranchRepository;
 import com.shp.fms.repository.mapper.BranchMapper;
 

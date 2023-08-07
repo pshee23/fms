@@ -5,10 +5,10 @@ import java.util.List;
 
 import org.springframework.stereotype.Component;
 
-import com.shp.fms.controller.request.PayHistoryRequestBody;
 import com.shp.fms.model.PayHistoryInfo;
 import com.shp.fms.model.entity.Employee;
 import com.shp.fms.model.entity.PayHistory;
+import com.shp.fms.model.request.PayHistoryRequestBody;
 
 @Component
 public class PayHistoryMapper {

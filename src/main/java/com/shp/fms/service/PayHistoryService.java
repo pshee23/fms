@@ -7,13 +7,13 @@ import org.springframework.stereotype.Service;
 
 import com.shp.fms.common.exception.NoDataReturnedException;
 import com.shp.fms.common.type.ServiceType;
-import com.shp.fms.controller.request.PayHistoryRequestBody;
 import com.shp.fms.model.PayHistoryInfo;
 import com.shp.fms.model.entity.Employee;
 import com.shp.fms.model.entity.Lesson;
 import com.shp.fms.model.entity.LessonHistory;
 import com.shp.fms.model.entity.PayHistory;
 import com.shp.fms.model.entity.PurchaseHistory;
+import com.shp.fms.model.request.PayHistoryRequestBody;
 import com.shp.fms.repository.PayHistoryRepository;
 import com.shp.fms.repository.mapper.PayHistoryMapper;
 

@@ -39,6 +39,9 @@ public class Member {
 	@Column(name="LOGIN_PW")
 	private String loginPw;
 	
+	@Column(name="ROLE")
+	private String role;
+	
 	// N:1
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="BRANCH_ID")

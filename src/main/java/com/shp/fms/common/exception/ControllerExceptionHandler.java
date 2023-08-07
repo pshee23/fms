@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import com.shp.fms.controller.response.CommonResponse;
+import com.shp.fms.model.response.CommonResponse;
 
 @ControllerAdvice
 public class ControllerExceptionHandler {

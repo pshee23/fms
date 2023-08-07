@@ -8,11 +8,11 @@ import org.springframework.stereotype.Service;
 import com.shp.fms.common.exception.NoDataReturnedException;
 import com.shp.fms.common.exception.NoResultByIdException;
 import com.shp.fms.common.type.ServiceType;
-import com.shp.fms.controller.request.LockerRequestBody;
 import com.shp.fms.model.LockerInfo;
 import com.shp.fms.model.entity.Branch;
 import com.shp.fms.model.entity.Locker;
 import com.shp.fms.model.entity.Member;
+import com.shp.fms.model.request.LockerRequestBody;
 import com.shp.fms.repository.LockerRepository;
 import com.shp.fms.repository.mapper.LockerMapper;
 

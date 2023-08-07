@@ -1,18 +1,15 @@
-package com.shp.fms.model;
+package com.shp.fms.model.request;
 
-import lombok.Builder;
 import lombok.Data;
 
 @Data
-@Builder
-public class MemberInfo {
-	private long memberId;
+public class EmployeeRequestBody {
 	private long branchId;
-	private long employeeId;
 	private String name;
 	private String address;
 	private String phoneNumber;
 	private String loginId;
 	private String loginPw;
 	private String role;
+	private String status;
 }

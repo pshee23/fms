@@ -1,4 +1,4 @@
-package com.shp.fms.controller.request;
+package com.shp.fms.model.request;
 
 import java.time.LocalDateTime;
 

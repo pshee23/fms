@@ -6,12 +6,12 @@ import org.springframework.stereotype.Service;
 
 import com.shp.fms.common.exception.NoDataReturnedException;
 import com.shp.fms.common.type.ServiceType;
-import com.shp.fms.controller.request.PurchaseHistoryRequestBody;
 import com.shp.fms.model.PurchaseHistoryInfo;
 import com.shp.fms.model.entity.Employee;
 import com.shp.fms.model.entity.Member;
 import com.shp.fms.model.entity.Product;
 import com.shp.fms.model.entity.PurchaseHistory;
+import com.shp.fms.model.request.PurchaseHistoryRequestBody;
 import com.shp.fms.repository.PurchaseHistoryRepository;
 import com.shp.fms.repository.mapper.PurchaseHistoryMapper;
 

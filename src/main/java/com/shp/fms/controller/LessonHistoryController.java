@@ -10,9 +10,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.shp.fms.controller.request.LessonHistoryRequestBody;
-import com.shp.fms.controller.response.LessonHistoryResponse;
 import com.shp.fms.model.LessonHistoryInfo;
+import com.shp.fms.model.request.LessonHistoryRequestBody;
+import com.shp.fms.model.response.LessonHistoryResponse;
 import com.shp.fms.service.LessonHistoryService;
 
 import lombok.AllArgsConstructor;
