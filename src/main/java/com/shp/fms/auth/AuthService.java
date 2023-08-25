@@ -14,16 +14,18 @@ public class AuthService {
 	
 	private final MemberService memberService;
 	
-	private final BCryptUtil util;
+	private final AuthRepository authRepository;
 	
-	public void login(Login requestBody) {
-		
-	}
+	private final BCryptUtil util;
 	
 	public void signUp(MemberRequestBody requestBody) {
 		requestBody.setRole("ROLE_USER");
 		String rawPassword = requestBody.getLoginPw();
 		requestBody.setLoginPw(util.encodePassword(rawPassword));
 		memberService.registerMember(requestBody);
+	}
+	
+	public void logout(String username, String token) {
+		authRepository.removeToken(username, token);
 	}
 }

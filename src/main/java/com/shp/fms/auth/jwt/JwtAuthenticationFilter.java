@@ -18,6 +18,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.core.exc.StreamReadException;
 import com.fasterxml.jackson.databind.DatabindException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.shp.fms.auth.AuthRepository;
 import com.shp.fms.auth.Login;
 import com.shp.fms.auth.auth.PrincipalDetails;
 
@@ -29,6 +30,7 @@ import lombok.extern.slf4j.Slf4j;
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
 	private final AuthenticationManager authenticationManager;
+	private final AuthRepository repository;
 	
 	@Override
 	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) {
@@ -41,8 +43,10 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 			
 			UsernamePasswordAuthenticationToken authenticationToken = 
 					new UsernamePasswordAuthenticationToken(loginReq.getUsername(), loginReq.getPassword());
-
+			log.info("autenticationToken. token={}", authenticationToken);
+			
 			Authentication authentication = authenticationManager.authenticate(authenticationToken);
+			log.info("authentication. auth={}", authentication);
 			
 			PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
 			log.info("login check. username={}", principalDetails.getLoginBody().getUsername());
@@ -77,6 +81,11 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 				.withClaim("username", principalDetails.getLoginBody().getUsername())
 				.sign(Algorithm.HMAC512(JwtProperties.SECRET));
 		
-		response.addHeader(JwtProperties.HEADER_STRING, new StringBuilder().append(JwtProperties.TOKEN_PREFIX).append(jwtToken).toString());
+		String prefixToken = new StringBuilder().append(JwtProperties.TOKEN_PREFIX).append(jwtToken).toString();
+		response.addHeader(JwtProperties.HEADER_STRING, prefixToken);
+		
+		// TODO 로그인 여부 저장
+		log.info("jwtToken. token={}", prefixToken);
+		repository.addToken(principalDetails.getLoginBody().getUsername(), prefixToken);
 	}
 }

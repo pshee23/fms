@@ -1,11 +1,13 @@
 package com.shp.fms.auth;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -46,6 +48,12 @@ public class AuthController {
 		
 		service.signUp(request);
 		return "회원가입완료";
+	}
+	
+	@PostMapping("logout")
+	public ResponseEntity<String> logout(@RequestParam String username, @RequestParam String token) { // TODO username, token 넘기는 방식 변경 필요
+		service.logout(username, token);
+		return ResponseEntity.ok().build(); 
 	}
 	
 	@Secured("ROLE_ADMIN")

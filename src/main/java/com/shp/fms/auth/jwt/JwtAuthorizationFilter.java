@@ -16,6 +16,7 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.shp.fms.auth.AuthRepository;
 import com.shp.fms.auth.Login;
 import com.shp.fms.auth.auth.PrincipalDetails;
 import com.shp.fms.model.entity.Member;
@@ -26,16 +27,18 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 	private MemberRepository memberRepository;
+	private AuthRepository authRepository;
 	
-	public JwtAuthorizationFilter(AuthenticationManager authenticationManager, MemberRepository memberRepository) {
+	public JwtAuthorizationFilter(AuthenticationManager authenticationManager, MemberRepository memberRepository, AuthRepository authRepository) {
 		super(authenticationManager);
 		this.memberRepository = memberRepository;
+		this.authRepository = authRepository;
 	}
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
 			throws IOException, ServletException {	
-		log.info("인증이나 권한이 필요한 주소 요청이 됨.");
+		log.info("인증이나 권한이 필요한 주소 요청이 들어옴");
 		
 		String jwtHeader = request.getHeader(JwtProperties.HEADER_STRING);
 		log.info("Jwt header = " + jwtHeader);
@@ -46,11 +49,21 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 		}
 		
 		// 2) 토큰 검증
-		String jwtToken = request.getHeader(JwtProperties.HEADER_STRING).replace(JwtProperties.TOKEN_PREFIX, "");
+		String authHeader = request.getHeader(JwtProperties.HEADER_STRING);
+		String jwtToken = authHeader.replace(JwtProperties.TOKEN_PREFIX, "");
 		String username = JWT
 				.require(Algorithm.HMAC512(JwtProperties.SECRET)).build()
-				.verify(jwtToken)
+				.verify(jwtToken) // 여기서 Token expired check
 				.getClaim("username").asString();
+		
+		// TODO 로그인 정보 확인
+		if(!authRepository.isTokenValid(username, authHeader)) {
+			log.error("login info not exists!! username={}, auth={}", username, authHeader);
+			// TODO 403 에러가 안나감..
+			chain.doFilter(request, response);
+			return;
+		}
+		
 		
 		// 서명이 정상적으로 됨
 		if(username != null) {

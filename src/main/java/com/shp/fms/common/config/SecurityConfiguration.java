@@ -12,6 +12,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
+import com.shp.fms.auth.AuthRepository;
 import com.shp.fms.auth.config.CorsConfig;
 import com.shp.fms.auth.filter.CustomFilter;
 import com.shp.fms.auth.jwt.JwtAuthenticationFilter;
@@ -27,6 +28,9 @@ public class SecurityConfiguration {
 	
 	@Autowired
 	private MemberRepository memberRepository;
+	
+	@Autowired
+	private AuthRepository authRepository;
 	
 	@Autowired
 	private CorsConfig corsConfig;
@@ -61,8 +65,8 @@ public class SecurityConfiguration {
 			AuthenticationManager authenticationManager = http.getSharedObject(AuthenticationManager.class);
 			http
 					.addFilter(corsConfig.corsFilter())
-					.addFilter(new JwtAuthenticationFilter(authenticationManager))
-					.addFilter(new JwtAuthorizationFilter(authenticationManager, memberRepository));
+					.addFilter(new JwtAuthenticationFilter(authenticationManager, authRepository))
+					.addFilter(new JwtAuthorizationFilter(authenticationManager, memberRepository, authRepository));
 		}
 	}
 }
