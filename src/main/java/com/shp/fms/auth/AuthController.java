@@ -1,11 +1,11 @@
 package com.shp.fms.auth;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -14,15 +14,11 @@ import com.shp.fms.model.request.MemberRequestBody;
 import lombok.AllArgsConstructor;
 
 @RestController
+@RequestMapping("/api")
 @AllArgsConstructor
 public class AuthController {
 	
 	private final AuthService service;
-	
-	@GetMapping({"","/"})
-	public @ResponseBody String index() {
-		return "index";
-	}
 	
 	@GetMapping({"/user"})
 	public @ResponseBody String user() {
@@ -39,27 +35,17 @@ public class AuthController {
 		return "manager";
 	}
 	
-	@GetMapping({"/loginForm"})
-	public @ResponseBody String login() {
-		return "loginForm";
+	@GetMapping("home")
+	public String home() {
+		return "<h1>home<h1>";
 	}
 	
-	@GetMapping({"/joinForm"})
-	public @ResponseBody String joinForm() {
-		return "joinForm";
-	}
-	
-	@PostMapping("/join")
+	@PostMapping("join")
 	public String join(@RequestBody MemberRequestBody request) {
 		System.out.println(request);
 		
 		service.signUp(request);
-		return "redirect:/loginForm";
-	}
-	
-	@GetMapping("/ok")
-	public ResponseEntity<String> ok() {
-		return ResponseEntity.ok("OK");
+		return "회원가입완료";
 	}
 	
 	@Secured("ROLE_ADMIN")

@@ -16,7 +16,7 @@ public class AuthService {
 	
 	private final BCryptUtil util;
 	
-	public void login(LoginRequestBody requestBody) {
+	public void login(Login requestBody) {
 		
 	}
 	
