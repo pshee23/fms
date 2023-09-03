@@ -14,9 +14,17 @@ spring:
             hibernate:
                 show_sql: true
                 format_sql: true
+    redis:
+        host: localhost
+        port: 26484
+        password: zooin.net
 
 logging:
   level:
     org:
       springframework:
-        security: INFO
+        security: TRACE
+
+app:
+    jwt:
+        secret: rkGU45258GGhiolLO2465TFY5345kGU45258GGhiolLO2465TFY5345

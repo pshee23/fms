@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -12,11 +13,12 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
-import com.shp.fms.auth.AuthRepository;
+import com.shp.fms.auth.RefreshRedisRepository;
 import com.shp.fms.auth.config.CorsConfig;
 import com.shp.fms.auth.filter.CustomFilter;
 import com.shp.fms.auth.jwt.JwtAuthenticationFilter;
 import com.shp.fms.auth.jwt.JwtAuthorizationFilter;
+import com.shp.fms.auth.jwt.JwtTokenProvider;
 import com.shp.fms.repository.MemberRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -30,10 +32,11 @@ public class SecurityConfiguration {
 	private MemberRepository memberRepository;
 	
 	@Autowired
-	private AuthRepository authRepository;
-	
-	@Autowired
 	private CorsConfig corsConfig;
+	
+	private final AuthenticationManagerBuilder authenticationManagerBuilder;
+	private final JwtTokenProvider jwtTokenProvider;
+	private final RefreshRedisRepository redisRepository;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -65,8 +68,9 @@ public class SecurityConfiguration {
 			AuthenticationManager authenticationManager = http.getSharedObject(AuthenticationManager.class);
 			http
 					.addFilter(corsConfig.corsFilter())
-					.addFilter(new JwtAuthenticationFilter(authenticationManager, authRepository))
-					.addFilter(new JwtAuthorizationFilter(authenticationManager, memberRepository, authRepository));
+					.addFilter(new JwtAuthenticationFilter(authenticationManager, authenticationManagerBuilder, 
+							jwtTokenProvider, redisRepository))
+					.addFilter(new JwtAuthorizationFilter(authenticationManager, memberRepository));
 		}
 	}
 }

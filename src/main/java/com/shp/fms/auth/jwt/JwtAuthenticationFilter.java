@@ -1,7 +1,6 @@
 package com.shp.fms.auth.jwt;
 
 import java.io.IOException;
-import java.util.Date;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -10,27 +9,35 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.core.exc.StreamReadException;
 import com.fasterxml.jackson.databind.DatabindException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.shp.fms.auth.AuthRepository;
 import com.shp.fms.auth.Login;
+import com.shp.fms.auth.RefreshRedisRepository;
+import com.shp.fms.auth.RefreshToken;
+import com.shp.fms.auth.TokenInfo;
 import com.shp.fms.auth.auth.PrincipalDetails;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@RequiredArgsConstructor
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
-
-	private final AuthenticationManager authenticationManager;
-	private final AuthRepository repository;
+	private final AuthenticationManagerBuilder authenticationManagerBuilder;
+	private final JwtTokenProvider jwtTokenProvider;
+	private final RefreshRedisRepository redisRepository;
+	
+	public JwtAuthenticationFilter(AuthenticationManager authenticationManager, AuthenticationManagerBuilder authenticationManagerBuilder, 
+			JwtTokenProvider jwtTokenProvider, RefreshRedisRepository redisRepository) {
+		super(authenticationManager);
+		this.authenticationManagerBuilder = authenticationManagerBuilder;
+		this.jwtTokenProvider = jwtTokenProvider;
+		this.redisRepository = redisRepository;
+	}
+	
 	
 	@Override
 	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) {
@@ -45,7 +52,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 					new UsernamePasswordAuthenticationToken(loginReq.getUsername(), loginReq.getPassword());
 			log.info("autenticationToken. token={}", authenticationToken);
 			
-			Authentication authentication = authenticationManager.authenticate(authenticationToken);
+			// 이 사이에 loadUserByUsername 실행됨. 아래 authenticate에서 실행되는것같음
+			Authentication authentication = this.getAuthenticationManager().authenticate(authenticationToken);
 			log.info("authentication. auth={}", authentication);
 			
 			PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
@@ -75,18 +83,32 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 		
 		PrincipalDetails principalDetails = (PrincipalDetails) authResult.getPrincipal();
 		
-		String jwtToken = JWT.create()
-				.withSubject(principalDetails.getUsername())
-				.withExpiresAt(new Date(System.currentTimeMillis() + JwtProperties.EXPIRATION_TIME))
-				.withClaim("id", principalDetails.getLoginBody().getId()) 
-				.withClaim("username", principalDetails.getLoginBody().getUsername())
-				.sign(Algorithm.HMAC512(JwtProperties.SECRET));
+//		String jwtToken = JWT.create()
+//				.withSubject(principalDetails.getUsername())
+//				.withExpiresAt(new Date(System.currentTimeMillis() + JwtProperties.EXPIRATION_TIME))
+//				.withClaim("id", principalDetails.getLoginBody().getId()) 
+//				.withClaim("username", principalDetails.getLoginBody().getUsername())
+//				.sign(Algorithm.HMAC512(JwtProperties.SECRET));
+//		
+//		String prefixToken = new StringBuilder().append(JwtProperties.TOKEN_PREFIX).append(jwtToken).toString();
+//		response.addHeader(JwtProperties.HEADER_STRING, prefixToken);
 		
-		String prefixToken = new StringBuilder().append(JwtProperties.TOKEN_PREFIX).append(jwtToken).toString();
-		response.addHeader(JwtProperties.HEADER_STRING, prefixToken);
+		// Refresh Token 저장
+//		UsernamePasswordAuthenticationToken token = 
+//				new UsernamePasswordAuthenticationToken(principalDetails.getUsername(), principalDetails.getLoginBody().getPassword());
+//		log.info("UsernamePasswordAuthenticationToken={}", token);
+//		Authentication authentication = authenticationManagerBuilder.getObject().authenticate(token);
+//		log.info("refreshAuthentication={}", authentication);
+		TokenInfo tokenInfo = jwtTokenProvider.generateToken(authResult);
+	    log.info("tokenInfo={}", tokenInfo);
+	    
+		redisRepository.save(RefreshToken.builder()
+	            .id(principalDetails.getUsername())
+	            .refreshToken(tokenInfo.getRefreshToken())
+	            .build());
 		
-		// TODO 로그인 여부 저장
-		log.info("jwtToken. token={}", prefixToken);
-		repository.addToken(principalDetails.getLoginBody().getUsername(), prefixToken);
+		response.addHeader(JwtProperties.HEADER_STRING, new StringBuilder().append(JwtProperties.TOKEN_PREFIX).append(tokenInfo.getAccessToken()).toString());
+		response.addHeader(JwtProperties.HEADER_REFRESH, new StringBuilder().append(JwtProperties.TOKEN_PREFIX).append(tokenInfo.getRefreshToken()).toString());
+
 	}
 }

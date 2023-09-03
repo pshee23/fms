@@ -1,5 +1,7 @@
 package com.shp.fms.auth;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -51,6 +53,11 @@ public class AuthController {
 		service.signUp(request);
 		return "회원가입완료";
 	}
+	
+	 @PostMapping(value = "/refresh")
+	    public ResponseEntity<?> refresh(HttpServletRequest httpServletRequest) {
+	        return service.refresh(httpServletRequest);
+	    }
 	
 	@PostMapping("/logout")
 	public ResponseEntity<String> logout(@RequestParam String username, @RequestParam String token) { // TODO username, token 넘기는 방식 변경 필요

@@ -16,7 +16,6 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.shp.fms.auth.AuthRepository;
 import com.shp.fms.auth.Login;
 import com.shp.fms.auth.auth.PrincipalDetails;
 import com.shp.fms.model.entity.Member;
@@ -27,12 +26,10 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 	private MemberRepository memberRepository;
-	private AuthRepository authRepository;
 	
-	public JwtAuthorizationFilter(AuthenticationManager authenticationManager, MemberRepository memberRepository, AuthRepository authRepository) {
+	public JwtAuthorizationFilter(AuthenticationManager authenticationManager, MemberRepository memberRepository) {
 		super(authenticationManager);
 		this.memberRepository = memberRepository;
-		this.authRepository = authRepository;
 	}
 
 	@Override
@@ -48,43 +45,44 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 			return;
 		}
 		
-		// 2) 토큰 검증
-		String authHeader = request.getHeader(JwtProperties.HEADER_STRING);
-		String jwtToken = authHeader.replace(JwtProperties.TOKEN_PREFIX, "");
-		String username = JWT
-				.require(Algorithm.HMAC512(JwtProperties.SECRET)).build()
-				.verify(jwtToken) // 여기서 Token expired check
-				.getClaim("username").asString();
-		
-		// TODO 로그인 정보 확인
-		if(!authRepository.isTokenValid(username, authHeader)) {
-			log.error("login info not exists!! username={}, auth={}", username, authHeader);
-			// TODO 403 에러가 안나감..
-			chain.doFilter(request, response);
-			return;
-		}
-		
-		
-		// 서명이 정상적으로 됨
-		if(username != null) {
-			Optional<Member> memberOp = memberRepository.findByLoginId(username);
-			if(memberOp.isEmpty()) {
-				log.error("Member is null. username={}", username);
+		if (!request.getRequestURI().equals("/api/refresh")) { 
+			// 2) 토큰 검증
+			String authHeader = request.getHeader(JwtProperties.HEADER_STRING);
+			String jwtToken = authHeader.replace(JwtProperties.TOKEN_PREFIX, "");
+			String username = JWT
+					.require(Algorithm.HMAC512(JwtProperties.SECRET)).build()
+					.verify(jwtToken) // 여기서 Token expired check
+					.getClaim("username").asString();
+			
+//			// TODO 로그인 정보 확인
+//			if(!authRepository.isTokenValid(username, authHeader)) {
+//				log.error("login info not exists!! username={}, auth={}", username, authHeader);
+//				chain.doFilter(request, response);
+//				return;
+//			}
+			
+			
+			// 서명이 정상적으로 됨
+			if(username != null) {
+				Optional<Member> memberOp = memberRepository.findByLoginId(username);
+				if(memberOp.isEmpty()) {
+					log.error("Member is null. username={}", username);
+				}
+				Login userEntity = new Login();
+				Member member = memberOp.get();
+				userEntity.setId(member.getMemberId());
+				userEntity.setUsername(member.getLoginId());
+				userEntity.setPassword(member.getLoginPw());
+				userEntity.setRoles(member.getRole());
+				
+				PrincipalDetails principalDetails = new PrincipalDetails(userEntity);
+				
+				Authentication authentication = new UsernamePasswordAuthenticationToken(principalDetails, null, principalDetails.getAuthorities());
+				
+				SecurityContextHolder.getContext().setAuthentication(authentication);
+				
 			}
-			Login userEntity = new Login();
-			Member member = memberOp.get();
-			userEntity.setId(member.getMemberId());
-			userEntity.setUsername(member.getLoginId());
-			userEntity.setPassword(member.getLoginPw());
-			userEntity.setRoles(member.getRole());
-			
-			PrincipalDetails principalDetails = new PrincipalDetails(userEntity);
-			
-			Authentication authentication = new UsernamePasswordAuthenticationToken(principalDetails, null, principalDetails.getAuthorities());
-			
-			SecurityContextHolder.getContext().setAuthentication(authentication);
-			
-			chain.doFilter(request, response);
 		}
+		chain.doFilter(request, response);
 	}
 }
