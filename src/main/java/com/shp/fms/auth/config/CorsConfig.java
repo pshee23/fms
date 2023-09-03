@@ -6,11 +6,15 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Configuration
 public class CorsConfig {
 
 	@Bean
 	public CorsFilter corsFilter() {
+		log.info("[corsFilter] 실행");
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 		CorsConfiguration config = new CorsConfiguration();
 		
@@ -22,6 +26,8 @@ public class CorsConfig {
 		// TODO api root
 		source.registerCorsConfiguration("/api/**", config);
 		
-		return new CorsFilter(source);
+		CorsFilter corsFilter = new CorsFilter(source);
+		log.info("[corsFilter] 종료");
+		return corsFilter;
 	}
 }

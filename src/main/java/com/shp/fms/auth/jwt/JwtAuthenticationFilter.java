@@ -34,7 +34,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 	
 	@Override
 	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) {
-		log.info("JwtAuthenticationFilter start");
+		log.info("[attemptAuthentication] 실행");
 		
 		try {
 			ObjectMapper om = new ObjectMapper();
@@ -51,6 +51,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 			PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
 			log.info("login check. username={}", principalDetails.getLoginBody().getUsername());
 			
+			log.info("[attemptAuthentication] 종료");
 			return authentication;
 		} catch (StreamReadException e) {
 			// TODO Auto-generated catch block
@@ -63,7 +64,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 			e.printStackTrace();
 		}
 		
-		log.info("JwtAuthenticationFilter fail end");
+		log.info("[attemptAuthentication] 실패");
 		return null;
 	}
 	

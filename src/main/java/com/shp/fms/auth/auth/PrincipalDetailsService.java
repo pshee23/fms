@@ -23,7 +23,7 @@ public class PrincipalDetailsService implements UserDetailsService {
 	
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		log.info("loadUserByUsername 실행");
+		log.info("[loadUserByUsername] 실행");
 		Optional<Member> memberOp = memberRepository.findByLoginId(username);
 		if(memberOp.isEmpty()) {
 			log.error("Member is null. username={}", username);
@@ -34,7 +34,10 @@ public class PrincipalDetailsService implements UserDetailsService {
 		userEntity.setUsername(member.getLoginId());
 		userEntity.setPassword(member.getLoginPw());
 		userEntity.setRoles(member.getRole());
-		return new PrincipalDetails(userEntity);
+		
+		UserDetails userDetails = new PrincipalDetails(userEntity);
+		log.info("[loadUserByUsername] 종료");
+		return userDetails;
 	}
 
 }

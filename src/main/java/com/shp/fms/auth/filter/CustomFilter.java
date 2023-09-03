@@ -20,6 +20,7 @@ public class CustomFilter implements Filter {
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
+		log.info("[CustomFilter] 실행");
 		HttpServletRequest req = (HttpServletRequest) request;
 		HttpServletResponse res = (HttpServletResponse) response;
 		
@@ -28,13 +29,13 @@ public class CustomFilter implements Filter {
 			log.info("CustomFilter doFilter headerAuth={}", headerAuth);
 			
 			if(JwtProperties.SECRET.equals(headerAuth)) {
-				chain.doFilter(req, res);
+				log.info("secret key equals");
 			} else {
 				log.error("CustomFilter doFilter Authentication FAIL. Secret key not match.");
 			}
 		}
 		
-		log.info("CustomFilter doFilter end.");
+		log.info("[CustomFilter] 종료");
 		chain.doFilter(req, res);
 	}
 

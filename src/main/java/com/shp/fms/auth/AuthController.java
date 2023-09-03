@@ -22,6 +22,8 @@ public class AuthController {
 	
 	private final AuthService service;
 	
+	// TODO login password 틀렷을때 아무반응없는거 수정
+	
 	@GetMapping({"/user"})
 	public @ResponseBody String user() {
 		return "user";
@@ -37,12 +39,12 @@ public class AuthController {
 		return "manager";
 	}
 	
-	@GetMapping("home")
+	@GetMapping("/home")
 	public String home() {
 		return "<h1>home<h1>";
 	}
 	
-	@PostMapping("join")
+	@PostMapping("/join")
 	public String join(@RequestBody MemberRequestBody request) {
 		System.out.println(request);
 		
@@ -50,7 +52,7 @@ public class AuthController {
 		return "회원가입완료";
 	}
 	
-	@PostMapping("logout")
+	@PostMapping("/logout")
 	public ResponseEntity<String> logout(@RequestParam String username, @RequestParam String token) { // TODO username, token 넘기는 방식 변경 필요
 		service.logout(username, token);
 		return ResponseEntity.ok().build(); 
