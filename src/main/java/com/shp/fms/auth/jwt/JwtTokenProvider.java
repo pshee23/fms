@@ -64,11 +64,12 @@ public class JwtTokenProvider {
         
 		String accessToken = JWT.create()
 			.withSubject(name)
-			.withExpiresAt(new Date(System.currentTimeMillis() + JwtProperties.EXPIRATION_TIME))
-			.withClaim(JwtProperties.SECRET, authorities)
+			.withIssuedAt(now)
+			.withExpiresAt(new Date(now.getTime() + JwtProperties.ACCESS_TOKEN_EXPIRE_TIME))
+//			.withClaim(JwtProperties.SECRET, authorities)
 			.withClaim("type", JwtProperties.TYPE_ACCESS)
 			.withClaim("username", name)
-			.sign(Algorithm.HMAC512(JwtProperties.SECRET));
+			.sign(Algorithm.HMAC512(key.toString()));
 
         //Generate RefreshToken
 //        String refreshToken = Jwts.builder()
@@ -80,10 +81,12 @@ public class JwtTokenProvider {
 //                .compact();
 		String refreshToken = JWT.create()
 				.withSubject(name)
-				.withExpiresAt(new Date(System.currentTimeMillis() + JwtProperties.EXPIRATION_TIME))
+				.withIssuedAt(now)
+				.withExpiresAt(new Date(now.getTime() + JwtProperties.REFRESH_TOKEN_EXPIRE_TIME))
 				.withClaim("type", JwtProperties.TYPE_REFRESH)
 				.withClaim("username", name)
-				.sign(Algorithm.HMAC512(JwtProperties.SECRET));
+				.sign(Algorithm.HMAC512(key.toString()));
+//		.sign(Algorithm.HMAC512(JwtProperties.SECRET));
 
         return TokenInfo.builder()
                 .grantType(JwtProperties.TOKEN_PREFIX)
@@ -96,7 +99,11 @@ public class JwtTokenProvider {
     
     public boolean validateToken(String token) {
         try {
-            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
+            Jwts
+            	.parserBuilder()
+            	.setSigningKey(key.getEncoded())
+            	.build()
+            	.parseClaimsJws(token);
             return true;
         } catch (SecurityException | MalformedJwtException e) {
             log.info("Invalid JWT Token", e);
@@ -111,7 +118,12 @@ public class JwtTokenProvider {
     }
     
     public boolean isRefreshToken(String token) {
-        String type = (String) Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody().get("type");
+        String type = (String) Jwts.parserBuilder()
+        		.setSigningKey(key)
+        		.build()
+        		.parseClaimsJws(token)
+        		.getBody()
+        		.get("type");
         return type.equals(JwtProperties.TYPE_REFRESH);
     }
     

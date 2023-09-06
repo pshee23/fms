@@ -21,7 +21,9 @@ import com.shp.fms.auth.RefreshRedisRepository;
 import com.shp.fms.auth.RefreshToken;
 import com.shp.fms.auth.TokenInfo;
 import com.shp.fms.auth.auth.PrincipalDetails;
+import com.shp.fms.model.response.CommonResponse;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -61,15 +63,31 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 			
 			log.info("[attemptAuthentication] 종료");
 			return authentication;
+		} catch (ExpiredJwtException e) {
+			log.error("ExpiredJwtException!!!", e);
+			CommonResponse commonRes = new CommonResponse();
+			commonRes.setCode(500);
+			commonRes.setMessage("Expired token!!");
+			response.setStatus(500);
+            try {
+				response.getWriter().write(new ObjectMapper().writeValueAsString(commonRes));
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} finally {
+				try {
+					response.getWriter().flush();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}				
+			}
 		} catch (StreamReadException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.error("StreamReadException!!!", e);
 		} catch (DatabindException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.error("DatabindException!!!", e);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.error("IOException!!!", e);
 		}
 		
 		log.info("[attemptAuthentication] 실패");
