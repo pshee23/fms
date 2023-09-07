@@ -23,7 +23,7 @@ logging:
   level:
     org:
       springframework:
-        security: TRACE
+        security: INFO
 
 app:
     jwt:

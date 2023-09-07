@@ -26,10 +26,12 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 	private MemberRepository memberRepository;
+	private JwtTokenProvider jwtTokenProvider;
 	
-	public JwtAuthorizationFilter(AuthenticationManager authenticationManager, MemberRepository memberRepository) {
+	public JwtAuthorizationFilter(AuthenticationManager authenticationManager, MemberRepository memberRepository, JwtTokenProvider jwtTokenProvider) {
 		super(authenticationManager);
 		this.memberRepository = memberRepository;
+		this.jwtTokenProvider = jwtTokenProvider;
 	}
 
 	@Override
@@ -46,21 +48,16 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 		}
 		
 		if (!request.getRequestURI().equals("/api/refresh")) { 
+			log.info("[{}] validate token.", request.getRequestURI());
 			// 2) 토큰 검증
 			String authHeader = request.getHeader(JwtProperties.HEADER_STRING);
 			String jwtToken = authHeader.replace(JwtProperties.TOKEN_PREFIX, "");
-			String username = JWT
-					.require(Algorithm.HMAC512(JwtProperties.SECRET)).build()
-					.verify(jwtToken) // 여기서 Token expired check
-					.getClaim("username").asString();
 			
-//			// TODO 로그인 정보 확인
-//			if(!authRepository.isTokenValid(username, authHeader)) {
-//				log.error("login info not exists!! username={}, auth={}", username, authHeader);
-//				chain.doFilter(request, response);
-//				return;
-//			}
-			
+//			String username = JWT
+//					.require(Algorithm.HMAC512(JwtProperties.SECRET)).build()
+//					.verify(jwtToken) // 여기서 Token expired check
+//					.getClaim("username").asString();	
+			String username = jwtTokenProvider.getUsername(jwtToken);
 			
 			// 서명이 정상적으로 됨
 			if(username != null) {

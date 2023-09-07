@@ -70,7 +70,7 @@ public class SecurityConfiguration {
 					.addFilter(corsConfig.corsFilter())
 					.addFilter(new JwtAuthenticationFilter(authenticationManager, authenticationManagerBuilder, 
 							jwtTokenProvider, redisRepository))
-					.addFilter(new JwtAuthorizationFilter(authenticationManager, memberRepository));
+					.addFilter(new JwtAuthorizationFilter(authenticationManager, memberRepository, jwtTokenProvider));
 		}
 	}
 }

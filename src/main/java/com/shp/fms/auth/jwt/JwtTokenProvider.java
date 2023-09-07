@@ -13,7 +13,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import com.auth0.jwt.JWT;
 import com.shp.fms.auth.TokenInfo;
 
 import io.jsonwebtoken.ExpiredJwtException;
@@ -24,7 +23,6 @@ import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
-import com.auth0.jwt.algorithms.Algorithm;
 
 @Slf4j
 @Component
@@ -44,6 +42,7 @@ public class JwtTokenProvider {
     
   //name, authorities 를 가지고 AccessToken, RefreshToken 을 생성하는 메서드
     public TokenInfo generateToken(String name, Collection<? extends GrantedAuthority> inputAuthorities) {
+    	log.info("generate Token. name={}", name);
         //권한 가져오기
         String authorities = inputAuthorities.stream()
                 .map(GrantedAuthority::getAuthority)
@@ -52,41 +51,40 @@ public class JwtTokenProvider {
         Date now = new Date();
 
         //Generate AccessToken
-//        String accessToken = Jwts.builder()
-//                .setSubject(name)
-//                .claim(JwtProperties.SECRET, authorities)
-//                .claim("type", JwtProperties.TYPE_ACCESS)
-//                .claim("username", name)
-//                .setIssuedAt(now)   //토큰 발행 시간 정보
-//                .setExpiration(new Date(now.getTime() + JwtProperties.ACCESS_TOKEN_EXPIRE_TIME))  //토큰 만료 시간 설정
-//                .signWith(key, SignatureAlgorithm.HS256)
-//                .compact();
-        
-		String accessToken = JWT.create()
-			.withSubject(name)
-			.withIssuedAt(now)
-			.withExpiresAt(new Date(now.getTime() + JwtProperties.ACCESS_TOKEN_EXPIRE_TIME))
+        String accessToken = Jwts.builder()
+                .setSubject(name)
+                .setIssuedAt(now)   //토큰 발행 시간 정보
+                .setExpiration(new Date(now.getTime() + JwtProperties.ACCESS_TOKEN_EXPIRE_TIME))  //토큰 만료 시간 설정
+                .claim(JwtProperties.SECRET, authorities)
+                .claim("type", JwtProperties.TYPE_ACCESS)
+                .claim("username", name)
+                .signWith(key, SignatureAlgorithm.HS512).compact();
+//		String accessToken = JWT.create()
+//			.withSubject(name)
+//			.withIssuedAt(now)
+//			.withExpiresAt(new Date(now.getTime() + JwtProperties.ACCESS_TOKEN_EXPIRE_TIME))
 //			.withClaim(JwtProperties.SECRET, authorities)
-			.withClaim("type", JwtProperties.TYPE_ACCESS)
-			.withClaim("username", name)
-			.sign(Algorithm.HMAC512(key.toString()));
-
+//			.withClaim("type", JwtProperties.TYPE_ACCESS)
+//			.withClaim("username", name)
+//			.sign(Algorithm.HMAC512(JwtProperties.SECRET));
+		log.info("generate accessToken. accessToken={}", accessToken);
+		
         //Generate RefreshToken
-//        String refreshToken = Jwts.builder()
-//                .claim("type", JwtProperties.TYPE_REFRESH)
-//                .claim("username", name)
-//                .setIssuedAt(now)   //토큰 발행 시간 정보
-//                .setExpiration(new Date(now.getTime() + JwtProperties.REFRESH_TOKEN_EXPIRE_TIME)) //토큰 만료 시간 설정
-//                .signWith(key, SignatureAlgorithm.HS256)
-//                .compact();
-		String refreshToken = JWT.create()
-				.withSubject(name)
-				.withIssuedAt(now)
-				.withExpiresAt(new Date(now.getTime() + JwtProperties.REFRESH_TOKEN_EXPIRE_TIME))
-				.withClaim("type", JwtProperties.TYPE_REFRESH)
-				.withClaim("username", name)
-				.sign(Algorithm.HMAC512(key.toString()));
-//		.sign(Algorithm.HMAC512(JwtProperties.SECRET));
+        String refreshToken = Jwts.builder()
+        		.setSubject(name)
+                .setIssuedAt(now)   //토큰 발행 시간 정보
+                .setExpiration(new Date(now.getTime() + JwtProperties.REFRESH_TOKEN_EXPIRE_TIME)) //토큰 만료 시간 설정
+                .claim("type", JwtProperties.TYPE_REFRESH)
+                .claim("username", name)
+                .signWith(key, SignatureAlgorithm.HS512).compact();
+//		String refreshToken = JWT.create()
+//				.withSubject(name)
+//				.withIssuedAt(now)
+//				.withExpiresAt(new Date(now.getTime() + JwtProperties.REFRESH_TOKEN_EXPIRE_TIME))
+//				.withClaim("type", JwtProperties.TYPE_REFRESH)
+//				.withClaim("username", name)
+//				.sign(Algorithm.HMAC512(JwtProperties.SECRET));
+		log.info("generate refreshToken. refreshToken={}", refreshToken);
 
         return TokenInfo.builder()
                 .grantType(JwtProperties.TOKEN_PREFIX)
@@ -97,11 +95,21 @@ public class JwtTokenProvider {
                 .build();
     }
     
+    public String getUsername(String token) {
+		return (String) Jwts
+            	.parserBuilder()
+            	.setSigningKey(key)
+            	.build()
+            	.parseClaimsJws(token)
+            	.getBody()
+        		.get("username");
+    }
+    
     public boolean validateToken(String token) {
         try {
             Jwts
             	.parserBuilder()
-            	.setSigningKey(key.getEncoded())
+            	.setSigningKey(key)
             	.build()
             	.parseClaimsJws(token);
             return true;

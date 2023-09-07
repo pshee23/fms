@@ -2,22 +2,14 @@ package com.shp.fms.auth;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.concurrent.TimeUnit;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 
-import com.shp.fms.auth.auth.PrincipalDetails;
-import com.shp.fms.auth.jwt.JwtProperties;
 import com.shp.fms.auth.jwt.JwtTokenProvider;
-import com.shp.fms.model.MemberInfo;
 import com.shp.fms.model.request.MemberRequestBody;
 import com.shp.fms.service.MemberService;
 import com.shp.fms.util.BCryptUtil;
@@ -35,12 +27,8 @@ public class AuthService {
 	private final RefreshRedisRepository redisRepository;
 	
 	private final BCryptUtil util;
-	
-	private final AuthenticationManagerBuilder authenticationManagerBuilder;
-	
+
 	private final JwtTokenProvider jwtTokenProvider;
-	
-	private final RedisTemplate<String, String> redisTemplate;
 	
 	public void signUp(MemberRequestBody requestBody) {
 		requestBody.setRole("ROLE_USER");
@@ -49,8 +37,9 @@ public class AuthService {
 		memberService.registerMember(requestBody);
 	}
 	
-	public void logout(String username, String token) {
-		
+	public void logout(String username) {
+		log.info("remove redis for logout. username={}", username);
+		redisRepository.deleteById(username);
 	}
 	
 	public ResponseEntity<?> refresh(HttpServletRequest request) {
@@ -58,7 +47,7 @@ public class AuthService {
         log.info("refresh token={}", token);
         
         if (token != null && jwtTokenProvider.validateToken(token)) {
-            if (jwtTokenProvider.isRefreshToken(token)) {
+            if(jwtTokenProvider.isRefreshToken(token)) {
                 RefreshToken refreshToken = redisRepository.findByRefreshToken(token);
                 if (refreshToken != null) {
 //                	MemberInfo memberInfo = memberService.getMemberInfoByLoginId(refreshToken.getId());                	
@@ -67,7 +56,7 @@ public class AuthService {
 //            		log.info("UsernamePasswordAuthenticationToken={}", athenticationToken);
 //            		Authentication authentication = authenticationManagerBuilder.getObject().authenticate(athenticationToken);
 //            		log.info("refreshAuthentication={}", authentication);
-                	
+//            		TokenInfo tokenInfo = jwtTokenProvider.generateToken(authentication);
                 	// TODO 임시
                 	Collection<GrantedAuthority> collectors = new ArrayList<>();
                 	collectors.add(()->{return "ROLE_USER";}); 
@@ -87,6 +76,6 @@ public class AuthService {
             }
         }
 
-        return ResponseEntity.ok("토큰 갱신에 실패했습니다.");
+        return ResponseEntity.status(401).body("토큰 갱신에 실패했습니다.");
     }
 }

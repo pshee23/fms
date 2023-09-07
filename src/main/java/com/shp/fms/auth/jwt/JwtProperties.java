@@ -15,7 +15,7 @@ public interface JwtProperties {
 //    long REFRESH_TOKEN_EXPIRE_TIME = 7 * 24 * 60 * 60 * 1000L;     //7일
 //    long REFRESH_TOKEN_EXPIRE_TIME_FOR_REDIS = REFRESH_TOKEN_EXPIRE_TIME / 1000L;
     
-    long ACCESS_TOKEN_EXPIRE_TIME = 30 * 1000L;               // 2초
-    long REFRESH_TOKEN_EXPIRE_TIME =  60 * 1000L;     // 3분
+    long ACCESS_TOKEN_EXPIRE_TIME = 1 * 60 * 1000L;               // 1분
+    long REFRESH_TOKEN_EXPIRE_TIME =  5 * 60 * 1000L;     // 5분
     long REFRESH_TOKEN_EXPIRE_TIME_FOR_REDIS = REFRESH_TOKEN_EXPIRE_TIME / 1000L;
 }

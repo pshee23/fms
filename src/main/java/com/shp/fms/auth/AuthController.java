@@ -7,6 +7,7 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -54,14 +55,14 @@ public class AuthController {
 		return "회원가입완료";
 	}
 	
-	 @PostMapping(value = "/refresh")
+	 @PutMapping("/refresh")
 	    public ResponseEntity<?> refresh(HttpServletRequest httpServletRequest) {
 	        return service.refresh(httpServletRequest);
 	    }
 	
-	@PostMapping("/logout")
-	public ResponseEntity<String> logout(@RequestParam String username, @RequestParam String token) { // TODO username, token 넘기는 방식 변경 필요
-		service.logout(username, token);
+	@PutMapping("/logout")
+	public ResponseEntity<String> logout(@RequestParam String username) {
+		service.logout(username);
 		return ResponseEntity.ok().build(); 
 	}
 	
