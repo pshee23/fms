@@ -1,6 +1,5 @@
 package com.shp.fms.model.entity;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import javax.persistence.Column;
@@ -32,11 +31,11 @@ public class Lesson {
 	@JoinColumn(name="MEMBER_ID")
 	private Member member;
 
-	@Column(name="START_DATE")
-	private LocalDate startDate;
+	@Column(name="START_DATETIME")
+	private LocalDateTime startDateTime;
 	
-	@Column(name="LAST_LESSON")
-	private LocalDateTime lastLessonTime;
+	@Column(name="END_DATETIME")
+	private LocalDateTime endDateTime;
 	
 	@Column(name="TOTAL_COUNT")
 	private int totalCount;
@@ -45,14 +44,15 @@ public class Lesson {
 	@ColumnDefault("0")
 	private int currentCount;
 	
-	public void setStartDate(LocalDateTime lastLessonTime) {
-		if(this.startDate == null) {
-			this.startDate = lastLessonTime.toLocalDate();
-		}
-	}
+	@Column(name="UPDATE_DATETIME")
+	private LocalDateTime updateDateTime = LocalDateTime.now();
 	
 	public void setCurrentCount() {
 		this.currentCount += 1;
+	}
+	
+	public void updateDateTime() {
+		this.updateDateTime = LocalDateTime.now();
 	}
 	
 }

@@ -41,7 +41,7 @@ public class LessonHistoryService {
 		lessonHistoryRepository.save(lessonHistory);
 
 		// update Lesson
-		lessonService.modifyLesson(registerInfo.getLessonId(), registerInfo.getLessonDateTime());
+		lessonService.modifyLesson(registerInfo.getLessonId());
 	}
 		
 	public List<LessonHistoryInfo> getAllLessonHistoryInfo(long memberId) {

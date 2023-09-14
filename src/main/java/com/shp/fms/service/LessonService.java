@@ -1,6 +1,5 @@
 package com.shp.fms.service;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
@@ -32,9 +31,9 @@ public class LessonService {
 		return lessonMapper.mapToLessonInfo(lesson);
 	}
 	
-	public Lesson modifyLesson(long lessonId, LocalDateTime lastLessonTime) {
+	public Lesson modifyLesson(long lessonId) {
 		Lesson lesson = getLessonById(lessonId);
-		lesson = lessonMapper.mapToLesson(lesson, lastLessonTime);
+		lesson = lessonMapper.mapToLesson(lesson);
 		return lessonRepository.save(lesson);
 	}
 	

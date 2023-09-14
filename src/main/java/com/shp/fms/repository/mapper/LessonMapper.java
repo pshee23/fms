@@ -1,7 +1,5 @@
 package com.shp.fms.repository.mapper;
 
-import java.time.LocalDateTime;
-
 import org.springframework.stereotype.Component;
 
 import com.shp.fms.model.LessonInfo;
@@ -15,10 +13,10 @@ public class LessonMapper {
 		return LessonInfo.builder()
 				.lessonId(lesson.getLessonId())
 				.memberId(lesson.getMember().getMemberId())
-				.startDate(lesson.getStartDate())
+				.startDateTime(lesson.getStartDateTime())
 				.totalCount(lesson.getTotalCount())
 				.currentCount(lesson.getCurrentCount())
-				.lastLessonTime(lesson.getLastLessonTime())
+				.endDateTime(lesson.getEndDateTime())
 				.build();
 	}
 	
@@ -29,9 +27,8 @@ public class LessonMapper {
 		return lesson;
 	}
 	
-	public Lesson mapToLesson(Lesson lesson, LocalDateTime lastLessonTime) {
-		lesson.setLastLessonTime(lastLessonTime);
-		lesson.setStartDate(lastLessonTime);
+	public Lesson mapToLesson(Lesson lesson) {
+		lesson.updateDateTime();
 		lesson.setCurrentCount();
 		return lesson;
 	}
