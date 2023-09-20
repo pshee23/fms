@@ -9,6 +9,8 @@ public class LessonHistoryRequestBody {
 	private long memberId;
 	private long lessonId;
 	private long employeeId;
-	private LocalDateTime lessonDateTime;
+	private LocalDateTime startDateTime;
+	private LocalDateTime endDateTime;
 	private String status;
+	private LocalDateTime updateDateTime;
 }

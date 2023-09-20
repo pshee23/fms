@@ -1,5 +1,7 @@
 package com.shp.fms.controller;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
@@ -30,9 +32,16 @@ public class LessonHistoryController {
 		return ResponseEntity.ok().build();
 	}
 	
-	@GetMapping("/list/{memberId}")
-	public ResponseEntity<LessonHistoryResponse> getAllLessonHistory(@PathVariable long memberId) {
-		List<LessonHistoryInfo> lessonHistoryInfoList = lessonHistoryService.getAllLessonHistoryInfo(memberId);
+	@GetMapping("/memberId/{memberId}")
+	public ResponseEntity<LessonHistoryResponse> getLessonHistoryByMemberId(@PathVariable long memberId) {
+		List<LessonHistoryInfo> lessonHistoryInfoList = lessonHistoryService.getAllLessonHistoryInfoByMemberId(memberId);
 		return ResponseEntity.ok(new LessonHistoryResponse().successResponse(lessonHistoryInfoList));
+	}
+	
+	@GetMapping("/datetime/{year}/{month}/{day}")
+	public ResponseEntity<List<LessonHistoryInfo>> getAllLessonHistoryByDateTime(@PathVariable int year, @PathVariable int month, @PathVariable int day) {
+		LocalDate dateTimeConv = LocalDate.of(year, month, day);
+//		List<LessonHistoryInfo> lessonHistoryInfoList = lessonHistoryService.getAllLessonHistoryInfoByDateTime(dateTimeConv);
+		return ResponseEntity.ok(lessonHistoryService.getAllLessonHistoryInfoByDateTime(dateTimeConv));
 	}
 }

@@ -21,7 +21,8 @@ public class LessonHistoryMapper {
 				.employeeId(lessonListory.getEmployee().getEmployeeId())
 				.memberId(lessonListory.getMember().getMemberId())
 				.lessonId(lessonListory.getLesson().getLessonId())
-				.lessonDate(lessonListory.getLessonDateTime())
+				.startDateTime(lessonListory.getStartDateTime())
+				.endDateTime(lessonListory.getEndDateTime())
 				.status(lessonListory.getStatus())
 				.build();
 	}
@@ -31,7 +32,8 @@ public class LessonHistoryMapper {
 		lessonHistory.setEmployee(employee);
 		lessonHistory.setMember(member);
 		lessonHistory.setLesson(lesson);
-		lessonHistory.setLessonDateTime(registerInfo.getLessonDateTime());
+		lessonHistory.setStartDateTime(registerInfo.getStartDateTime());
+		lessonHistory.setEndDateTime(registerInfo.getEndDateTime());
 		lessonHistory.setStatus(registerInfo.getStatus());
 		return lessonHistory;
 	}

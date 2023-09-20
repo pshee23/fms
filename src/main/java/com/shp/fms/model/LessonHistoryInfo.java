@@ -12,6 +12,7 @@ public class LessonHistoryInfo {
 	private long employeeId;
 	private long memberId;
 	private long lessonId;
-	private LocalDateTime lessonDate;
+	private LocalDateTime startDateTime;
+	private LocalDateTime endDateTime;
 	private String status;
 }

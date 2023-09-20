@@ -37,8 +37,11 @@ public class LessonHistory {
 	@JoinColumn(name="LESSON_ID")
 	private Lesson lesson;
 	
-	@Column(name="LESSON_DATE")
-	private LocalDateTime lessonDateTime;
+	@Column(name="START_DATETIME")
+	private LocalDateTime startDateTime;
+	
+	@Column(name="END_DATETIME")
+	private LocalDateTime endDateTime;
 	
 	@Column(name="STATUS")
 	private String status;

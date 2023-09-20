@@ -1,5 +1,6 @@
 package com.shp.fms.service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -44,10 +45,20 @@ public class LessonHistoryService {
 		lessonService.modifyLesson(registerInfo.getLessonId());
 	}
 		
-	public List<LessonHistoryInfo> getAllLessonHistoryInfo(long memberId) {
+	public List<LessonHistoryInfo> getAllLessonHistoryInfoByMemberId(long memberId) {
 		List<LessonHistory> lessonHistoryList = lessonHistoryRepository.findByMember_MemberId(memberId);
 		if(lessonHistoryList.isEmpty()) {
 			throw new NoResultByIdException(ServiceType.MEMBER.getName(), memberId, ServiceType.LESSON_HISTORY.getName());
+		}
+		return lessonHistoryMapper.mapToLessonHistoryInfoList(lessonHistoryList);
+	}
+	
+	public List<LessonHistoryInfo> getAllLessonHistoryInfoByDateTime(LocalDate datetime) {
+		LocalDateTime startTime = LocalDateTime.of(datetime.getYear(), datetime.getMonth(), datetime.getDayOfMonth(), 0, 0);
+		LocalDateTime endTime = LocalDateTime.of(datetime.getYear(), datetime.getMonth(), datetime.getDayOfMonth()+1, 0, 0).minusSeconds(1);
+		List<LessonHistory> lessonHistoryList = lessonHistoryRepository.findAllByStartDateTimeGreaterThanEqualAndEndDateTimeLessThanEqual(startTime, endTime);
+		if(lessonHistoryList.isEmpty()) {
+			throw new NoResultByIdException(ServiceType.MEMBER.getName(), 0, ServiceType.LESSON_HISTORY.getName()); // TODO
 		}
 		return lessonHistoryMapper.mapToLessonHistoryInfoList(lessonHistoryList);
 	}
@@ -61,7 +72,7 @@ public class LessonHistoryService {
 	}
 	
 	public List<LessonHistory> getAllByEmployeeIdAndDate(long employeeId, LocalDateTime startDate, LocalDateTime endDate) {
-		List<LessonHistory> lessonHistoryList = lessonHistoryRepository.findAllByEmployee_EmployeeIdAndLessonDateTimeBetween(employeeId, startDate, endDate);
+		List<LessonHistory> lessonHistoryList = lessonHistoryRepository.findAllByEmployee_EmployeeIdAndStartDateTimeGreaterThanEqualAndEndDateTimeLessThanEqual(employeeId, startDate, endDate);
 		if(lessonHistoryList.isEmpty()) {
 			// TODO 다른 리턴 방식?
 			throw new NoResultByIdException(ServiceType.EMPLOYEE.getName(), employeeId, ServiceType.LESSON_HISTORY.getName());

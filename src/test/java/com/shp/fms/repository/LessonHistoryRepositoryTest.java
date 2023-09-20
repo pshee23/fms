@@ -40,7 +40,7 @@ class LessonHistoryRepositoryTest {
 	void testFindByEndDateBetween_EmployeeId() {
 		LocalDateTime startDate = LocalDateTime.parse("2023-04-01 00:00:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 		LocalDateTime endDate = LocalDateTime.parse("2023-04-30 23:59:59", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-		List<LessonHistory> lessonHistoryList = repository.findAllByEmployee_EmployeeIdAndLessonDateTimeBetween(1l, startDate, endDate);
+		List<LessonHistory> lessonHistoryList = repository.findAllByEmployee_EmployeeIdAndStartDateTimeGreaterThanEqualAndEndDateTimeLessThanEqual(1l, startDate, endDate);
 		
 		List<LessonHistory> dummyList = new ArrayList<>();
 		dummyList.add(firstLessonHistory());
@@ -63,7 +63,7 @@ class LessonHistoryRepositoryTest {
 		LessonHistory lessonHistory = new LessonHistory();
 		lessonHistory.setEmployee(employee);
 		lessonHistory.setLesson(lesson);
-		lessonHistory.setLessonDateTime(lessonDateTime);
+//		lessonHistory.setLessonDateTime(lessonDateTime);
 		lessonHistory.setLessonHistoryId(1l);
 		lessonHistory.setMember(null);
 		lessonHistory.setStatus(null);
