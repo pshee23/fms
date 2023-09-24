@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -18,7 +19,15 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "LESSON_HISTORY")
+@Table(
+		name = "LESSON_HISTORY",
+		uniqueConstraints= {
+				@UniqueConstraint(
+						name="LESSON-HISTORY_MEMBER_AND_DATETIME",
+						columnNames={"MEMBER_ID","START_DATETIME"}
+				)
+		}
+)
 public class LessonHistory {
 	
 	@Id

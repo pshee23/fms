@@ -18,7 +18,9 @@ import com.shp.fms.repository.LessonHistoryRepository;
 import com.shp.fms.repository.mapper.LessonHistoryMapper;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @AllArgsConstructor
 public class LessonHistoryService {
@@ -34,13 +36,14 @@ public class LessonHistoryService {
 	private final LessonHistoryMapper lessonHistoryMapper;
 
 	public void registerLessonHistory(LessonHistoryRequestBody registerInfo) {
+		// TODO 조회 안되면 에러도 없이 무반응. 안드는 200 리턴됨..
 		Employee employee = employeeService.getEmployeeById(registerInfo.getEmployeeId());
 		Member member = memberService.getMemberById(registerInfo.getMemberId());
 		Lesson lesson = lessonService.getLessonById(registerInfo.getLessonId());
 		LessonHistory lessonHistory = lessonHistoryMapper.mapToLessonHistory(registerInfo, employee, member, lesson);
-		
-		lessonHistoryRepository.save(lessonHistory);
-
+		log.info("#############. body={}", lessonHistory);
+		LessonHistory saveResult = lessonHistoryRepository.save(lessonHistory);
+		log.info("registered lesson-history. body={}", saveResult);
 		// update Lesson
 		lessonService.modifyLesson(registerInfo.getLessonId());
 	}

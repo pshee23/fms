@@ -48,40 +48,40 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 		try {
 			ObjectMapper om = new ObjectMapper();
 			Login loginReq = om.readValue(request.getInputStream(), Login.class);
-			log.info("request loginRequestBody. body={}", loginReq);
+			log.info("[attemptAuthentication] request loginRequestBody. body={}", loginReq);
 			
 			UsernamePasswordAuthenticationToken authenticationToken = 
 					new UsernamePasswordAuthenticationToken(loginReq.getUsername(), loginReq.getPassword());
-			log.info("autenticationToken. token={}", authenticationToken);
+			log.info("[attemptAuthentication] autenticationToken. token={}", authenticationToken);
 			
 			// 이 사이에 loadUserByUsername 실행됨. 아래 authenticate에서 실행되는것같음
 			Authentication authentication = this.getAuthenticationManager().authenticate(authenticationToken);
-			log.info("authentication. auth={}", authentication);
+			log.info("[attemptAuthentication] authentication. auth={}", authentication);
 			
 			PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
-			log.info("login check. username={}", principalDetails.getLoginBody().getUsername());
+			log.info("[attemptAuthentication] login check. username={}", principalDetails.getLoginBody().getUsername());
 			
 			log.info("[attemptAuthentication] 종료");
 			return authentication;
 		} catch (ExpiredJwtException e) {
 			log.error("ExpiredJwtException!!!", e);
-			CommonResponse commonRes = new CommonResponse();
-			commonRes.setCode(500);
-			commonRes.setMessage("Expired token!!");
-			response.setStatus(500);
-            try {
-				response.getWriter().write(new ObjectMapper().writeValueAsString(commonRes));
-			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			} finally {
-				try {
-					response.getWriter().flush();
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}				
-			}
+//			CommonResponse commonRes = new CommonResponse();
+//			commonRes.setCode(500);
+//			commonRes.setMessage("Expired token!!");
+//			response.setStatus(500);
+//            try {
+//				response.getWriter().write(new ObjectMapper().writeValueAsString(commonRes));
+//			} catch (IOException e1) {
+//				// TODO Auto-generated catch block
+//				e1.printStackTrace();
+//			} finally {
+//				try {
+//					response.getWriter().flush();
+//				} catch (IOException e1) {
+//					// TODO Auto-generated catch block
+//					e1.printStackTrace();
+//				}				
+//			}
 		} catch (StreamReadException e) {
 			log.error("StreamReadException!!!", e);
 		} catch (DatabindException e) {

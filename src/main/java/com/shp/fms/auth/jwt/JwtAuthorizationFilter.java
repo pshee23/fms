@@ -1,6 +1,7 @@
 package com.shp.fms.auth.jwt;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Optional;
 
 import javax.servlet.FilterChain;
@@ -14,11 +15,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.shp.fms.auth.Login;
 import com.shp.fms.auth.auth.PrincipalDetails;
 import com.shp.fms.model.entity.Member;
+import com.shp.fms.model.response.CommonResponse;
 import com.shp.fms.repository.MemberRepository;
 
 import lombok.extern.slf4j.Slf4j;
@@ -37,30 +38,27 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
 			throws IOException, ServletException {	
-		log.info("인증이나 권한이 필요한 주소 요청이 들어옴");
+		log.info("[JwtAuthorizationFilter] 인증이나 권한이 필요한 주소 요청이 들어옴");
 		
 		String jwtHeader = request.getHeader(JwtProperties.HEADER_STRING);
-		log.info("Jwt header = " + jwtHeader);
+		log.info("[JwtAuthorizationFilter] Jwt header={}", jwtHeader);
 		
 		if(jwtHeader == null || !jwtHeader.startsWith(JwtProperties.TOKEN_PREFIX)) {
+			log.info("[JwtAuthorizationFilter] jwtHeader is null or not start with prefix. header={}", jwtHeader);
 			chain.doFilter(request, response);
 			return;
 		}
 		
 		if (!request.getRequestURI().equals("/api/refresh")) { 
-			log.info("[{}] validate token.", request.getRequestURI());
+			log.info("[JwtAuthorizationFilter] [{}] validate token.", request.getRequestURI());
 			// 2) 토큰 검증
 			String authHeader = request.getHeader(JwtProperties.HEADER_STRING);
 			String jwtToken = authHeader.replace(JwtProperties.TOKEN_PREFIX, "");
-			
-//			String username = JWT
-//					.require(Algorithm.HMAC512(JwtProperties.SECRET)).build()
-//					.verify(jwtToken) // 여기서 Token expired check
-//					.getClaim("username").asString();	
+
 			String username = jwtTokenProvider.getUsername(jwtToken);
 			
 			// 서명이 정상적으로 됨
-			if(username != null) {
+			if(username != null && !username.isEmpty()) {
 				Optional<Member> memberOp = memberRepository.findByLoginId(username);
 				if(memberOp.isEmpty()) {
 					log.error("Member is null. username={}", username);
@@ -80,6 +78,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 				
 			}
 		}
+		log.info("[JwtAuthorizationFilter] end");
 		chain.doFilter(request, response);
 	}
 }

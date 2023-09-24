@@ -14,12 +14,14 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import com.shp.fms.auth.TokenInfo;
+import com.shp.fms.common.exception.AuthenticationException;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.UnsupportedJwtException;
+import io.jsonwebtoken.security.SignatureException;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
@@ -96,13 +98,37 @@ public class JwtTokenProvider {
     }
     
     public String getUsername(String token) {
-		return (String) Jwts
-            	.parserBuilder()
-            	.setSigningKey(key)
-            	.build()
-            	.parseClaimsJws(token)
-            	.getBody()
-        		.get("username");
+    	try {
+    		return (String) Jwts
+                	.parserBuilder()
+                	.setSigningKey(key)
+                	.build()
+                	.parseClaimsJws(token)
+                	.getBody()
+            		.get("username");
+//    	} catch (Exception e) {
+//    		return null;
+//    	}
+    	} catch (ExpiredJwtException e) {
+    		log.error("get user name ExpiredJwtException", e.getLocalizedMessage());
+    		throw new AuthenticationException(401010, e.getLocalizedMessage());
+    	} catch (UnsupportedJwtException e) {
+    		log.error("get user name UnsupportedJwtException", e.getLocalizedMessage());
+    		throw new AuthenticationException(401011, e.getLocalizedMessage());
+    	} catch (MalformedJwtException e) {
+    		log.error("get user name MalformedJwtException", e.getLocalizedMessage());
+    		throw new AuthenticationException(401012, e.getLocalizedMessage());
+    	} catch (IllegalArgumentException  e) {
+    		log.error("get user name IllegalArgumentException", e.getLocalizedMessage());
+    		throw new AuthenticationException(401013, e.getLocalizedMessage());
+    	} catch (SignatureException e) {
+    		log.error("get user name SignatureException", e.getLocalizedMessage());
+    		throw new AuthenticationException(401014, e.getLocalizedMessage());
+    	} catch (Exception e) {
+    		log.error("get user name Exception", e.getLocalizedMessage());
+    		throw new AuthenticationException(401019, e.getLocalizedMessage());
+    	}
+		
     }
     
     public boolean validateToken(String token) {

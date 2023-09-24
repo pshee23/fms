@@ -64,7 +64,7 @@ public class AuthService {
             		
             		TokenInfo tokenInfo = jwtTokenProvider.generateToken(refreshToken.getId(), collectors);
             	    log.info("tokenInfo={}", tokenInfo);
-            	    
+            	    // TODO refresh token 은 갱신 안하도록
             		redisRepository.save(RefreshToken.builder()
             	            .id(refreshToken.getId())
             	            .refreshToken(tokenInfo.getRefreshToken())
