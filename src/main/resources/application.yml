@@ -1,0 +1,30 @@
+server:
+  port: 8080
+spring:
+    datasource:
+        url: jdbc:mariadb://localhost:3306/fitness_management
+        username: root
+        password: zooin.net
+        driver-class-name: org.mariadb.jdbc.Driver
+    jpa:
+        hibernate:
+            ddl-auto: update
+        database-platform:
+        properties:
+            hibernate:
+                show_sql: true
+                format_sql: true
+    redis:
+        host: localhost
+        port: 26484
+        password: zooin.net
+
+logging:
+  level:
+    org:
+      springframework:
+        security: INFO
+
+app:
+    jwt:
+        secret: Sb2xlIjoiQWRtaW4iLCJJc3N1ZXIiOiJJc3N1ZXIiLCJVc2VybmFtZSI6IkphdmFJblVzZSIsImV4cCI6MTY5NDAwMDkzNiwiaWF0IjoxNjk0MDAwOTM2fQF5mBw8OksXYo56P3jd09RKpoG7SsX59kA40
