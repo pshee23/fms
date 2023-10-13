@@ -3,6 +3,7 @@ package com.shp.fms.service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -47,33 +48,35 @@ public class LessonHistoryService {
 		// update Lesson
 		lessonService.modifyLesson(registerInfo.getLessonId());
 	}
-		
-	public List<LessonHistoryInfo> getAllLessonHistoryInfoByMemberId(long memberId) {
-		List<LessonHistory> lessonHistoryList = lessonHistoryRepository.findByMember_MemberId(memberId);
-		if(lessonHistoryList.isEmpty()) {
-			throw new NoResultByIdException(ServiceType.MEMBER.getName(), memberId, ServiceType.LESSON_HISTORY.getName());
-		}
-		return lessonHistoryMapper.mapToLessonHistoryInfoList(lessonHistoryList);
-	}
 	
-	public List<LessonHistoryInfo> getAllLessonHistoryInfoByDateTime(LocalDate datetime) {
+	public List<LessonHistoryInfo> getAllEmployeeLessonHistoryInfoByDateTime(long employeeId, LocalDate datetime) {
 		LocalDateTime startTime = LocalDateTime.of(datetime.getYear(), datetime.getMonth(), datetime.getDayOfMonth(), 0, 0);
 		LocalDateTime endTime = LocalDateTime.of(datetime.getYear(), datetime.getMonth(), datetime.getDayOfMonth()+1, 0, 0).minusSeconds(1);
-		List<LessonHistory> lessonHistoryList = lessonHistoryRepository.findAllByStartDateTimeGreaterThanEqualAndEndDateTimeLessThanEqual(startTime, endTime);
+		log.info("get all lesson history. startTime={} ~ endTime={}", startTime, endTime);
+		List<LessonHistory> lessonHistoryList = lessonHistoryRepository.findAllByEmployee_EmployeeIdAndStartDateTimeGreaterThanEqualAndEndDateTimeLessThanEqual(employeeId, startTime, endTime);
+		for(LessonHistory lh : lessonHistoryList) {
+			log.info("@@@@@@@@@ {}", lh.getStartDateTime());
+		}
 		if(lessonHistoryList.isEmpty()) {
 			throw new NoResultByIdException(ServiceType.MEMBER.getName(), 0, ServiceType.LESSON_HISTORY.getName()); // TODO
 		}
 		return lessonHistoryMapper.mapToLessonHistoryInfoList(lessonHistoryList);
 	}
 	
-	public List<LessonHistory> getLessonHistoryByEmployeeId(long employeeId) {
-		List<LessonHistory> lessonHistoryList = lessonHistoryRepository.findByEmployee_EmployeeId(employeeId);
-		if(lessonHistoryList.isEmpty()) {
-			throw new NoResultByIdException(ServiceType.EMPLOYEE.getName(), employeeId, ServiceType.LESSON_HISTORY.getName());
+	public List<LessonHistoryInfo> getAllMemberLessonHistoryInfoByDateTime(long memberId, LocalDate datetime) {
+		LocalDateTime startTime = LocalDateTime.of(datetime.getYear(), datetime.getMonth(), datetime.getDayOfMonth(), 0, 0);
+		LocalDateTime endTime = LocalDateTime.of(datetime.getYear(), datetime.getMonth(), datetime.getDayOfMonth()+1, 0, 0).minusSeconds(1);
+		log.info("get all lesson history. startTime={} ~ endTime={}", startTime, endTime);
+		List<LessonHistory> lessonHistoryList = lessonHistoryRepository.findAllByMember_MemberIdAndStartDateTimeGreaterThanEqualAndEndDateTimeLessThanEqual(memberId, startTime, endTime);
+		for(LessonHistory lh : lessonHistoryList) {
+			log.info("@@@@@@@@@ {}", lh.getStartDateTime());
 		}
-		return lessonHistoryList;
+		if(lessonHistoryList.isEmpty()) {
+			throw new NoResultByIdException(ServiceType.MEMBER.getName(), 0, ServiceType.LESSON_HISTORY.getName()); // TODO
+		}
+		return lessonHistoryMapper.mapToLessonHistoryInfoList(lessonHistoryList);
 	}
-	
+
 	public List<LessonHistory> getAllByEmployeeIdAndDate(long employeeId, LocalDateTime startDate, LocalDateTime endDate) {
 		List<LessonHistory> lessonHistoryList = lessonHistoryRepository.findAllByEmployee_EmployeeIdAndStartDateTimeGreaterThanEqualAndEndDateTimeLessThanEqual(employeeId, startDate, endDate);
 		if(lessonHistoryList.isEmpty()) {
@@ -81,5 +84,16 @@ public class LessonHistoryService {
 			throw new NoResultByIdException(ServiceType.EMPLOYEE.getName(), employeeId, ServiceType.LESSON_HISTORY.getName());
 		}
 		return lessonHistoryList;
+	}
+	
+	public void changeLessonHistoryStatus(long lessonHistoryId, String status) {
+		Optional<LessonHistory> lessonHistoryOptional = lessonHistoryRepository.findById(lessonHistoryId);
+		if(lessonHistoryOptional.isEmpty()) {
+			// TODO return error
+			return;
+		}
+		LessonHistory lessonHistory = lessonHistoryOptional.get();
+		lessonHistory.setStatus(status);
+		lessonHistoryRepository.save(lessonHistory); // XXX 원래 자동으로 업데이트되는거 아닌가?
 	}
 }

@@ -67,6 +67,14 @@ public class EmployeeService {
 		return employee.get();
 	}
 	
+	public Long getEmployeeIdByLoginId(String loginId) {
+		Optional<Employee> employee = employeeRepository.findByLoginId(loginId);
+		if(employee.isEmpty()) {
+			return null;
+		}
+		return employee.get().getEmployeeId();
+	}
+	
 	public EmployeeInfo getEmployeeInfoById(long employeeId) {
 		return employeeMapper.mapToEmployeeInfo(getEmployeeById(employeeId));
 	}

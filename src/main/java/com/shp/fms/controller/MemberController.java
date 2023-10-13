@@ -48,6 +48,12 @@ public class MemberController {
 		return ResponseEntity.ok(new MemberResponse().deleteResponse(isDeleted));
 	}
 	
+	@GetMapping("/{loginId}")
+	public ResponseEntity<Object> getId(@PathVariable String loginId) {
+		Long memberId = memberService.getEmployeeIdByLoginId(loginId);
+		return ResponseEntity.ok(memberId);
+	}
+	
 	@GetMapping("/list")
 	public ResponseEntity<MemberResponse> getAllMember() {
 		List<MemberInfo> memberInfoList = memberService.getAllMemberInfo();

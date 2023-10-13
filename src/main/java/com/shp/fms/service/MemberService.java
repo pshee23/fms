@@ -57,6 +57,14 @@ public class MemberService {
 		}
 	}
 	
+	public Long getEmployeeIdByLoginId(String loginId) {
+		Optional<Member> member = memberRepository.findByLoginId(loginId);
+		if(member.isEmpty()) {
+			return null;
+		}
+		return member.get().getMemberId();
+	}
+	
 	public List<MemberInfo> getAllMemberInfo() {
 		List<Member> memberList = memberRepository.findAll();
 		if(memberList.isEmpty()) {

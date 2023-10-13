@@ -22,7 +22,9 @@ public class Login {
 	
 	private String password;
 	
-	private String roles; 
+	private String roles;
+	
+	private boolean isEmployee;
 	
 	public List<String> getRoleList() {
 		if(this.roles.length() > 0) {

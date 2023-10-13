@@ -27,6 +27,9 @@ public class Lesson {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long lessonId;
 	
+	@Column(name="LESSON_NAME")
+	private String name;
+	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="MEMBER_ID")
 	private Member member;

@@ -55,10 +55,10 @@ public class AuthController {
 		return "회원가입완료";
 	}
 	
-	 @PutMapping("/refresh")
-	    public ResponseEntity<?> refresh(HttpServletRequest httpServletRequest) {
-	        return service.refresh(httpServletRequest);
-	    }
+	@PutMapping("/refresh")
+    public ResponseEntity<?> refresh(HttpServletRequest httpServletRequest) {
+        return service.refresh(httpServletRequest);
+    }
 	
 	@PutMapping("/logout")
 	public ResponseEntity<String> logout(@RequestParam String username) {

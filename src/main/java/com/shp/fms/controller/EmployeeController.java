@@ -48,6 +48,12 @@ public class EmployeeController {
 		return ResponseEntity.ok(new EmployeeResponse().deleteResponse(isDeleted));
 	}
 	
+	@GetMapping("/{loginId}")
+	public ResponseEntity<Object> getId(@PathVariable String loginId) {
+		Long employeeId = employeeService.getEmployeeIdByLoginId(loginId);
+		return ResponseEntity.ok(employeeId);
+	}
+	
 	@GetMapping("/list")
 	public ResponseEntity<EmployeeResponse> getAllEmployee() {
 		List<EmployeeInfo> employeeInfoList = employeeService.getAllEmployeeInfo();
