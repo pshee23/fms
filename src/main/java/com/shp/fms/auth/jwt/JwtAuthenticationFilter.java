@@ -11,6 +11,8 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.fasterxml.jackson.core.exc.StreamReadException;
@@ -60,6 +62,13 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 			
 			PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
 			log.info("[attemptAuthentication] login check. username={}", principalDetails.getLoginBody().getUsername());
+			
+			// XXX 로그인시 회원/직원을 구분하기 위해.. 다른 방법이 있을것같은데
+			for(GrantedAuthority auth : principalDetails.getAuthorities()) {
+				if(loginReq.isEmployee() && auth.getAuthority().equals("ROLE_USER")) {
+					throw new UsernameNotFoundException(loginReq.getUsername());
+				}
+			}
 			
 			log.info("[attemptAuthentication] 종료");
 			return authentication;
