@@ -2,6 +2,7 @@ package com.shp.fms.controller;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,12 +11,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.shp.fms.model.LessonHistoryInfo;
 import com.shp.fms.model.request.LessonHistoryRequestBody;
-import com.shp.fms.model.response.LessonHistoryResponse;
 import com.shp.fms.service.LessonHistoryService;
 
 import lombok.AllArgsConstructor;
@@ -34,6 +33,14 @@ public class LessonHistoryController {
 		log.info("register lesson-history. body={}", requestBody);
 		lessonHistoryService.registerLessonHistory(requestBody);
 		return ResponseEntity.ok().build();
+	}
+	
+	@GetMapping("/employee/{employeeId}/datetime/{year}/{month}")
+	public ResponseEntity<Map<LocalDate, Integer>> getAllEmployeeLessonHistoryByDate(@PathVariable long employeeId, @PathVariable int year, @PathVariable int month) {
+		log.info("get all lesson-history by Date. date={}-{}", year, month);
+		Map<LocalDate, Integer> lessonHistoryInfoList = lessonHistoryService.getAllEmployeeLessonHistoryMarkerByDate(employeeId, year, month);
+		log.info("result. response={}", lessonHistoryInfoList);
+		return ResponseEntity.ok(lessonHistoryInfoList);
 	}
 
 	@GetMapping("/employee/{employeeId}/datetime/{year}/{month}/{day}")

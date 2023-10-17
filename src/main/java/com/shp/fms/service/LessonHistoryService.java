@@ -2,7 +2,9 @@ package com.shp.fms.service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
@@ -47,6 +49,22 @@ public class LessonHistoryService {
 		log.info("registered lesson-history. body={}", saveResult);
 		// update Lesson
 		lessonService.modifyLesson(registerInfo.getLessonId());
+	}	
+	
+	public Map<LocalDate, Integer> getAllEmployeeLessonHistoryMarkerByDate(long employeeId, int year, int month) {
+		LocalDateTime startTime = LocalDateTime.of(year, month, 1, 0, 0);
+		LocalDateTime endTime = LocalDateTime.of(year, month+1, 1, 0, 0).minusSeconds(1);
+		log.info("get all lesson history. startTime={} ~ endTime={}", startTime, endTime);
+		List<LessonHistory> lessonHistoryList = lessonHistoryRepository.findAllByEmployee_EmployeeIdAndStartDateTimeGreaterThanEqualAndEndDateTimeLessThanEqualOrderByStartDateTimeAsc(employeeId, startTime, endTime);
+		if(lessonHistoryList.isEmpty()) {
+			throw new NoResultByIdException(ServiceType.MEMBER.getName(), 0, ServiceType.LESSON_HISTORY.getName()); // TODO
+		}
+		Map<LocalDate, Integer> resultMap = new HashMap<>();
+		for(LessonHistory history : lessonHistoryList) {
+			LocalDate localDate = history.getStartDateTime().toLocalDate();
+			resultMap.put(localDate, resultMap.getOrDefault(localDate, 0)+1);
+		}
+		return resultMap;
 	}
 	
 	public List<LessonHistoryInfo> getAllEmployeeLessonHistoryInfoByDateTime(long employeeId, LocalDate datetime) {
