@@ -1,5 +1,8 @@
 package com.shp.fms.repository.mapper;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.stereotype.Component;
 
 import com.shp.fms.model.LessonInfo;
@@ -13,6 +16,7 @@ public class LessonMapper {
 		return LessonInfo.builder()
 				.lessonId(lesson.getLessonId())
 				.memberId(lesson.getMember().getMemberId())
+				.employeeId(lesson.getEmployee().getEmployeeId())
 				.startDateTime(lesson.getStartDateTime())
 				.totalCount(lesson.getTotalCount())
 				.currentCount(lesson.getCurrentCount())
@@ -31,5 +35,15 @@ public class LessonMapper {
 		lesson.updateDateTime();
 		lesson.setCurrentCount();
 		return lesson;
+	}
+	
+	public List<LessonInfo> mapToLessonInfoList(List<Lesson> lessonList) {
+		List<LessonInfo> lessonInfoList = new ArrayList<>();
+		
+		for(Lesson lesson : lessonList) {
+			LessonInfo lessonInfo = mapToLessonInfo(lesson);
+			lessonInfoList.add(lessonInfo);
+		}
+		return lessonInfoList;
 	}
 }

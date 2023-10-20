@@ -33,6 +33,10 @@ public class Lesson {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="MEMBER_ID")
 	private Member member;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="EMPLOYEE_ID")
+	private Employee employee;
 
 	@Column(name="START_DATETIME")
 	private LocalDateTime startDateTime;

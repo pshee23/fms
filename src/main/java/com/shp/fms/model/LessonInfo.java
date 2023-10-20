@@ -10,13 +10,11 @@ import lombok.Data;
 public class LessonInfo {
 	private long lessonId;
 	private long memberId;
+	private long employeeId;
+	
 	private int totalCount;
 	private int currentCount;
-//	private LocalDateTime lastLessonTime;
+
 	private LocalDateTime startDateTime;
 	private LocalDateTime endDateTime;
-	
-	private int colorId;
-	private String content;
-	private LocalDateTime createDateTime;
 }

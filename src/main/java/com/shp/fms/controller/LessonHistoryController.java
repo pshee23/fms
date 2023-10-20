@@ -36,9 +36,9 @@ public class LessonHistoryController {
 	}
 	
 	@GetMapping("/employee/{employeeId}/datetime/{year}/{month}")
-	public ResponseEntity<Map<LocalDate, Integer>> getAllEmployeeLessonHistoryByDate(@PathVariable long employeeId, @PathVariable int year, @PathVariable int month) {
+	public ResponseEntity<Map<LocalDate, List<String>>> getAllEmployeeLessonHistoryByDate(@PathVariable long employeeId, @PathVariable int year, @PathVariable int month) {
 		log.info("get all lesson-history by Date. date={}-{}", year, month);
-		Map<LocalDate, Integer> lessonHistoryInfoList = lessonHistoryService.getAllEmployeeLessonHistoryMarkerByDate(employeeId, year, month);
+		Map<LocalDate, List<String>> lessonHistoryInfoList = lessonHistoryService.getAllEmployeeLessonHistoryMarkerByDate(employeeId, year, month);
 		log.info("result. response={}", lessonHistoryInfoList);
 		return ResponseEntity.ok(lessonHistoryInfoList);
 	}

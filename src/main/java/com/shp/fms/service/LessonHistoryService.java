@@ -2,6 +2,7 @@ package com.shp.fms.service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,18 +52,19 @@ public class LessonHistoryService {
 		lessonService.modifyLesson(registerInfo.getLessonId());
 	}	
 	
-	public Map<LocalDate, Integer> getAllEmployeeLessonHistoryMarkerByDate(long employeeId, int year, int month) {
+	public Map<LocalDate, List<String>> getAllEmployeeLessonHistoryMarkerByDate(long employeeId, int year, int month) {
 		LocalDateTime startTime = LocalDateTime.of(year, month, 1, 0, 0);
 		LocalDateTime endTime = LocalDateTime.of(year, month+1, 1, 0, 0).minusSeconds(1);
 		log.info("get all lesson history. startTime={} ~ endTime={}", startTime, endTime);
 		List<LessonHistory> lessonHistoryList = lessonHistoryRepository.findAllByEmployee_EmployeeIdAndStartDateTimeGreaterThanEqualAndEndDateTimeLessThanEqualOrderByStartDateTimeAsc(employeeId, startTime, endTime);
-		if(lessonHistoryList.isEmpty()) {
-			throw new NoResultByIdException(ServiceType.MEMBER.getName(), 0, ServiceType.LESSON_HISTORY.getName()); // TODO
-		}
-		Map<LocalDate, Integer> resultMap = new HashMap<>();
+		Map<LocalDate, List<String>> resultMap = new HashMap<>();
 		for(LessonHistory history : lessonHistoryList) {
+			log.info("######## {}", history.toString());
 			LocalDate localDate = history.getStartDateTime().toLocalDate();
-			resultMap.put(localDate, resultMap.getOrDefault(localDate, 0)+1);
+			List<String> stringList = resultMap.getOrDefault(localDate, new ArrayList<>());
+			stringList.add(history.getLessonHistoryId().toString());
+			resultMap.put(localDate, stringList);
+			log.info("######## {}", resultMap);
 		}
 		return resultMap;
 	}
