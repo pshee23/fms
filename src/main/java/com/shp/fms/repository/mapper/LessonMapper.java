@@ -15,8 +15,11 @@ public class LessonMapper {
 	public LessonInfo mapToLessonInfo(Lesson lesson) {
 		return LessonInfo.builder()
 				.lessonId(lesson.getLessonId())
+				.lessonName(lesson.getName())
 				.memberId(lesson.getMember().getMemberId())
+				.memberName(lesson.getMember().getName())
 				.employeeId(lesson.getEmployee().getEmployeeId())
+				.employeeName(lesson.getEmployee().getName())
 				.startDateTime(lesson.getStartDateTime())
 				.totalCount(lesson.getTotalCount())
 				.currentCount(lesson.getCurrentCount())

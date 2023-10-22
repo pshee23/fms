@@ -9,8 +9,13 @@ import lombok.Data;
 @Builder
 public class LessonInfo {
 	private long lessonId;
+	private String lessonName;
+	
 	private long memberId;
+	private String memberName;
+	
 	private long employeeId;
+	private String employeeName;
 	
 	private int totalCount;
 	private int currentCount;
