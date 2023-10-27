@@ -28,8 +28,8 @@ public class LessonService {
 		return lessonRepository.save(lesson);
 	}
 	
-	public List<LessonInfo> getAllLesson() {
-		return lessonMapper.mapToLessonInfoList(lessonRepository.findAll());
+	public List<LessonInfo> getLessonListByEmployeeId(long employeeId) {
+		return lessonMapper.mapToLessonInfoList(lessonRepository.findByEmployee_EmployeeId(employeeId));
 	}
 	
 	public Lesson getLessonById(long lessonId) {
