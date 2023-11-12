@@ -66,6 +66,12 @@ public class MemberController {
 		return ResponseEntity.ok(new MemberResponse().successResponse(memberInfo));
 	}
 	
+	@GetMapping("/list/employee/{employeeId}")
+	public ResponseEntity<List<MemberInfo>> getMemberByEmployeeId(@PathVariable long employeeId) {
+		List<MemberInfo> memberInfo = memberService.getMemberByEmployeeId(employeeId);
+		return ResponseEntity.ok(memberInfo);
+	}
+	
 	@GetMapping("/list/branch/{branchId}")
 	public ResponseEntity<MemberResponse> getMemberListByBranchId(@PathVariable long branchId) {
 		List<MemberInfo> memberInfo = memberService.getMemberInfoListByBranchId(branchId);
