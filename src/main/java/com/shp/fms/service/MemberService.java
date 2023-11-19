@@ -93,6 +93,15 @@ public class MemberService {
 		return memberMapper.mapToMemberInfoList(memberList);
 	}
 	
+	public List<MemberInfo> getMemberByBranchEmployeeId(long employeeId) {
+		Employee employee = employeeService.getEmployeeById(employeeId);
+		List<Member> memberList = memberRepository.findByBranch_BranchId(employee.getBranch().getBranchId());
+		if(memberList.isEmpty()) {
+			throw new NoResultByIdException(employeeId, ServiceType.EMPLOYEE.getName());
+		}
+		return memberMapper.mapToMemberInfoList(memberList);
+	}
+	
 	public List<MemberInfo> getMemberInfoListByBranchId(long branchId) {
 		List<Member> memberList = memberRepository.findByBranch_BranchId(branchId);
 		if(memberList.isEmpty()) {
