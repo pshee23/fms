@@ -18,7 +18,9 @@ import com.shp.fms.model.response.MemberResponse;
 import com.shp.fms.service.MemberService;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RequestMapping("/member")
 @RestController
 @AllArgsConstructor
@@ -66,14 +68,16 @@ public class MemberController {
 		return ResponseEntity.ok(new MemberResponse().successResponse(memberInfo));
 	}
 	
-	@GetMapping("/list/employee/{employeeId}")
+	@GetMapping("/employee/{employeeId}")
 	public ResponseEntity<List<MemberInfo>> getMemberByEmployeeId(@PathVariable long employeeId) {
+		log.info("getMemberByEmployeeId. id={}", employeeId);
 		List<MemberInfo> memberInfo = memberService.getMemberByEmployeeId(employeeId);
 		return ResponseEntity.ok(memberInfo);
 	}
 	
-	@GetMapping("/list/branch/employee/{employeeId}")
+	@GetMapping("/branch/employee/{employeeId}")
 	public ResponseEntity<List<MemberInfo>> getMemberByBranchEmployeeId(@PathVariable long employeeId) {
+		log.info("getMemberByBranchEmployeeId. id={}", employeeId);
 		List<MemberInfo> memberInfo = memberService.getMemberByBranchEmployeeId(employeeId);
 		return ResponseEntity.ok(memberInfo);
 	}
