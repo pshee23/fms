@@ -50,8 +50,14 @@ public class MemberController {
 		return ResponseEntity.ok(new MemberResponse().deleteResponse(isDeleted));
 	}
 	
-	@GetMapping("/{loginId}")
-	public ResponseEntity<Object> getId(@PathVariable String loginId) {
+	@GetMapping("/{memberId}")
+	public ResponseEntity<Object> getById(@PathVariable long memberId) {
+		MemberInfo memberInfo = memberService.getMemberInfoById(memberId);
+		return ResponseEntity.ok(memberInfo);
+	}
+	
+	@GetMapping("/login/{loginId}")
+	public ResponseEntity<Object> getByLoginId(@PathVariable String loginId) {
 		Long memberId = memberService.getEmployeeIdByLoginId(loginId);
 		return ResponseEntity.ok(memberId);
 	}

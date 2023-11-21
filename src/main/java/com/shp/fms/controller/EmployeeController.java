@@ -48,8 +48,14 @@ public class EmployeeController {
 		return ResponseEntity.ok(new EmployeeResponse().deleteResponse(isDeleted));
 	}
 	
-	@GetMapping("/{loginId}")
-	public ResponseEntity<Object> getId(@PathVariable String loginId) {
+	@GetMapping("/{employeeId}")
+	public ResponseEntity<Object> getById(@PathVariable long employeeId) {
+		EmployeeInfo employeeInfo = employeeService.getEmployeeInfoById(employeeId);
+		return ResponseEntity.ok(employeeInfo);
+	}
+	
+	@GetMapping("/login/{loginId}")
+	public ResponseEntity<Object> getByLoginId(@PathVariable String loginId) {
 		Long employeeId = employeeService.getEmployeeIdByLoginId(loginId);
 		return ResponseEntity.ok(employeeId);
 	}
