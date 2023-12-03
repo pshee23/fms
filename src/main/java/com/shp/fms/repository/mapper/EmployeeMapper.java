@@ -22,6 +22,7 @@ public class EmployeeMapper {
 				.address(employee.getAddress())
 				.phoneNumber(employee.getPhoneNumber())
 				.loginId(employee.getLoginId())
+				.loginPw(employee.getLoginPw())
 				.role(employee.getRole())
 				.status(employee.getStatus())
 				.build();

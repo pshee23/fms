@@ -54,7 +54,7 @@ public class LessonHistoryService {
 	
 	public Map<LocalDate, List<String>> getAllEmployeeLessonHistoryMarkerByDate(long employeeId, int year, int month) {
 		LocalDateTime startTime = LocalDateTime.of(year, month, 1, 0, 0);
-		LocalDateTime endTime = LocalDateTime.of(year, month+1, 1, 0, 0).minusSeconds(1);
+		LocalDateTime endTime = LocalDateTime.of(year, month, 1, 0, 0).plusMonths(1).minusSeconds(1);
 		log.info("get all lesson history. startTime={} ~ endTime={}", startTime, endTime);
 		List<LessonHistory> lessonHistoryList = lessonHistoryRepository.findAllByEmployee_EmployeeIdAndStartDateTimeGreaterThanEqualAndEndDateTimeLessThanEqualOrderByStartDateTimeAsc(employeeId, startTime, endTime);
 		Map<LocalDate, List<String>> resultMap = new HashMap<>();
