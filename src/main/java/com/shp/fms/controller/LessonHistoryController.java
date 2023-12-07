@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.shp.fms.model.LessonHistoryInfo;
@@ -33,6 +35,26 @@ public class LessonHistoryController {
 		log.info("register lesson-history. body={}", requestBody);
 		lessonHistoryService.registerLessonHistory(requestBody);
 		return ResponseEntity.ok().build();
+	}
+	
+	@GetMapping("/employee/{employeeId}/top")
+	public ResponseEntity<List<LessonHistoryInfo>> getAllEmployeeLessonHistoryByRange(
+			@PathVariable long employeeId) {
+		log.info("get 10 lesson-history.");
+		List<LessonHistoryInfo> lessonHistoryInfoList = lessonHistoryService.getTop10EmployeeLessonHistoryInfo(employeeId);
+		log.info("result. response={}", lessonHistoryInfoList);
+		return ResponseEntity.ok(lessonHistoryInfoList);
+	}
+	
+	@GetMapping("/employee/{employeeId}")
+	public ResponseEntity<List<LessonHistoryInfo>> getAllEmployeeLessonHistoryByRange(
+			@PathVariable long employeeId, 
+			@RequestParam @DateTimeFormat(pattern="yyyy-MM-dd") LocalDate startDate, 
+			@RequestParam @DateTimeFormat(pattern="yyyy-MM-dd") LocalDate endDate) {
+		log.info("get all lesson-history by range. startDate={}, endDate={}", startDate, endDate);
+		List<LessonHistoryInfo> lessonHistoryInfoList = lessonHistoryService.getAllEmployeeLessonHistoryInfoByRange(employeeId, startDate, endDate);
+		log.info("result. response={}", lessonHistoryInfoList);
+		return ResponseEntity.ok(lessonHistoryInfoList);
 	}
 	
 	@GetMapping("/employee/{employeeId}/datetime/{year}/{month}")

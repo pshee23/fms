@@ -54,6 +54,10 @@ public class Lesson {
 	@Column(name="UPDATE_DATETIME")
 	private LocalDateTime updateDateTime = LocalDateTime.now();
 	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="BRANCH_ID")
+	private Branch branch;
+	
 	public void setCurrentCount() {
 		this.currentCount += 1;
 	}

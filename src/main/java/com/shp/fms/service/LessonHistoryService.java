@@ -50,7 +50,7 @@ public class LessonHistoryService {
 		log.info("registered lesson-history. body={}", saveResult);
 		// update Lesson
 		lessonService.modifyLesson(registerInfo.getLessonId());
-	}	
+	}
 	
 	public Map<LocalDate, List<String>> getAllEmployeeLessonHistoryMarkerByDate(long employeeId, int year, int month) {
 		LocalDateTime startTime = LocalDateTime.of(year, month, 1, 0, 0);
@@ -67,6 +67,29 @@ public class LessonHistoryService {
 			log.info("######## {}", resultMap);
 		}
 		return resultMap;
+	}
+	
+	public List<LessonHistoryInfo> getTop10EmployeeLessonHistoryInfo(long employeeId) {
+		log.info("get 10 lesson history.");
+		List<LessonHistory> lessonHistoryList = lessonHistoryRepository.findTop10ByEmployee_EmployeeIdOrderByStartDateTimeAsc(employeeId);
+		if(lessonHistoryList.isEmpty()) {
+			throw new NoResultByIdException(ServiceType.MEMBER.getName(), 0, ServiceType.LESSON_HISTORY.getName()); // TODO
+		}
+		return lessonHistoryMapper.mapToLessonHistoryInfoList(lessonHistoryList);
+	}
+	
+	public List<LessonHistoryInfo> getAllEmployeeLessonHistoryInfoByRange(long employeeId, LocalDate startTime, LocalDate endTime) {
+		LocalDateTime startDateTime = LocalDateTime.of(startTime.getYear(), startTime.getMonth(), startTime.getDayOfMonth(), 0, 0);
+		LocalDateTime endDateTime = LocalDateTime.of(endTime.getYear(), endTime.getMonth(), endTime.getDayOfMonth(), 0, 0).plusDays(1).minusSeconds(1);
+		log.info("get all lesson history. startTime={} ~ endTime={}", startTime, endTime);
+		List<LessonHistory> lessonHistoryList = lessonHistoryRepository.findAllByEmployee_EmployeeIdAndStartDateTimeGreaterThanEqualAndEndDateTimeLessThanEqualOrderByStartDateTimeAsc(employeeId, startDateTime, endDateTime);
+		for(LessonHistory lh : lessonHistoryList) {
+			log.info("@@@@@@@@@ {}", lh.getStartDateTime());
+		}
+		if(lessonHistoryList.isEmpty()) {
+			throw new NoResultByIdException(ServiceType.MEMBER.getName(), 0, ServiceType.LESSON_HISTORY.getName()); // TODO
+		}
+		return lessonHistoryMapper.mapToLessonHistoryInfoList(lessonHistoryList);
 	}
 	
 	public List<LessonHistoryInfo> getAllEmployeeLessonHistoryInfoByDateTime(long employeeId, LocalDate datetime) {

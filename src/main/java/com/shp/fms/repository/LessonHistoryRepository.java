@@ -11,6 +11,8 @@ public interface LessonHistoryRepository extends JpaRepository<LessonHistory, Lo
 	
 	List<LessonHistory> findByMember_MemberId(long memberId);
 	
+	List<LessonHistory> findTop10ByEmployee_EmployeeIdOrderByStartDateTimeAsc(long employeeId);
+	
 //	List<LessonHistory> findByStartDateTimeGreaterThanEqualAndEndDateTimeLessThanEqual(LocalDateTime startDateTime, LocalDateTime endDateTime);
 	
 	List<LessonHistory> findByEmployee_EmployeeId(long employeeId);
