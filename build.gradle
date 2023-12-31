@@ -2,16 +2,20 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '2.7.8'
 	id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+	id 'com.ewerk.gradle.plugins.querydsl' version '1.0.10'
 }
 
 group = 'com.shp'
 version = '0.0.1'
 sourceCompatibility = '11'
+def querydslVersion = '5.0.0'
 
 configurations {
 	compileOnly {
 		extendsFrom annotationProcessor
 	}
+	
+ 	querydsl.extendsFrom compileClasspath
 }
 
 repositories {
@@ -30,6 +34,9 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.mariadb.jdbc:mariadb-java-client'
 	
+	implementation 'com.querydsl:querydsl-jpa:5.0.0'
+	implementation 'com.querydsl:querydsl-apt:5.0.0'
+	
 	// Spring Security 추가
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	
@@ -44,4 +51,25 @@ dependencies {
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+def querydslDir = "$buildDir/generated/querydsl"
+
+querydsl {
+	library = "com.querydsl:querydsl-apt"
+    jpa = true
+    querydslDefault = true
+    querydslSourcesDir = querydslDir
+}
+
+sourceSets {
+	main { 
+		java {
+			srcDirs = ['src/main/java', querydslDir] 
+		}
+	}
+}
+
+compileQuerydsl {
+    options.annotationProcessorPath = configurations.querydsl
 }

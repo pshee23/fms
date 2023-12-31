@@ -19,6 +19,7 @@ import com.shp.fms.model.entity.LessonHistory;
 import com.shp.fms.model.entity.Member;
 import com.shp.fms.model.request.LessonHistoryRequestBody;
 import com.shp.fms.repository.LessonHistoryRepository;
+import com.shp.fms.repository.impl.LessonHistoryRepositoryImpl;
 import com.shp.fms.repository.mapper.LessonHistoryMapper;
 
 import lombok.AllArgsConstructor;
@@ -30,6 +31,8 @@ import lombok.extern.slf4j.Slf4j;
 public class LessonHistoryService {
 	
 	private final LessonHistoryRepository lessonHistoryRepository;
+	
+	private final LessonHistoryRepositoryImpl lessonHistoryRepositoryImpl;
 	
 	private final EmployeeService employeeService;
 	
@@ -78,11 +81,9 @@ public class LessonHistoryService {
 		return lessonHistoryMapper.mapToLessonHistoryInfoList(lessonHistoryList);
 	}
 	
-	public List<LessonHistoryInfo> getAllEmployeeLessonHistoryInfoByRange(long employeeId, LocalDate startTime, LocalDate endTime) {
-		LocalDateTime startDateTime = LocalDateTime.of(startTime.getYear(), startTime.getMonth(), startTime.getDayOfMonth(), 0, 0);
-		LocalDateTime endDateTime = LocalDateTime.of(endTime.getYear(), endTime.getMonth(), endTime.getDayOfMonth(), 0, 0).plusDays(1).minusSeconds(1);
+	public List<LessonHistoryInfo> getAllEmployeeLessonHistoryInfoByRange(long employeeId, int orderByTime, int offset, int limit, LocalDate startTime, LocalDate endTime) {
 		log.info("get all lesson history. startTime={} ~ endTime={}", startTime, endTime);
-		List<LessonHistory> lessonHistoryList = lessonHistoryRepository.findAllByEmployee_EmployeeIdAndStartDateTimeGreaterThanEqualAndEndDateTimeLessThanEqualOrderByStartDateTimeAsc(employeeId, startDateTime, endDateTime);
+		List<LessonHistory> lessonHistoryList = lessonHistoryRepositoryImpl.findFilteredOrderedSearchResults(employeeId, orderByTime, offset, limit, startTime, endTime);
 		for(LessonHistory lh : lessonHistoryList) {
 			log.info("@@@@@@@@@ {}", lh.getStartDateTime());
 		}

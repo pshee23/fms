@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.shp.fms.model.LessonHistoryInfo;
 import com.shp.fms.model.request.LessonHistoryRequestBody;
+import com.shp.fms.model.request.LessonHistorySearchRequestBody;
 import com.shp.fms.service.LessonHistoryService;
 
 import lombok.AllArgsConstructor;
@@ -46,13 +47,13 @@ public class LessonHistoryController {
 		return ResponseEntity.ok(lessonHistoryInfoList);
 	}
 	
-	@GetMapping("/employee/{employeeId}")
+	@PostMapping("/employee/{employeeId}")
 	public ResponseEntity<List<LessonHistoryInfo>> getAllEmployeeLessonHistoryByRange(
 			@PathVariable long employeeId, 
-			@RequestParam @DateTimeFormat(pattern="yyyy-MM-dd") LocalDate startDate, 
-			@RequestParam @DateTimeFormat(pattern="yyyy-MM-dd") LocalDate endDate) {
-		log.info("get all lesson-history by range. startDate={}, endDate={}", startDate, endDate);
-		List<LessonHistoryInfo> lessonHistoryInfoList = lessonHistoryService.getAllEmployeeLessonHistoryInfoByRange(employeeId, startDate, endDate);
+			@RequestBody LessonHistorySearchRequestBody requestBody) {
+		log.info("get all lesson-history by range. startDate={}, endDate={}", requestBody);
+		List<LessonHistoryInfo> lessonHistoryInfoList = lessonHistoryService.getAllEmployeeLessonHistoryInfoByRange(
+				employeeId, requestBody.getOrderByTime(), requestBody.getOffset(), requestBody.getLimit(), requestBody.getStartDate(), requestBody.getEndDate());
 		log.info("result. response={}", lessonHistoryInfoList);
 		return ResponseEntity.ok(lessonHistoryInfoList);
 	}
