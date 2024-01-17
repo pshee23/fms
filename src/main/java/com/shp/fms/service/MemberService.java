@@ -3,7 +3,6 @@ package com.shp.fms.service;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.shp.fms.common.exception.NoDataReturnedException;
@@ -113,7 +112,7 @@ public class MemberService {
 	public MemberInfo getMemberInfoByLoginId(String loginId) {
 		Optional<Member> member = memberRepository.findByLoginId(loginId);
 		if(member.isEmpty()) {
-			throw new UsernameNotFoundException("no user");
+//			throw new UsernameNotFoundException("no user");
 		}
 		return memberMapper.mapToMemberInfo(member.get());
 	}
