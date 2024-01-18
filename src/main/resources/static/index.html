@@ -1,16 +1,31 @@
 <!DOCTYPE html>
 <html>
 <head>
+	<meta charset="UTF-8">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
     <title>Spring Boot WebSocket Chat Application</title>
     <link rel="stylesheet" href="/css/main.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 </head>
 <body>
 
 <div id="username-page">
     <div class="username-page-container">
-        <h1 class="title">username을 입력하세요</h1>
+		<h3 class="title">방 목록</h3>
+			<form id="newRoomForm" name="newRoomForm">
+            <div class="form-group">
+                <input type="text" id="roomId-new" placeholder="RoomId" autocomplete="off" class="form-control" />
+            </div>
+            <div class="form-group">
+                <button type="submit" class="accent username-submit">룸 생성</button>
+            </div>
+        </form>
+        <h3 class="title">username을 입력하세요</h3>
         <form id="usernameForm" name="usernameForm">
+			<div class="form-group">
+                <input type="text" id="roomId" placeholder="RoomId" autocomplete="off" class="form-control" />
+            </div>
             <div class="form-group">
                 <input type="text" id="name" placeholder="Username" autocomplete="off" class="form-control" />
             </div>

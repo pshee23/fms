@@ -8,17 +8,25 @@ var messageInput = document.querySelector('#message');
 var messageArea = document.querySelector('#messageArea');
 var connectingElement = document.querySelector('.connecting');
 
+var newRoomForm = document.querySelector('#newRoomForm');
+
 var stompClient = null;
 var username = null;
+var roomId = null;
+
+var chatRooms = [];
 
 var colors = [
     '#2196F3', '#32c787', '#00BCD4', '#ff5652',
     '#ffc107', '#ff85af', '#FF9800', '#39bbb0'
 ];
 
+getChatRooms();
+
 function connect(event) {
     username = document.querySelector('#name').value.trim();
-
+	roomId = document.querySelector('#roomId').value.trim();
+	
     if(username) {
         usernamePage.classList.add('hidden');
         chatPage.classList.remove('hidden');
@@ -31,15 +39,55 @@ function connect(event) {
     event.preventDefault();
 }
 
+function newRoom(event) {
+	console.log("new Room");
+	var newRoomId = document.querySelector('#roomId-new').value.trim();
+	if(newRoomId) {
+		$.ajax({ 
+		type: "post",
+		url: "/chat/room",
+		data: {
+			name: newRoomId
+		},
+		success: function(data){
+			console.log("newRoom " + data);
+		}
+	})
+	}
+}
+
+function getChatRooms() {
+/*	$.get("/chat/rooms", function(data){
+		if (data.responseCode == "SUCCESS" && data.data == 0) {
+			chatRooms = data.data;
+			alert(chatRooms);
+		} else {
+			
+		}
+		
+	}, function(xhr, ajaxOptions, thrownError){
+		alert("get list fail");        
+	});*/
+	
+	$.ajax({ 
+		type: "get",
+		url: "/chat/rooms",
+		success: function(data){
+			console.log("roomList " + data);
+		}
+	})
+}
+
 
 function onConnected() {
     // Subscribe to the Public Topic
-    stompClient.subscribe('/topic/public', onMessageReceived);
+    //stompClient.subscribe('/topic/public', onMessageReceived);
+    stompClient.subscribe('/sub/chat/room/'+roomId, onMessageReceived);
 
     // Tell your username to the server
-    stompClient.send("/app/chat.addUser",
+    stompClient.send("/pub/chat/message",
         {},
-        JSON.stringify({sender: username, type: 'JOIN'})
+        JSON.stringify({sender: username, type: 'JOIN', roomId: roomId})
     )
 
     connectingElement.classList.add('hidden');
@@ -58,9 +106,10 @@ function sendMessage(event) {
         var chatMessage = {
             sender: username,
             content: messageInput.value,
-            type: 'CHAT'
+            type: 'CHAT',
+            roomId: roomId
         };
-        stompClient.send("/app/chat.sendMessage", {}, JSON.stringify(chatMessage));
+        stompClient.send("/pub/chat/message", {}, JSON.stringify(chatMessage));
         messageInput.value = '';
     }
     event.preventDefault();
@@ -114,5 +163,6 @@ function getAvatarColor(messageSender) {
     return colors[index];
 }
 
+newRoomForm.addEventListener('submit', newRoom, true)
 usernameForm.addEventListener('submit', connect, true)
 messageForm.addEventListener('submit', sendMessage, true)

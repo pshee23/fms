@@ -1,11 +1,12 @@
 package com.shp.fms.chat;
 
 import java.io.Serializable;
-import java.util.UUID;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
+@ToString
 @Getter
 @Setter
 public class ChatRoom implements Serializable {
@@ -17,7 +18,8 @@ public class ChatRoom implements Serializable {
 
     public static ChatRoom create(String name) {
         ChatRoom chatRoom = new ChatRoom();
-        chatRoom.roomId = UUID.randomUUID().toString();
+//        chatRoom.roomId = UUID.randomUUID().toString();
+        chatRoom.roomId = name;
         chatRoom.name = name;
         return chatRoom;
     }
