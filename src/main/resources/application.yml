@@ -18,6 +18,9 @@ spring:
         host: localhost
         port: 26484
         password: zooin.net
+    data:
+       mongodb:
+          uri: mongodb://localhost:27017/fitness
 
 logging:
   level:

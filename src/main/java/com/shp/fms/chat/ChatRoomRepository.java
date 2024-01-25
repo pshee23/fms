@@ -12,6 +12,8 @@ import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.stereotype.Repository;
 
+import com.shp.fms.service.MongoDbService;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -25,6 +27,8 @@ public class ChatRoomRepository {
     
     // 구독 처리 서비스
     private final RedisMessageSubscriber redisSubscriber;
+    
+    private final MongoDbService mongoService;
     
     // Redis
     private static final String CHAT_ROOMS = "CHAT_ROOM";
@@ -52,17 +56,21 @@ public class ChatRoomRepository {
      * 채팅방 생성 : 서버간 채팅방 공유를 위해 redis hash에 저장한다.
      */
     public ChatRoom createChatRoom(String name) {
-        ChatRoom chatRoom = ChatRoom.create(name);
+    	String roomId = mongoService.registerChatRoom(name);
+    	
+        ChatRoom chatRoom = ChatRoom.create(roomId, name);
         log.info("######## createChatRoom. chatRoom={}", chatRoom);
+        
         opsHashChatRoom.put(CHAT_ROOMS, chatRoom.getRoomId(), chatRoom);
         log.info("######## create result. chatRoom={}", findRoomById(chatRoom.getRoomId()));
+        // TODO if error?
         return chatRoom;
     }
 
     /**
      * 채팅방 입장 : redis에 topic을 만들고 pub/sub 통신을 하기 위해 리스너를 설정한다.
      */
-    public void enterChatRoom(String roomId) {
+    public void enterChatRoom(String roomId, String chatUser) {
     	log.info("######## enterChatRoom. roomId={}", roomId);
         ChannelTopic topic = topics.get(roomId);
         log.info("######## enterChatRoom. topic={}", topic);
@@ -71,6 +79,19 @@ public class ChatRoomRepository {
             redisMessageListener.addMessageListener(redisSubscriber, topic);
             topics.put(roomId, topic);
             log.info("######## enterChatRoom. topics={}", topics);
+        }
+        mongoService.registerChatUser(roomId, chatUser);
+    }
+    
+    public void leaveChatRoom(String roomId, String chatUser) {
+    	log.info("######## leaveChatRoom. roomId={}", roomId);
+        ChannelTopic topic = topics.get(roomId);
+        log.info("######## leaveChatRoom. topic={}", topic);
+        if (topic != null) {
+           // TODO unsubscribe?
+           mongoService.deleteChatUser(roomId, chatUser);
+        } else {
+        	log.error("######## leaveChatRoom. no room. roomId={}", roomId);
         }
     }
 

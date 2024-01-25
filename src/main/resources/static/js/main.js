@@ -23,6 +23,15 @@ var colors = [
 
 getChatRooms();
 
+window.addEventListener('beforeunload', disconnect);
+
+
+function disconnect(event) {
+	leaveRoom(event);
+	stompClient.disconnect(function(frame) {
+ 	});
+}
+
 function connect(event) {
     username = document.querySelector('#name').value.trim();
 	roomId = document.querySelector('#roomId').value.trim();
@@ -54,6 +63,20 @@ function newRoom(event) {
 		}
 	})
 	}
+}
+
+function leaveRoom() {
+    if(stompClient) {
+        var chatMessage = {
+            sender: username,
+            content: 'leave room',
+            type: 'LEAVE',
+            roomId: roomId
+        };
+        stompClient.send("/pub/chat/message", {}, JSON.stringify(chatMessage));
+        messageInput.value = '';
+    }
+    event.preventDefault();
 }
 
 function getChatRooms() {
