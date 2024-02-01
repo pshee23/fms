@@ -1,10 +1,12 @@
 package com.shp.fms.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.shp.fms.chat.ChatRoom;
 import com.shp.fms.chat.mongo.ChatMessageDocument;
 import com.shp.fms.chat.mongo.ChatRoomDocument;
 import com.shp.fms.chat.mongo.ChatUserDocument;
@@ -26,19 +28,49 @@ public class MongoDbService {
 	
 	private final MongoChatMessageRepository chatMessageRepository;
 
-	public String registerChatRoom(String name) {
-		ChatRoomDocument document = ChatRoomDocument.builder().name(name).build();
+	public String registerChatRoom(ChatRoom chatRoom) {
+		ChatRoomDocument document = ChatRoomDocument.builder()
+				.name(chatRoom.getName())
+				.employeeId(chatRoom.getEmployeeId())
+				.memberId(chatRoom.getMemberId()).build();
 		ChatRoomDocument result = chatRoomRepository.save(document);
 		log.info("######### registerChatRoom. => {}", result);
 		return result.get_id();
 	}
 	
-	public void findChatRoom() {
-		log.info("######### registerChatRoom. => {}", chatRoomRepository.findAll());
+	public List<ChatRoom> findAllChatRoom() {
+		List<ChatRoomDocument> documentList = chatRoomRepository.findAll();
+		log.info("######### findAllChatRoom. => {}", documentList);
+		List<ChatRoom> roomList = new ArrayList<>();
+		for(ChatRoomDocument document : documentList) {
+			ChatRoom chatRoom = mapChatRoom(document);
+			roomList.add(chatRoom);
+		}
+		return roomList;
+	}
+	
+	public List<ChatRoom> findAllChatRoomByEmployeeId(String employeeId) {
+		List<ChatRoomDocument> documentList = chatRoomRepository.findAllByEmployeeId(employeeId);
+		log.info("######### findAllChatRoomByEmployeeId. => {}", documentList);
+		List<ChatRoom> roomList = new ArrayList<>();
+		for(ChatRoomDocument document : documentList) {
+			ChatRoom chatRoom = mapChatRoom(document);
+			roomList.add(chatRoom);
+		}
+		return roomList;
+	}
+	
+	private ChatRoom mapChatRoom(ChatRoomDocument document) {
+		ChatRoom chatRoom = new ChatRoom();
+		chatRoom.setRoomId(document.get_id());
+		chatRoom.setName(document.getName());
+		chatRoom.setEmployeeId(document.getEmployeeId());
+		chatRoom.setMemberId(document.getMemberId());
+		return chatRoom;
 	}
 	
 	public void findChatRoom(String roomId) {
-		log.info("######### registerChatRoom. => {}", chatRoomRepository.findById(roomId));	
+		log.info("######### findChatRoom. => {}", chatRoomRepository.findById(roomId));	
 	}
 	
 	public void changeChatRoomName(String roomId, String name) {
@@ -50,7 +82,7 @@ public class MongoDbService {
 		ChatRoomDocument result = document.get();
 		result.setName(name);
 		chatRoomRepository.save(result);
-		log.info("######### registerChatRoom. => {}", result);
+		log.info("######### changeChatRoomName. => {}", result);
 	}
 	
 	public void deleteChatRoom(String roomId) {
@@ -59,24 +91,24 @@ public class MongoDbService {
 	}
 	
 	public List<ChatUserDocument> findAllChatRoomUser(String roomId) {
-		List<ChatUserDocument> userList = chatUserRepository.findAllByRoomId(roomId);
+		List<ChatUserDocument> userList = chatUserRepository.findAllBy_id(roomId);
 		log.info("######### findAllChatRoomUser by id. => {}", userList);
 		return userList;
 	}
 	
 	public void registerChatUser(String roomId, String userName) {
-		ChatUserDocument document = ChatUserDocument.builder().roomId(roomId).userName(userName).build();
+		ChatUserDocument document = ChatUserDocument.builder()._id(roomId).userName(userName).build();
 		ChatUserDocument result = chatUserRepository.save(document);
 		log.info("######### registerChatUser. => {}", result);
 	}
 	
 	public void deleteChatUser(String roomId, String userName) {
-		chatUserRepository.deleteByRoomIdAndUserName(roomId, userName);
+		chatUserRepository.deleteBy_idAndUserName(roomId, userName);
 		log.info("######### deleteChatUser by id. => {}", roomId);
 	}
 	
 	public void registerChatMessage(String roomId, String userName, String message) {
-		ChatMessageDocument document = ChatMessageDocument.builder().roomId(roomId).userName(userName).message(message).build();
+		ChatMessageDocument document = ChatMessageDocument.builder()._id(roomId).userName(userName).message(message).build();
 		ChatMessageDocument result = chatMessageRepository.save(document);
 		log.info("######### registerChatMessage. => {}", result);
 	}

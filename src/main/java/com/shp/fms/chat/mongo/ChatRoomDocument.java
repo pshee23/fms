@@ -18,7 +18,8 @@ public class ChatRoomDocument {
 	private String _id;
 	
 	private String name;
-	private String createUser;
+	private String employeeId;
+	private String memberId;
 	
 	@LastModifiedDate
 	private LocalDateTime updDate;

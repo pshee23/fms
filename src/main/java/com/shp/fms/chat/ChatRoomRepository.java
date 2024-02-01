@@ -55,10 +55,10 @@ public class ChatRoomRepository {
     /**
      * 채팅방 생성 : 서버간 채팅방 공유를 위해 redis hash에 저장한다.
      */
-    public ChatRoom createChatRoom(String name) {
-    	String roomId = mongoService.registerChatRoom(name);
-    	
-        ChatRoom chatRoom = ChatRoom.create(roomId, name);
+    public ChatRoom createChatRoom(ChatRoom chatRoom) {
+    	String roomId = mongoService.registerChatRoom(chatRoom);
+
+    	chatRoom.setRoomId(roomId);
         log.info("######## createChatRoom. chatRoom={}", chatRoom);
         
         opsHashChatRoom.put(CHAT_ROOMS, chatRoom.getRoomId(), chatRoom);
@@ -88,10 +88,20 @@ public class ChatRoomRepository {
         ChannelTopic topic = topics.get(roomId);
         log.info("######## leaveChatRoom. topic={}", topic);
         if (topic != null) {
-           // TODO unsubscribe?
-           mongoService.deleteChatUser(roomId, chatUser);
+           // TODO what to do on background mode?
         } else {
         	log.error("######## leaveChatRoom. no room. roomId={}", roomId);
+        }
+    }
+    
+    public void deleteChatRoom(String roomId) {
+    	log.info("######## deleteChatRoom. roomId={}", roomId);
+        if (opsHashChatRoom.hasKey(CHAT_ROOMS, roomId)) {
+        	// TODO how to unsubscribe redis?
+        	opsHashChatRoom.delete(CHAT_ROOMS, roomId);
+        	mongoService.deleteChatRoom(roomId);
+        } else {
+        	log.error("######## deleteChatRoom. no room. roomId={}", roomId);
         }
     }
 

@@ -6,7 +6,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 
 public interface MongoChatUserRepository extends MongoRepository<ChatUserDocument, String> {
 
-	List<ChatUserDocument> findAllByRoomId(String roomId);
+	List<ChatUserDocument> findAllBy_id(String roomId);
 	
-	void deleteByRoomIdAndUserName(String roomId, String userName);
+	void deleteBy_idAndUserName(String roomId, String userName);
 }

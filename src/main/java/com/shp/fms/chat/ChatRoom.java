@@ -1,7 +1,6 @@
 package com.shp.fms.chat;
 
 import java.io.Serializable;
-import java.util.UUID;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -16,12 +15,7 @@ public class ChatRoom implements Serializable {
 
     private String roomId;
     private String name;
-
-    public static ChatRoom create(String roomId, String name) {
-        ChatRoom chatRoom = new ChatRoom();
-//        chatRoom.roomId = UUID.randomUUID().toString();
-        chatRoom.roomId = roomId;
-        chatRoom.name = name;
-        return chatRoom;
-    }
+    
+    private String employeeId;
+    private String memberId;
 }

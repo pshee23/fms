@@ -56,7 +56,9 @@ function newRoom(event) {
 		type: "post",
 		url: "/chat/room",
 		data: {
-			name: newRoomId
+			name: newRoomId,
+			employeeId: 1,
+			memberId: 1
 		},
 		success: function(data){
 			console.log("newRoom " + data);

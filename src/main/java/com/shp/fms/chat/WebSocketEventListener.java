@@ -21,16 +21,17 @@ public class WebSocketEventListener {
 
     @EventListener
     public void handleWebSocketConnectListener(SessionConnectedEvent event) {
-        log.info("Received a new web socket connection");
+        log.info("Received a new web socket connection. {}", event.getMessage());
     }
 
     @EventListener
     public void handleWebSocketDisconnectListener(SessionDisconnectEvent event) {
+    	log.info("???????? handleWebSocketDisconnectListener : {}", event.getMessage());
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
 
         String username = (String) headerAccessor.getSessionAttributes().get("username");
         if(username != null) {
-            log.info("???????? User Disconnected : " + username);
+            log.info("???????? User Disconnected : {}", username);
 
             ChatMessage chatMessage = new ChatMessage();
             chatMessage.setType(MessageType.LEAVE);

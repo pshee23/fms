@@ -1,5 +1,6 @@
 package com.shp.fms.chat;
 
+import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
@@ -25,8 +26,6 @@ public class ChatController {
 	  * websocket "/pub/chat/message"로 들어오는 메시징을 처리한다.
 	  */
 	 @MessageMapping("/chat/message")
-//	 @MessageMapping("/chat.addUser")
-//	 @SendTo("/topic/public")
 	 public void message(ChatMessage message) {
 		 log.info("######## message. charMessage={}", message);
 	     if (ChatMessage.MessageType.JOIN.equals(message.getType())) {
@@ -34,23 +33,15 @@ public class ChatController {
 	         message.setContent(message.getSender() + "님이 입장하셨습니다.");
 	     } else if(ChatMessage.MessageType.LEAVE.equals(message.getType())) {
 	    	 chatRoomRepository.leaveChatRoom(message.getRoomId(), message.getSender());
+	     } else if(ChatMessage.MessageType.DELETE.equals(message.getType())) {
+	    	 chatRoomRepository.deleteChatRoom(message.getRoomId());
 	     }
 	     // Websocket에 발행된 메시지를 redis로 발행한다(publish)
-	     redisPublisher.publish(chatRoomRepository.getTopic(message.getRoomId()), message);
+	     ChannelTopic topic = chatRoomRepository.getTopic(message.getRoomId());
+	     if(topic == null) {
+	    	 log.error("ChannelTopic Error??. message={}", message);
+	     } else {
+	    	 redisPublisher.publish(topic, message);	    	 
+	     }
 	 }
-	
-//	@MessageMapping("/chat.sendMessage")
-//    @SendTo("/topic/public")
-//    public ChatMessage sendMessage(@Payload ChatMessage chatMessage) {
-//		log.info("######## sendMessage. charMessage={}", chatMessage);
-//        return chatMessage;
-//    }
-
-//    @MessageMapping("/chat.addUser")
-//    @SendTo("/topic/public")
-//    public ChatMessage addUser(@Payload ChatMessage chatMessage, SimpMessageHeaderAccessor headerAccessor){
-//    	log.info("######## addUser. charMessage={}, headerAccessor={}", chatMessage, headerAccessor);
-//        headerAccessor.getSessionAttributes().put("username", chatMessage.getSender());
-//        return chatMessage;
-//    }
 }
