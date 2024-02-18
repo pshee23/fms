@@ -54,6 +54,9 @@ dependencies {
 	// mongoDb
 	implementation 'org.mongodb:mongodb-driver-sync:4.5.1'
 	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
+	
+	// firebase
+	implementation group: 'com.google.firebase', name: 'firebase-admin', version: '9.2.0'
 }
 
 tasks.named('test') {
