@@ -72,6 +72,10 @@ public class ChatRoomRepository {
     public ChatRoom createChatRoom(ChatRoom chatRoom) {
     	String roomId = mongoService.registerChatRoom(chatRoom);
 
+    	if(roomId == null) {
+    		return null;
+    	}
+    	
     	chatRoom.setRoomId(roomId);
         log.info("######## createChatRoom. chatRoom={}", chatRoom);
         

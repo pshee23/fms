@@ -40,6 +40,13 @@ public class ChatRoomController {
 	@ResponseBody
 	public ResponseEntity<ChatRoom> createRoom(@RequestBody ChatRoom chatRoom) {
 		log.info("######## createRoom. chatRoom={}", chatRoom);
-		return ResponseEntity.ok(chatRoomRepository.createChatRoom(chatRoom));
+		ChatRoom resultRoom = chatRoomRepository.createChatRoom(chatRoom);
+		if(resultRoom == null) {
+			return ResponseEntity.internalServerError().build();
+		}
+		// TODO check. 이렇게 각각 보내는게 맞나? zero에서 test 필요
+		chatRoomRepository.enterChatRoom(resultRoom.getRoomId(), chatRoom.getEmployeeId());
+		chatRoomRepository.enterChatRoom(resultRoom.getRoomId(), chatRoom.getMemberId());
+		return ResponseEntity.ok(resultRoom);
 	}
 }

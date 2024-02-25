@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 
 import com.shp.fms.chat.ChatRoom;
@@ -33,9 +34,14 @@ public class MongoDbService {
 				.name(chatRoom.getName())
 				.employeeId(chatRoom.getEmployeeId())
 				.memberId(chatRoom.getMemberId()).build();
-		ChatRoomDocument result = chatRoomRepository.save(document);
-		log.info("######### registerChatRoom. => {}", result);
-		return result.get_id();
+		try {
+			ChatRoomDocument result = chatRoomRepository.save(document);
+			log.info("######### registerChatRoom. => {}", result);
+			return result.get_id();
+		} catch(OptimisticLockingFailureException ex) {
+			log.error("######### registerChatRoom fail. doc={}", document, ex);
+			return null;
+		}
 	}
 	
 	public List<ChatRoom> findAllChatRoom() {
