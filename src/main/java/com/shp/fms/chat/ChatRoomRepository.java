@@ -1,5 +1,6 @@
 package com.shp.fms.chat;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,6 +47,19 @@ public class ChatRoomRepository {
 
     public List<ChatRoom> findAllRoom() {
         return opsHashChatRoom.values(CHAT_ROOMS);
+    }
+    
+    public List<ChatRoom> findRoomById(String userType, String id) {
+    	List<ChatRoom> chatRoomList = new ArrayList<>();
+    	if(userType.equals("member")) {
+    		chatRoomList = mongoService.findAllChatRoomByMemberId(id);
+    	} else if(userType.equals("employee")) {
+    		chatRoomList = mongoService.findAllChatRoomByEmployeeId(id);
+    	} else {
+    		log.error("no type by {}", userType);
+    	}
+    	
+    	return chatRoomList;
     }
 
     public ChatRoom findRoomById(String id) {

@@ -41,33 +41,34 @@ public class MongoDbService {
 	public List<ChatRoom> findAllChatRoom() {
 		List<ChatRoomDocument> documentList = chatRoomRepository.findAll();
 		log.info("######### findAllChatRoom. => {}", documentList);
-		List<ChatRoom> roomList = new ArrayList<>();
-		for(ChatRoomDocument document : documentList) {
-			ChatRoom chatRoom = mapChatRoom(document);
-			roomList.add(chatRoom);
-		}
-		return roomList;
+		return mapChatRoom(documentList);
 	}
 	
 	public List<ChatRoom> findAllChatRoomByEmployeeId(String employeeId) {
 		List<ChatRoomDocument> documentList = chatRoomRepository.findAllByEmployeeId(employeeId);
 		log.info("######### findAllChatRoomByEmployeeId. => {}", documentList);
+		return mapChatRoom(documentList);
+	}
+	
+	public List<ChatRoom> findAllChatRoomByMemberId(String memberId) {
+		List<ChatRoomDocument> documentList = chatRoomRepository.findAllByMemberId(memberId);
+		log.info("######### findAllChatRoomByMemberId. => {}", documentList);
+		return mapChatRoom(documentList);
+	}
+	
+	private List<ChatRoom> mapChatRoom(List<ChatRoomDocument> documentList) {
 		List<ChatRoom> roomList = new ArrayList<>();
 		for(ChatRoomDocument document : documentList) {
-			ChatRoom chatRoom = mapChatRoom(document);
+			ChatRoom chatRoom = new ChatRoom();
+			chatRoom.setRoomId(document.get_id());
+			chatRoom.setName(document.getName());
+			chatRoom.setEmployeeId(document.getEmployeeId());
+			chatRoom.setMemberId(document.getMemberId());
 			roomList.add(chatRoom);
 		}
 		return roomList;
 	}
 	
-	private ChatRoom mapChatRoom(ChatRoomDocument document) {
-		ChatRoom chatRoom = new ChatRoom();
-		chatRoom.setRoomId(document.get_id());
-		chatRoom.setName(document.getName());
-		chatRoom.setEmployeeId(document.getEmployeeId());
-		chatRoom.setMemberId(document.getMemberId());
-		return chatRoom;
-	}
 	
 	public void findChatRoom(String roomId) {
 		log.info("######### findChatRoom. => {}", chatRoomRepository.findById(roomId));	

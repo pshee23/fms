@@ -28,13 +28,13 @@ public class ChatController {
 	 @MessageMapping("/chat/message")
 	 public void message(ChatMessage message) {
 		 log.info("######## message. charMessage={}", message);
-	     if (ChatMessage.MessageType.JOIN.equals(message.getType())) {
+		 if (ChatMessage.MessageType.JOIN.equals(message.getType())) {
+			 // 채팅방 입장 (Foreground)
 	         chatRoomRepository.enterChatRoom(message.getRoomId(), message.getSender());
 	         message.setContent(message.getSender() + "님이 입장하셨습니다.");
 	     } else if(ChatMessage.MessageType.LEAVE.equals(message.getType())) {
+	    	 // 채팅방 퇴장 (Background)
 	    	 chatRoomRepository.leaveChatRoom(message.getRoomId(), message.getSender());
-	     } else if(ChatMessage.MessageType.DELETE.equals(message.getType())) {
-	    	 chatRoomRepository.deleteChatRoom(message.getRoomId());
 	     }
 	     // Websocket에 발행된 메시지를 redis로 발행한다(publish)
 	     ChannelTopic topic = chatRoomRepository.getTopic(message.getRoomId());
