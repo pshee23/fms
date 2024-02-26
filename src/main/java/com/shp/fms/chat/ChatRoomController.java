@@ -36,6 +36,8 @@ public class ChatRoomController {
         return ResponseEntity.ok(resultList);
     }
 	
+	// TODO 1. deviceId를 로그인 하는 시점에 서버로 전송해서 db에 저장
+	// 2. 
 	@PostMapping("/room")
 	@ResponseBody
 	public ResponseEntity<ChatRoom> createRoom(@RequestBody ChatRoom chatRoom) {

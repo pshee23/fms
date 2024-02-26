@@ -17,5 +17,8 @@ public class ChatRoom implements Serializable {
     private String name;
     
     private String employeeId;
+    private String employeeToken;
+    
     private String memberId;
+    private String memberToken;
 }

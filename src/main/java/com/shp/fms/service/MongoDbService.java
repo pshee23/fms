@@ -2,7 +2,6 @@ package com.shp.fms.service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
@@ -44,12 +43,6 @@ public class MongoDbService {
 		}
 	}
 	
-	public List<ChatRoom> findAllChatRoom() {
-		List<ChatRoomDocument> documentList = chatRoomRepository.findAll();
-		log.info("######### findAllChatRoom. => {}", documentList);
-		return mapChatRoom(documentList);
-	}
-	
 	public List<ChatRoom> findAllChatRoomByEmployeeId(String employeeId) {
 		List<ChatRoomDocument> documentList = chatRoomRepository.findAllByEmployeeId(employeeId);
 		log.info("######### findAllChatRoomByEmployeeId. => {}", documentList);
@@ -75,36 +68,15 @@ public class MongoDbService {
 		return roomList;
 	}
 	
-	
-	public void findChatRoom(String roomId) {
-		log.info("######### findChatRoom. => {}", chatRoomRepository.findById(roomId));	
-	}
-	
-	public void changeChatRoomName(String roomId, String name) {
-		Optional<ChatRoomDocument> document = chatRoomRepository.findById(roomId);
-		if(document.isEmpty()) {
-			log.info("######### no chat room found. {}", roomId);
-			return;
-		}
-		ChatRoomDocument result = document.get();
-		result.setName(name);
-		chatRoomRepository.save(result);
-		log.info("######### changeChatRoomName. => {}", result);
-	}
-	
 	public void deleteChatRoom(String roomId) {
 		chatRoomRepository.deleteById(roomId);
 		log.info("######### deleteChatRoomName by id. => {}", roomId);
 	}
 	
-	public List<ChatUserDocument> findAllChatRoomUser(String roomId) {
-		List<ChatUserDocument> userList = chatUserRepository.findAllBy_id(roomId);
-		log.info("######### findAllChatRoomUser by id. => {}", userList);
-		return userList;
-	}
-	
 	public void registerChatUser(String roomId, String userName) {
-		ChatUserDocument document = ChatUserDocument.builder()._id(roomId).userName(userName).build();
+		ChatUserDocument document = ChatUserDocument.builder()
+				._id(roomId)
+				.userName(userName).build();
 		ChatUserDocument result = chatUserRepository.save(document);
 		log.info("######### registerChatUser. => {}", result);
 	}

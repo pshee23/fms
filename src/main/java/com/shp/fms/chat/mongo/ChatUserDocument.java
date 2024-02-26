@@ -19,6 +19,8 @@ public class ChatUserDocument {
 	
 	private String userName;
 	
+	private String devicekey;
+	
 	@LastModifiedDate
 	private LocalDateTime updDate;
 	

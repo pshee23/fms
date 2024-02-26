@@ -2,14 +2,11 @@ package com.shp.fms.controller;
 
 import java.util.List;
 
-import javax.websocket.server.PathParam;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -61,33 +58,8 @@ public class TestController {
         return ResponseEntity.ok().build();
     }
     
-	@GetMapping("/mongo/room/list")
-	public ResponseEntity<List<ChatRoom>> findAllChatRoomRepo() {
-		return ResponseEntity.ok(mongoService.findAllChatRoom());
-	}
-	
-	@GetMapping("/mongo/room/employee/{employeeId}")
-	public ResponseEntity<List<ChatRoom>> findAllChatRoomByEmployeeId(@PathParam("employeeId") String employeeId) {
-		return ResponseEntity.ok(mongoService.findAllChatRoomByEmployeeId(employeeId));
-	}
-	
-	@GetMapping("/chat_room/repo/{id}")
-	public void findChatRoomRepo(@PathVariable("id") String id) {
-		mongoService.findChatRoom(id);
-	}
-	
-	@PutMapping("/chat_room/repo/{id}/{name}")
-	public void changeChatRoomNameRepo(@PathVariable("id") String id, @PathVariable("name") String name) {
-		mongoService.changeChatRoomName(id, name);
-	}
-	
 	@DeleteMapping("/chat_room/repo/{id}")
 	public void deleteChatRoomNameRepo(@PathVariable("id") String id) {
 		mongoService.deleteChatRoom(id);
-	}
-	
-	@GetMapping("/chat_user/repo")
-	public void findAllChatUserRepo(@PathVariable("id") String id) {
-		mongoService.findAllChatRoomUser(id);
 	}
 }

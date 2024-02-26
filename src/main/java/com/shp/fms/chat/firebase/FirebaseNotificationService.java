@@ -29,6 +29,7 @@ public class FirebaseNotificationService {
 				.build();
 		
 		Message message = Message.builder()
+				// TODO 상대방의 토큰에다가 전송해야함
 				.setToken("eq5w-t__QJCmkY9IPV-ET8:APA91bEps-i1-vH0cOCaLQHLDm_Wpba6mHcRcrBhW-yJBTBiBO6ixVrLPUNLFthnAUa0wcOnn7WoDJ6zXno3DN-B8vrYEgo1ZJUY0DmAc7-Ph5jYPdt45LMxYrBxw13u625wfpMEelXH")
 				.setNotification(notification)
 				.build();
