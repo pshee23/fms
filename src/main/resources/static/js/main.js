@@ -73,7 +73,8 @@ function leaveRoom() {
             sender: username,
             content: 'leave room',
             type: 'LEAVE',
-            roomId: roomId
+            roomId: roomId,
+            deviceToken : '232'
         };
         stompClient.send("/pub/chat/message", {}, JSON.stringify(chatMessage));
         messageInput.value = '';
@@ -109,10 +110,18 @@ function onConnected() {
     //stompClient.subscribe('/topic/public', onMessageReceived);
     stompClient.subscribe('/sub/chat/room/'+roomId, onMessageReceived);
 
+	var chatMessage = {
+            sender: username,
+            content: 'join room',
+            type: 'JOIN',
+            roomId: roomId,
+            deviceToken : '232'
+        };
     // Tell your username to the server
-    stompClient.send("/pub/chat/message",
+    stompClient.send(
+		"/pub/chat/message",
         {},
-        JSON.stringify({sender: username, type: 'JOIN', roomId: roomId})
+       	JSON.stringify(chatMessage)
     )
 
     connectingElement.classList.add('hidden');
@@ -126,17 +135,23 @@ function onError(error) {
 
 
 function sendMessage(event) {
+	console.log("!!!!!!!! sendMessage");
     var messageContent = messageInput.value.trim();
+    console.log("!!!!!!!! sendMessage. msg=" + messageContent);
     if(messageContent && stompClient) {
         var chatMessage = {
             sender: username,
             content: messageInput.value,
             type: 'CHAT',
-            roomId: roomId
+            roomId: roomId,
+            deviceToken : '232'
         };
+        console.log("!!!!!!!! sendMessage. chatMessage=" + chatMessage);
         stompClient.send("/pub/chat/message", {}, JSON.stringify(chatMessage));
         messageInput.value = '';
-    }
+    } else {
+		console.log("!!!!!!!! sendMessage error");
+	}
     event.preventDefault();
 }
 

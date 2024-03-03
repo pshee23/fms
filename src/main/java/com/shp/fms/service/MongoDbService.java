@@ -43,6 +43,10 @@ public class MongoDbService {
 		}
 	}
 	
+	public ChatRoomDocument findChatRoomByRoomId(String roomId) {
+		return chatRoomRepository.findById(roomId).get();
+	}
+	
 	public List<ChatRoom> findAllChatRoomByEmployeeId(String employeeId) {
 		List<ChatRoomDocument> documentList = chatRoomRepository.findAllByEmployeeId(employeeId);
 		log.info("######### findAllChatRoomByEmployeeId. => {}", documentList);

@@ -7,6 +7,8 @@ import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.stereotype.Controller;
 
+import com.shp.fms.chat.ChatMessage.MessageType;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -16,7 +18,8 @@ import lombok.extern.slf4j.Slf4j;
 public class ChatController {
 
 	 private final RedisMessagePublisher redisPublisher;
-	 private final ChatRoomRepository chatRoomRepository;
+	 private final ChatRoomRepository roomRepository;
+	 private final ChatUserRepository userRepository;
 	
 	 // XXX
 	 // exists CHAT_ROOM
@@ -30,18 +33,30 @@ public class ChatController {
 		 log.info("######## message. charMessage={}", message);
 		 if (ChatMessage.MessageType.JOIN.equals(message.getType())) {
 			 // 채팅방 입장 (Foreground)
-	         chatRoomRepository.enterChatRoom(message.getRoomId(), message.getSender());
-	         message.setContent(message.getSender() + "님이 입장하셨습니다.");
+	         roomRepository.enterChatRoom(message.getRoomId(), message.getSender());
+	         
+	         ChatUser chatUser = new ChatUser();
+	         chatUser.setId(message.getSender());
+	         chatUser.setStatus(MessageType.JOIN);
+	         chatUser.setDeviceToken(message.getDeviceToken());
+	         userRepository.updateUserState(chatUser);
 	     } else if(ChatMessage.MessageType.LEAVE.equals(message.getType())) {
 	    	 // 채팅방 퇴장 (Background)
-	    	 chatRoomRepository.leaveChatRoom(message.getRoomId(), message.getSender());
-	     }
-	     // Websocket에 발행된 메시지를 redis로 발행한다(publish)
-	     ChannelTopic topic = chatRoomRepository.getTopic(message.getRoomId());
-	     if(topic == null) {
-	    	 log.error("ChannelTopic Error??. message={}", message);
+	    	 roomRepository.leaveChatRoom(message.getRoomId(), message.getSender());
+	    	 
+	    	 ChatUser chatUser = new ChatUser();
+	         chatUser.setId(message.getSender());
+	         chatUser.setStatus(MessageType.LEAVE);
+	         chatUser.setDeviceToken(message.getDeviceToken());
+	    	 userRepository.updateUserState(chatUser);
 	     } else {
-	    	 redisPublisher.publish(topic, message);	    	 
+	    	// Websocket에 발행된 메시지를 redis로 발행한다(publish)
+		     ChannelTopic topic = roomRepository.getTopic(message.getRoomId());
+		     if(topic == null) {
+		    	 log.error("ChannelTopic Error??. message={}", message);
+		     } else {
+		    	 redisPublisher.publish(topic, message);	    	 
+		     }	 
 	     }
 	 }
 }
