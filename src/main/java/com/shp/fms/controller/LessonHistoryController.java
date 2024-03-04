@@ -76,6 +76,15 @@ public class LessonHistoryController {
 		return ResponseEntity.ok(lessonHistoryInfoList); //TODO flutter에서 list 객체 parse 방법 
 	}
 	
+	@GetMapping("/member/{memberId}/datetime/{year}/{month}")
+	public ResponseEntity<Map<LocalDate, List<String>>> getAllMemberLessonHistoryByDate(@PathVariable long memberId, @PathVariable int year, @PathVariable int month) {
+		log.info("get all lesson-history by Date. date={}-{}", year, month);
+		Map<LocalDate, List<String>> lessonHistoryInfoList = lessonHistoryService.getAllMemberLessonHistoryMarkerByDate(memberId, year, month);
+		log.info("result. response={}", lessonHistoryInfoList);
+//		return ResponseEntity.ok(new LessonHistoryResponse().successResponse(lessonHistoryInfoList));
+		return ResponseEntity.ok(lessonHistoryInfoList); //TODO flutter에서 list 객체 parse 방법 
+	}
+	
 	@GetMapping("/member/{memberId}/datetime/{year}/{month}/{day}")
 	public ResponseEntity<List<LessonHistoryInfo>> getAllMemberLessonHistoryByDateTime(@PathVariable long memberId, @PathVariable int year, @PathVariable int month, @PathVariable int day) {
 		LocalDate dateTimeConv = LocalDate.of(year, month, day);

@@ -107,6 +107,23 @@ public class LessonHistoryService {
 		return lessonHistoryMapper.mapToLessonHistoryInfoList(lessonHistoryList);
 	}
 	
+	public Map<LocalDate, List<String>> getAllMemberLessonHistoryMarkerByDate(long memberId, int year, int month) {
+		LocalDateTime startTime = LocalDateTime.of(year, month, 1, 0, 0);
+		LocalDateTime endTime = LocalDateTime.of(year, month, 1, 0, 0).plusMonths(1).minusSeconds(1);
+		log.info("get all lesson history. startTime={} ~ endTime={}", startTime, endTime);
+		List<LessonHistory> lessonHistoryList = lessonHistoryRepository.findAllByMember_MemberIdAndStartDateTimeGreaterThanEqualAndEndDateTimeLessThanEqualOrderByStartDateTimeAsc(memberId, startTime, endTime);
+		Map<LocalDate, List<String>> resultMap = new HashMap<>();
+		for(LessonHistory history : lessonHistoryList) {
+			log.info("######## {}", history.toString());
+			LocalDate localDate = history.getStartDateTime().toLocalDate();
+			List<String> stringList = resultMap.getOrDefault(localDate, new ArrayList<>());
+			stringList.add(history.getLessonHistoryId().toString());
+			resultMap.put(localDate, stringList);
+			log.info("######## {}", resultMap);
+		}
+		return resultMap;
+	}
+	
 	public List<LessonHistoryInfo> getAllMemberLessonHistoryInfoByDateTime(long memberId, LocalDate datetime) {
 		LocalDateTime startTime = LocalDateTime.of(datetime.getYear(), datetime.getMonth(), datetime.getDayOfMonth(), 0, 0);
 		LocalDateTime endTime = LocalDateTime.of(datetime.getYear(), datetime.getMonth(), datetime.getDayOfMonth()+1, 0, 0).minusSeconds(1);
