@@ -10,6 +10,7 @@ import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.Message;
 import com.google.firebase.messaging.Notification;
 import com.shp.fms.chat.ChatMessage;
+import com.shp.fms.chat.ChatMessage.MessageType;
 import com.shp.fms.chat.ChatUser;
 import com.shp.fms.chat.ChatUserRepository;
 import com.shp.fms.chat.mongo.ChatRoomDocument;
@@ -33,21 +34,25 @@ public class FirebaseNotificationService {
 		// TODO 방에 있는 모든 유저 정보를 가져와서 token 설정 하고 status 상태 확인해서 메세지 보낼지 말지 확인
 		List<ChatUser> chatUserList = userRepository.getChatUserList(roomDoc.getEmployeeId(), roomDoc.getMemberId());
 		List<Message> messageList = new ArrayList<>();
+		
+		Notification notification = Notification.builder()
+				.setTitle(chatMessage.getSender())
+				.setBody(chatMessage.getContent())
+				.build();
+		
 		for(ChatUser user : chatUserList) {
-			Notification notification = Notification.builder()
-					.setTitle(chatMessage.getSender())
-					.setBody(chatMessage.getContent())
-					.build();
-			
-			Message message = Message.builder()
-					// TODO 상대방의 토큰에다가 전송해야함
-					.setToken(user.getDeviceToken())
-					.setNotification(notification)
-					.build();
-			messageList.add(message);
+			log.info("######## sendNotificationByToken. user={}", user);
+			if(!user.getId().equals(chatMessage.getSender()) && user.getStatus().equals(MessageType.LEAVE)) {
+				log.info("######## !!!!! user={}, sender={}, status={}", user, chatMessage.getSender(), user.getStatus());
+				log.info("######## !!!!! isStatus={}", user.getStatus().equals(MessageType.LEAVE));
+				Message message = Message.builder()
+						.setToken(user.getDeviceToken())
+						.setNotification(notification)
+						.build();
+				messageList.add(message);	
+			}
 		}
 
-		
 		try {
 			firebaseMessaging.sendEach(messageList);
 //			firebaseMessaging.send(message);
