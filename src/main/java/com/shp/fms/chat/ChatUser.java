@@ -17,7 +17,7 @@ public class ChatUser implements Serializable {
     
 //    private String name;
     
-    private String id;
+    private String id; // user id
     
     private String deviceToken;
     

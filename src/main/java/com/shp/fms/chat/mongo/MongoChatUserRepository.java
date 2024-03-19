@@ -8,5 +8,5 @@ public interface MongoChatUserRepository extends MongoRepository<ChatUserDocumen
 
 	List<ChatUserDocument> findAllBy_id(String roomId);
 	
-	void deleteBy_idAndUserName(String roomId, String userName);
+	void deleteByRoomIdAndUserName(String roomId, String userName);
 }

@@ -17,6 +17,8 @@ public class ChatMessageDocument {
 	@Id
 	private String _id;
 	
+	private String roomId;
+	
 	private String userName;
 	private String message;
 	

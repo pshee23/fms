@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 
+import com.shp.fms.chat.ChatMessage;
 import com.shp.fms.chat.ChatRoom;
 import com.shp.fms.chat.mongo.ChatMessageDocument;
 import com.shp.fms.chat.mongo.ChatRoomDocument;
@@ -34,7 +35,7 @@ public class MongoDbService {
 				.employeeId(chatRoom.getEmployeeId())
 				.memberId(chatRoom.getMemberId()).build();
 		try {
-			ChatRoomDocument result = chatRoomRepository.save(document);
+			ChatRoomDocument result = chatRoomRepository.insert(document);
 			log.info("######### registerChatRoom. => {}", result);
 			return result.get_id();
 		} catch(OptimisticLockingFailureException ex) {
@@ -79,20 +80,34 @@ public class MongoDbService {
 	
 	public void registerChatUser(String roomId, String userName) {
 		ChatUserDocument document = ChatUserDocument.builder()
-				._id(roomId)
+				.roomId(roomId)
 				.userName(userName).build();
-		ChatUserDocument result = chatUserRepository.save(document);
+		ChatUserDocument result = chatUserRepository.insert(document);
 		log.info("######### registerChatUser. => {}", result);
 	}
 	
 	public void deleteChatUser(String roomId, String userName) {
-		chatUserRepository.deleteBy_idAndUserName(roomId, userName);
-		log.info("######### deleteChatUser by id. => {}", roomId);
+		chatUserRepository.deleteByRoomIdAndUserName(roomId, userName);
+		log.info("######### deleteChatUser by roomId. => {}", roomId);
 	}
 	
 	public void registerChatMessage(String roomId, String userName, String message) {
-		ChatMessageDocument document = ChatMessageDocument.builder()._id(roomId).userName(userName).message(message).build();
-		ChatMessageDocument result = chatMessageRepository.save(document);
+		ChatMessageDocument document = ChatMessageDocument.builder().roomId(roomId).userName(userName).message(message).build();
+		ChatMessageDocument result = chatMessageRepository.insert(document);
 		log.info("######### registerChatMessage. => {}", result);
+	}
+	
+	public List<ChatMessage> getChatMessages(String roomId) {
+		List<ChatMessageDocument> resultList = chatMessageRepository.findAllByRoomId(roomId);
+		log.info("######### getChatMessages. => {}", resultList);
+		List<ChatMessage> chatList = new ArrayList();
+		for(ChatMessageDocument doc : resultList) {
+			ChatMessage message = new ChatMessage();
+			message.setRoomId(roomId);
+			message.setSender(doc.getUserName());
+			message.setContent(doc.getMessage());
+			chatList.add(message);
+		}
+		return chatList;
 	}
 }

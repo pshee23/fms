@@ -17,6 +17,8 @@ public class ChatUserDocument {
 	@Id
 	private String _id;
 	
+	private String roomId;
+	
 	private String userName;
 	
 	private String devicekey;

@@ -29,10 +29,11 @@ public class FirebaseNotificationService {
 	
 	public void sendNotificationByToken(ChatMessage chatMessage, ChatRoomDocument roomDoc) {
 		log.info("######## sendNotificationByToken. message={}, roomDoc={}", chatMessage, roomDoc);
+		String roomId = chatMessage.getRoomId();
 		
 		// Firebase sub/unsub?
 		// TODO 방에 있는 모든 유저 정보를 가져와서 token 설정 하고 status 상태 확인해서 메세지 보낼지 말지 확인
-		List<ChatUser> chatUserList = userRepository.getChatUserList(roomDoc.getEmployeeId(), roomDoc.getMemberId());
+		List<ChatUser> chatUserList = userRepository.getChatUserList(roomId, roomDoc.getEmployeeId(), roomDoc.getMemberId());
 		List<Message> messageList = new ArrayList<>();
 		
 		Notification notification = Notification.builder()
@@ -41,24 +42,20 @@ public class FirebaseNotificationService {
 				.build();
 		
 		for(ChatUser user : chatUserList) {
-			log.info("######## sendNotificationByToken. user={}", user);
 			if(!user.getId().equals(chatMessage.getSender()) && user.getStatus().equals(MessageType.LEAVE)) {
-				log.info("######## !!!!! user={}, sender={}, status={}", user, chatMessage.getSender(), user.getStatus());
-				log.info("######## !!!!! isStatus={}", user.getStatus().equals(MessageType.LEAVE));
 				Message message = Message.builder()
 						.setToken(user.getDeviceToken())
 						.setNotification(notification)
 						.build();
-				messageList.add(message);	
+				messageList.add(message);
 			}
 		}
-
-		try {
-			firebaseMessaging.sendEach(messageList);
-//			firebaseMessaging.send(message);
-			log.info("######## sendNotificationByToken SUCCESS");
-		} catch (FirebaseMessagingException e) {
-			log.error("######## sendNotificationByToken FAIL", e);
+		if(!messageList.isEmpty()) {
+			try {
+				firebaseMessaging.sendEach(messageList);
+			} catch (FirebaseMessagingException e) {
+				log.error("######## sendNotificationByToken FAIL", e);
+			}	
 		}
 	}
 }
