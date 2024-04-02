@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 
 import com.shp.fms.model.PayHistoryInfo;
-import com.shp.fms.model.entity.Employee;
+import com.shp.fms.model.entity.Member;
 import com.shp.fms.model.entity.PayHistory;
 import com.shp.fms.model.request.PayHistoryRequestBody;
 
@@ -16,7 +16,7 @@ public class PayHistoryMapper {
 	public PayHistoryInfo mapToPayHistoryInfo(PayHistory payHistory) {
 		return PayHistoryInfo.builder()
 				.payHistoryId(payHistory.getPayHistoryId())
-				.employeeId(payHistory.getEmployee().getEmployeeId())
+				.employeeId(payHistory.getEmployee().getId())
 				.payDateTime(payHistory.getPayDateTime())
 				.startTime(payHistory.getStartTime())
 				.endTime(payHistory.getEndTime())
@@ -24,7 +24,7 @@ public class PayHistoryMapper {
 				.build();
 	}
 	
-	public PayHistory mapToPayHistory(PayHistoryRequestBody registerInfo, Employee employee, int salary) {
+	public PayHistory mapToPayHistory(PayHistoryRequestBody registerInfo, Member employee, int salary) {
 		PayHistory payHistory = new PayHistory();
 		payHistory.setEmployee(employee);
 		payHistory.setPayDateTime(registerInfo.getPayDateTime());

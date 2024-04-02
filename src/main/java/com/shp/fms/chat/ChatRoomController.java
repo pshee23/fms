@@ -11,6 +11,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.shp.fms.chat.model.ChatRoom;
+import com.shp.fms.chat.model.request.CreateChatRoomRequest;
+import com.shp.fms.service.MongoDbService;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -20,7 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/chat")
 public class ChatRoomController {
 	
-	private final ChatRoomRepository chatRoomRepository;
+	private final MongoDbService mongoService;
 	
 	/*
 	 * 1. 기본적으로 수업 신규 등록하면 create chat room & enter chat room
@@ -28,27 +32,30 @@ public class ChatRoomController {
 	 * 3. 혹시 방이 제대로 생성되지 않을수도 있으니 수동으로 방을 만들수 있도록 한다(flutter에서 추가)
 	 */
 	
-	@GetMapping("/room/list/{userType}/{id}")
+	/*
+	 * userId로 생성된 모든 채팅방 조회
+	 * @methodName : getRoomListByUserId
+	 */
+	@GetMapping("/room/list/user/{userId}")
     @ResponseBody
-    public ResponseEntity<List<ChatRoom>> findRoomById(@PathVariable String userType, @PathVariable String id) {
-		log.info("######## find room by id. ");
-		List<ChatRoom> resultList = chatRoomRepository.findRoomById(userType, id);
+    public ResponseEntity<List<ChatRoom>> getRoomListByUserId(@PathVariable String userId) {
+		log.info("[REQ] get roomList by userId. userId={}", userId);
+		List<ChatRoom> resultList = mongoService.getRoomListByUserId(userId);
         return ResponseEntity.ok(resultList);
     }
 	
-	// TODO 1. deviceId를 로그인 하는 시점에 서버로 전송해서 db에 저장
-	// 2. 
+	/*
+	 * 채팅방 신규 생성
+	 * @methodName : createNewRoom
+	 */
 	@PostMapping("/room")
 	@ResponseBody
-	public ResponseEntity<ChatRoom> createRoom(@RequestBody ChatRoom chatRoom) {
-		log.info("######## createRoom. chatRoom={}", chatRoom);
-		ChatRoom resultRoom = chatRoomRepository.createChatRoom(chatRoom);
-		if(resultRoom == null) {
+	public ResponseEntity<ChatRoom> createNewRoom(@RequestBody CreateChatRoomRequest createRequest) {
+		log.info("[REQ] CreateRoom. requestBody={}", createRequest);
+		String roomId = mongoService.makeChatRoom(createRequest);
+		if(roomId == null) {
 			return ResponseEntity.internalServerError().build();
 		}
-		// TODO check. 이렇게 각각 보내는게 맞나? zero에서 test 필요
-		chatRoomRepository.enterChatRoom(resultRoom.getRoomId(), chatRoom.getEmployeeId());
-		chatRoomRepository.enterChatRoom(resultRoom.getRoomId(), chatRoom.getMemberId());
-		return ResponseEntity.ok(resultRoom);
+		return ResponseEntity.ok().build();
 	}
 }

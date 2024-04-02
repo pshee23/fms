@@ -1,6 +1,8 @@
 package com.shp.fms.model.entity;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,6 +12,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.ColumnDefault;
@@ -21,22 +24,29 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "LESSON")
+//@IdClass(EmployeeMemberId.class)
 public class Lesson {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private long lessonId;
+	@Column(name = "LESSON_ID")
+	private Long id;
 	
 	@Column(name="LESSON_NAME")
 	private String name;
 	
+//	@Id
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="MEMBER_ID")
 	private Member member;
 	
+//	@Id
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="EMPLOYEE_ID")
-	private Employee employee;
+	private Member employee;
+	
+	@OneToMany(mappedBy="lesson")
+	private List<LessonHistory> historyList = new ArrayList<>();
 
 	@Column(name="START_DATETIME")
 	private LocalDateTime startDateTime;
@@ -53,10 +63,6 @@ public class Lesson {
 	
 	@Column(name="UPDATE_DATETIME")
 	private LocalDateTime updateDateTime = LocalDateTime.now();
-	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="BRANCH_ID")
-	private Branch branch;
 	
 	public void setCurrentCount() {
 		this.currentCount += 1;

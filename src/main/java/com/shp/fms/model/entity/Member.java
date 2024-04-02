@@ -1,5 +1,7 @@
 package com.shp.fms.model.entity;
 
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -8,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.Getter;
@@ -22,10 +25,13 @@ public class Member {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name="MEMBER_ID")
-	private Long memberId;
+	private Long id;
 	
 	@Column(name="NAME", nullable=false)
 	private String name;
+	
+	@Column(name="TYPE")
+	private String type;
 	
 	@Column(name="ADDRESS")
 	private String address;
@@ -42,13 +48,10 @@ public class Member {
 	@Column(name="ROLE")
 	private String role;
 	
-	// N:1
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="BRANCH_ID")
 	private Branch branch;
 	
-	// N:1
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="EMPLOYEE_ID")
-	private Employee employee;
+	@OneToMany
+	private List<Lesson> lessonList;
 }

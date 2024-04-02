@@ -27,7 +27,7 @@ public class PayHistory {
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="EMPLOYEE_ID")
-	private Employee employee;
+	private Member employee;
 	
 	@Column(name="SALARY")
 	private int salary;

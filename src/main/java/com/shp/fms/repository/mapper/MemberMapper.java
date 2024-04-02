@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 
 import com.shp.fms.model.MemberInfo;
 import com.shp.fms.model.entity.Branch;
-import com.shp.fms.model.entity.Employee;
 import com.shp.fms.model.entity.Member;
 import com.shp.fms.model.request.MemberRequestBody;
 
@@ -18,8 +17,7 @@ public class MemberMapper {
 	public MemberInfo mapToMemberInfo(Member member) {
 		return MemberInfo.builder()
 				.branchId(member.getBranch().getBranchId())
-				.employeeId(member.getEmployee().getEmployeeId())
-				.memberId(member.getMemberId())
+				.memberId(member.getId())
 				.name(member.getName())
 				.address(member.getAddress())
 				.phoneNumber(member.getPhoneNumber())
@@ -29,10 +27,9 @@ public class MemberMapper {
 				.build();
 	}
 	
-	public Member mapToMember(MemberRequestBody registerInfo, Branch branch, Employee employee) {
+	public Member mapToMember(MemberRequestBody registerInfo, Branch branch) {
 		Member member = new Member();
 		member.setBranch(branch);
-		member.setEmployee(employee);
 		member.setName(registerInfo.getName());
 		member.setAddress(registerInfo.getAddress());
 		member.setPhoneNumber(registerInfo.getPhoneNumber());
@@ -42,9 +39,8 @@ public class MemberMapper {
 		return member;
 	}
 	
-	public Member mapToMember(Member originMember, MemberRequestBody modifyInfo, Branch branch, Employee employee) {
+	public Member mapToMember(Member originMember, MemberRequestBody modifyInfo, Branch branch) {
 		originMember.setBranch(branch);
-		originMember.setEmployee(employee);
 		originMember.setName(modifyInfo.getName());
 		originMember.setAddress(modifyInfo.getAddress());
 		originMember.setPhoneNumber(modifyInfo.getPhoneNumber());

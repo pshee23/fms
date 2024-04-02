@@ -1,7 +1,6 @@
 package com.shp.fms.auth.jwt;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.Optional;
 
 import javax.servlet.FilterChain;
@@ -13,15 +12,11 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.shp.fms.auth.Login;
 import com.shp.fms.auth.auth.PrincipalDetails;
-import com.shp.fms.model.entity.Employee;
 import com.shp.fms.model.entity.Member;
-import com.shp.fms.model.response.CommonResponse;
 import com.shp.fms.repository.MemberRepository;
 
 import lombok.extern.slf4j.Slf4j;
@@ -67,7 +62,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 				}
 				Login userEntity = new Login();
 				Member member = memberOp.get();
-				userEntity.setId(member.getMemberId());
+				userEntity.setId(member.getId());
 				userEntity.setUsername(member.getLoginId());
 				userEntity.setPassword(member.getLoginPw());
 				userEntity.setRoles(member.getRole());
@@ -82,30 +77,5 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 		}
 		log.info("[JwtAuthorizationFilter] end");
 		chain.doFilter(request, response);
-	}
-	
-	private UserDetails makeEntity(Employee employee) {
-		Login userEntity = new Login();
-		userEntity.setId(employee.getEmployeeId());
-		userEntity.setUsername(employee.getLoginId());
-		userEntity.setPassword(employee.getLoginPw());
-		userEntity.setRoles(employee.getRole());
-		
-		return makePrincipalDetails(userEntity);
-	}
-	
-	private UserDetails makeEntity(Member member) {
-		Login userEntity = new Login();
-		userEntity.setId(member.getMemberId());
-		userEntity.setUsername(member.getLoginId());
-		userEntity.setPassword(member.getLoginPw());
-		userEntity.setRoles(member.getRole());
-		
-		return makePrincipalDetails(userEntity);
-	}
-	
-	private UserDetails makePrincipalDetails(Login entity) {
-		log.info("[loadUserByUsername] 종료");
-		return new PrincipalDetails(entity);
 	}
 }

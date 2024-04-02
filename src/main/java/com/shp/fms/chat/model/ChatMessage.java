@@ -1,4 +1,4 @@
-package com.shp.fms.chat;
+package com.shp.fms.chat.model;
 
 import lombok.Getter;
 import lombok.Setter;

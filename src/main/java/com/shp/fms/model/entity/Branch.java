@@ -18,6 +18,7 @@ public class Branch {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name="BRANCH_ID")
 	private Long branchId;
 	
 	@Column(name="NAME", nullable=false)

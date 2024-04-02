@@ -22,7 +22,7 @@ public class LessonController {
 
 	@GetMapping("/list/employee/{employeeId}")
 	public ResponseEntity<List<LessonInfo>> getAllLessonList(@PathVariable long employeeId) {
-		List<LessonInfo> lessonList = lessonService.getLessonListByEmployeeId(employeeId);
+		List<LessonInfo> lessonList = lessonService.getLessonInfoListByEmployeeId(employeeId);
 		return ResponseEntity.ok(lessonList);
 	}
 }

@@ -11,7 +11,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -19,33 +18,18 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(
-		name = "LESSON_HISTORY",
-		uniqueConstraints= {
-				@UniqueConstraint(
-						name="LESSON-HISTORY_MEMBER_AND_DATETIME",
-						columnNames={"MEMBER_ID","START_DATETIME"}
-				)
-		}
-)
+@Table(name = "LESSON_HISTORY")
 public class LessonHistory {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long lessonHistoryId;
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="EMPLOYEE_ID")
-	private Employee employee;
+	@Column(name = "LESSON_HISTORY_ID")
+	private Long id;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="MEMBER_ID")
-	private Member member;
-	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
 	@JoinColumn(name="LESSON_ID")
 	private Lesson lesson;
-	
+
 	@Column(name="START_DATETIME")
 	private LocalDateTime startDateTime;
 	

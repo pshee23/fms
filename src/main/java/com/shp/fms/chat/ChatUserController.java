@@ -8,6 +8,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.shp.fms.chat.model.request.UpdateChatUserStatusRequest;
+import com.shp.fms.service.MongoDbService;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -17,16 +20,19 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/chat")
 public class ChatUserController {
 	
-	private final ChatUserRepository chatUserRepository;
+	private final MongoDbService mongoService;
 	
 	/*
 	 * 앱에 로그인 시 user status 정보 갱신
 	 */
-	@PutMapping("room/{roomId}/user")
+	@PutMapping("room/{roomId}/user/{userId}")
 	@ResponseBody
-	public ResponseEntity<String> updateDevice(@PathVariable("roomId") String roomId, @RequestBody ChatUser chatUser) {
-		log.info("######## updateDevice. body={}", chatUser);
-		chatUserRepository.updateUserState(roomId, chatUser.getId(), chatUser.getStatus());
+	public ResponseEntity<String> updateDevice(
+			@PathVariable("roomId") String roomId, 
+			@PathVariable("userId") String userId, 
+			@RequestBody UpdateChatUserStatusRequest statusRequest) {
+		log.info("######## updateDevice. body={}", statusRequest);
+		mongoService.updateChatUserStatus(roomId, userId, statusRequest.getStatus());
 		return ResponseEntity.ok().build();
 	}
 }

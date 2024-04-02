@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,13 +11,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.shp.fms.model.LessonHistoryInfo;
 import com.shp.fms.model.request.LessonHistoryRequestBody;
 import com.shp.fms.model.request.LessonHistorySearchRequestBody;
 import com.shp.fms.service.LessonHistoryService;
+import com.shp.fms.service.LessonService;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,6 +30,8 @@ public class LessonHistoryController {
 	
 	private final LessonHistoryService lessonHistoryService;
 	
+	private final LessonService lessonService;
+	
 	@PostMapping
 	public ResponseEntity<Object> registerLessonHistory(@RequestBody LessonHistoryRequestBody requestBody) {
 		log.info("register lesson-history. body={}", requestBody);
@@ -42,7 +43,7 @@ public class LessonHistoryController {
 	public ResponseEntity<List<LessonHistoryInfo>> getAllEmployeeLessonHistoryByRange(
 			@PathVariable long employeeId) {
 		log.info("get 10 lesson-history.");
-		List<LessonHistoryInfo> lessonHistoryInfoList = lessonHistoryService.getTop10EmployeeLessonHistoryInfo(employeeId);
+		List<LessonHistoryInfo> lessonHistoryInfoList = lessonService.getTop10EmployeeLessonHistoryInfo(employeeId);
 		log.info("result. response={}", lessonHistoryInfoList);
 		return ResponseEntity.ok(lessonHistoryInfoList);
 	}
@@ -61,7 +62,7 @@ public class LessonHistoryController {
 	@GetMapping("/employee/{employeeId}/datetime/{year}/{month}")
 	public ResponseEntity<Map<LocalDate, List<String>>> getAllEmployeeLessonHistoryByDate(@PathVariable long employeeId, @PathVariable int year, @PathVariable int month) {
 		log.info("get all lesson-history by Date. date={}-{}", year, month);
-		Map<LocalDate, List<String>> lessonHistoryInfoList = lessonHistoryService.getAllEmployeeLessonHistoryMarkerByDate(employeeId, year, month);
+		Map<LocalDate, List<String>> lessonHistoryInfoList = lessonService.getAllMemberLessonHistoryMarkerByDate(employeeId, year, month);
 		log.info("result. response={}", lessonHistoryInfoList);
 		return ResponseEntity.ok(lessonHistoryInfoList);
 	}
@@ -70,7 +71,7 @@ public class LessonHistoryController {
 	public ResponseEntity<List<LessonHistoryInfo>> getAllEmployeeLessonHistoryByDateTime(@PathVariable long employeeId, @PathVariable int year, @PathVariable int month, @PathVariable int day) {
 		LocalDate dateTimeConv = LocalDate.of(year, month, day);
 		log.info("get all lesson-history by DateTime. dateTime={}", dateTimeConv);
-		List<LessonHistoryInfo> lessonHistoryInfoList = lessonHistoryService.getAllEmployeeLessonHistoryInfoByDateTime(employeeId, dateTimeConv);
+		List<LessonHistoryInfo> lessonHistoryInfoList = lessonService.getAllMemberLessonHistoryInfoByDateTime(employeeId, dateTimeConv);
 		log.info("result. response={}", lessonHistoryInfoList);
 //		return ResponseEntity.ok(new LessonHistoryResponse().successResponse(lessonHistoryInfoList));
 		return ResponseEntity.ok(lessonHistoryInfoList); //TODO flutter에서 list 객체 parse 방법 
@@ -79,7 +80,7 @@ public class LessonHistoryController {
 	@GetMapping("/member/{memberId}/datetime/{year}/{month}")
 	public ResponseEntity<Map<LocalDate, List<String>>> getAllMemberLessonHistoryByDate(@PathVariable long memberId, @PathVariable int year, @PathVariable int month) {
 		log.info("get all lesson-history by Date. date={}-{}", year, month);
-		Map<LocalDate, List<String>> lessonHistoryInfoList = lessonHistoryService.getAllMemberLessonHistoryMarkerByDate(memberId, year, month);
+		Map<LocalDate, List<String>> lessonHistoryInfoList = lessonService.getAllMemberLessonHistoryMarkerByDate(memberId, year, month);
 		log.info("result. response={}", lessonHistoryInfoList);
 //		return ResponseEntity.ok(new LessonHistoryResponse().successResponse(lessonHistoryInfoList));
 		return ResponseEntity.ok(lessonHistoryInfoList); //TODO flutter에서 list 객체 parse 방법 
@@ -89,7 +90,7 @@ public class LessonHistoryController {
 	public ResponseEntity<List<LessonHistoryInfo>> getAllMemberLessonHistoryByDateTime(@PathVariable long memberId, @PathVariable int year, @PathVariable int month, @PathVariable int day) {
 		LocalDate dateTimeConv = LocalDate.of(year, month, day);
 		log.info("get all lesson-history by DateTime. dateTime={}", dateTimeConv);
-		List<LessonHistoryInfo> lessonHistoryInfoList = lessonHistoryService.getAllMemberLessonHistoryInfoByDateTime(memberId, dateTimeConv);
+		List<LessonHistoryInfo> lessonHistoryInfoList = lessonService.getAllMemberLessonHistoryInfoByDateTime(memberId, dateTimeConv);
 		log.info("result. response={}", lessonHistoryInfoList);
 //		return ResponseEntity.ok(new LessonHistoryResponse().successResponse(lessonHistoryInfoList));
 		return ResponseEntity.ok(lessonHistoryInfoList); //TODO flutter에서 list 객체 parse 방법 

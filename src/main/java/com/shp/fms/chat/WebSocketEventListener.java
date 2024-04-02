@@ -8,7 +8,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionConnectedEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
-import com.shp.fms.chat.ChatMessage.MessageType;
+import com.shp.fms.chat.model.ChatMessage;
+import com.shp.fms.chat.model.ChatMessage.MessageType;
 
 import lombok.extern.slf4j.Slf4j;
 

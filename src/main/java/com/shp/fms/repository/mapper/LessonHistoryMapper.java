@@ -6,7 +6,6 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 
 import com.shp.fms.model.LessonHistoryInfo;
-import com.shp.fms.model.entity.Employee;
 import com.shp.fms.model.entity.Lesson;
 import com.shp.fms.model.entity.LessonHistory;
 import com.shp.fms.model.entity.Member;
@@ -17,24 +16,15 @@ public class LessonHistoryMapper {
 
 	public LessonHistoryInfo mapToLessonHistoryInfo(LessonHistory lessonListory) {
 		return LessonHistoryInfo.builder()
-				.lessonHistoryId(lessonListory.getLessonHistoryId())
-				.employeeId(lessonListory.getEmployee().getEmployeeId())
-				.employeeName(lessonListory.getEmployee().getName())
-				.memberId(lessonListory.getMember().getMemberId())
-				.memberName(lessonListory.getMember().getName())
-				.lessonId(lessonListory.getLesson().getLessonId())
-				.lessonName(lessonListory.getLesson().getName())
+				.lessonHistoryId(lessonListory.getId())
 				.startDateTime(lessonListory.getStartDateTime())
 				.endDateTime(lessonListory.getEndDateTime())
 				.status(lessonListory.getStatus())
 				.build();
 	}
 	
-	public LessonHistory mapToLessonHistory(LessonHistoryRequestBody registerInfo, Employee employee, Member member, Lesson lesson) {
+	public LessonHistory mapToLessonHistory(LessonHistoryRequestBody registerInfo, Member employee, Member member, Lesson lesson) {
 		LessonHistory lessonHistory = new LessonHistory();
-		lessonHistory.setEmployee(employee);
-		lessonHistory.setMember(member);
-		lessonHistory.setLesson(lesson);
 		lessonHistory.setStartDateTime(registerInfo.getStartDateTime());
 		lessonHistory.setEndDateTime(registerInfo.getEndDateTime());
 		lessonHistory.setStatus(registerInfo.getStatus());

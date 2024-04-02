@@ -1,7 +1,8 @@
 package com.shp.fms.repository.impl;
 
+import static com.shp.fms.model.entity.QLessonHistory.lessonHistory;
+
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.stereotype.Repository;
@@ -11,7 +12,6 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.shp.fms.model.entity.LessonHistory;
 import com.shp.fms.repository.DslLessonHistoryRepository;
-import static com.shp.fms.model.entity.QLessonHistory.lessonHistory;
 
 @Repository
 public class LessonHistoryRepositoryImpl implements DslLessonHistoryRepository {
@@ -25,7 +25,7 @@ public class LessonHistoryRepositoryImpl implements DslLessonHistoryRepository {
 	@Override
 	public List<LessonHistory> findFilteredOrderedSearchResults(long employeeId, int orderByTime, int offset, int limit, LocalDate startDate, LocalDate endDate) {
 		return jpaQueryFactory.selectFrom(lessonHistory)
-				.where(lessonHistory.employee.employeeId.eq(employeeId))
+				.where(lessonHistory.employee.memberId.eq(employeeId))
 				.where(
 						overStartDate(startDate, endDate),
 						belowEndDate(startDate, endDate)

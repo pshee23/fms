@@ -1,4 +1,4 @@
-package com.shp.fms.chat;
+package com.shp.fms.chat.model.request;
 
 import java.io.Serializable;
 
@@ -9,16 +9,9 @@ import lombok.ToString;
 @ToString
 @Getter
 @Setter
-public class ChatRoom implements Serializable {
-
+public class CreateChatRoomRequest implements Serializable {
     private static final long serialVersionUID = 6494678977089006639L;
-
-    private String roomId;
-    private String name;
     
     private String employeeId;
-    private String employeeToken;
-    
     private String memberId;
-    private String memberToken;
 }

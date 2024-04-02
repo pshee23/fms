@@ -2,6 +2,7 @@ package com.shp.fms.chat.firebase;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map.Entry;
 
 import org.springframework.stereotype.Service;
 
@@ -9,11 +10,12 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.Message;
 import com.google.firebase.messaging.Notification;
-import com.shp.fms.chat.ChatMessage;
-import com.shp.fms.chat.ChatMessage.MessageType;
-import com.shp.fms.chat.ChatUser;
-import com.shp.fms.chat.ChatUserRepository;
-import com.shp.fms.chat.mongo.ChatRoomDocument;
+import com.shp.fms.chat.model.ChatMessage;
+import com.shp.fms.chat.model.ChatMessage.MessageType;
+import com.shp.fms.chat.model.ChatUserStatus;
+import com.shp.fms.chat.mongo.document.ChatRoomDocument;
+import com.shp.fms.chat.mongo.document.ChatUserDocument;
+import com.shp.fms.service.MongoDbService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +27,7 @@ public class FirebaseNotificationService {
 
 	private final FirebaseMessaging firebaseMessaging;
 	
-    private final ChatUserRepository userRepository;
+    private final MongoDbService mongoService;
 	
 	public void sendNotificationByToken(ChatMessage chatMessage, ChatRoomDocument roomDoc) {
 		log.info("######## sendNotificationByToken. message={}, roomDoc={}", chatMessage, roomDoc);
@@ -33,18 +35,19 @@ public class FirebaseNotificationService {
 		
 		// Firebase sub/unsub?
 		// TODO 방에 있는 모든 유저 정보를 가져와서 token 설정 하고 status 상태 확인해서 메세지 보낼지 말지 확인
-		List<ChatUser> chatUserList = userRepository.getChatUserList(roomId, roomDoc.getEmployeeId(), roomDoc.getMemberId());
-		List<Message> messageList = new ArrayList<>();
+		ChatRoomDocument roomDocument = mongoService.findChatRoomByRoomId(roomId);
 		
 		Notification notification = Notification.builder()
 				.setTitle(chatMessage.getSender())
 				.setBody(chatMessage.getContent())
 				.build();
 		
-		for(ChatUser user : chatUserList) {
-			if(!user.getId().equals(chatMessage.getSender()) && user.getStatus().equals(MessageType.LEAVE)) {
+		List<Message> messageList = new ArrayList<>();
+		for(Entry<String, ChatUserStatus> user : roomDocument.getUserList().entrySet()) {
+			if(!user.getKey().equals(chatMessage.getSender()) && user.getValue().getStatus().equals(MessageType.LEAVE)) {
+				ChatUserDocument userDocument = mongoService.findChatUserDocByUserId(user.getKey());
 				Message message = Message.builder()
-						.setToken(user.getDeviceToken())
+						.setToken(userDocument.getDeviceToken())
 						.setNotification(notification)
 						.build();
 				messageList.add(message);

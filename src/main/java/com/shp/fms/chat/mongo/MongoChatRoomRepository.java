@@ -4,9 +4,9 @@ import java.util.List;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 
+import com.shp.fms.chat.mongo.document.ChatRoomDocument;
+
 public interface MongoChatRoomRepository extends MongoRepository<ChatRoomDocument, String> {
 
-	List<ChatRoomDocument> findAllByEmployeeId(String employeeId);
-	
-	List<ChatRoomDocument> findAllByMemberId(String memberId);
+	List<ChatRoomDocument> findAllById(String roomId);
 }

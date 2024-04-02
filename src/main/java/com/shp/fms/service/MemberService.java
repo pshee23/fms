@@ -10,7 +10,6 @@ import com.shp.fms.common.exception.NoResultByIdException;
 import com.shp.fms.common.type.ServiceType;
 import com.shp.fms.model.MemberInfo;
 import com.shp.fms.model.entity.Branch;
-import com.shp.fms.model.entity.Employee;
 import com.shp.fms.model.entity.Member;
 import com.shp.fms.model.request.MemberRequestBody;
 import com.shp.fms.repository.MemberRepository;
@@ -26,14 +25,11 @@ public class MemberService {
 
 	private final BranchService branchService;
 	
-	private final EmployeeService employeeService;
-	
 	private final MemberMapper memberMapper;
 
 	public MemberInfo registerMember(MemberRequestBody registerInfo) {
 		Branch branch = branchService.getBranchById(registerInfo.getBranchId());
-		Employee employee = employeeService.getEmployeeById(registerInfo.getEmployeeId());
-		Member member = memberMapper.mapToMember(registerInfo, branch, employee);
+		Member member = memberMapper.mapToMember(registerInfo, branch);
 		member = memberRepository.save(member);
 		return memberMapper.mapToMemberInfo(member);
 	}
@@ -41,8 +37,7 @@ public class MemberService {
 	public MemberInfo modifyMember(long memberId, MemberRequestBody modifyInfo) {
 		Member member = getMemberById(memberId);
 		Branch branch = branchService.getBranchById(modifyInfo.getBranchId());
-		Employee employee = employeeService.getEmployeeById(modifyInfo.getEmployeeId());
-		member = memberMapper.mapToMember(member, modifyInfo, branch, employee);
+		member = memberMapper.mapToMember(member, modifyInfo, branch);
 		member = memberRepository.save(member);
 		return memberMapper.mapToMemberInfo(member);
 	}
@@ -61,7 +56,7 @@ public class MemberService {
 		if(member.isEmpty()) {
 			return null;
 		}
-		return member.get().getMemberId();
+		return member.get().getId();
 	}
 	
 	public List<MemberInfo> getAllMemberInfo() {
@@ -84,17 +79,21 @@ public class MemberService {
 		return memberMapper.mapToMemberInfo(getMemberById(memberId));
 	}
 	
-	public List<MemberInfo> getMemberByEmployeeId(long employeeId) {
-		List<Member> memberList = memberRepository.findAllByEmployee_EmployeeId(employeeId);
-		if(memberList.isEmpty()) {
-			throw new NoResultByIdException(employeeId, ServiceType.EMPLOYEE.getName());
-		}
-		return memberMapper.mapToMemberInfoList(memberList);
-	}
+//	public List<MemberInfo> getMemberByEmployeeId(long employeeId) {
+//		Optional<Member> memberList = memberRepository.findById(employeeId);
+//		if(memberList.isEmpty()) {
+//			throw new NoResultByIdException(employeeId, ServiceType.EMPLOYEE.getName());
+//		}
+//		return memberMapper.mapToMemberInfo(memberList.get());
+//	}
 	
 	public List<MemberInfo> getMemberByBranchEmployeeId(long employeeId) {
-		Employee employee = employeeService.getEmployeeById(employeeId);
-		List<Member> memberList = memberRepository.findByBranch_BranchId(employee.getBranch().getBranchId());
+		Optional<Member> employee = memberRepository.findById(employeeId);
+		if(employee.isEmpty()) {
+			throw new NoResultByIdException(employeeId, ServiceType.EMPLOYEE.getName());
+		}
+		
+		List<Member> memberList = memberRepository.findByBranch_BranchId(employee.get().getBranch().getBranchId());
 		if(memberList.isEmpty()) {
 			throw new NoResultByIdException(employeeId, ServiceType.EMPLOYEE.getName());
 		}

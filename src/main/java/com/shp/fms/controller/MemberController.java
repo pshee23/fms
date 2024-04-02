@@ -1,5 +1,6 @@
 package com.shp.fms.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
@@ -12,9 +13,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.shp.fms.model.LessonInfo;
 import com.shp.fms.model.MemberInfo;
 import com.shp.fms.model.request.MemberRequestBody;
 import com.shp.fms.model.response.MemberResponse;
+import com.shp.fms.service.LessonService;
 import com.shp.fms.service.MemberService;
 
 import lombok.AllArgsConstructor;
@@ -27,6 +30,8 @@ import lombok.extern.slf4j.Slf4j;
 public class MemberController {
 
 	private final MemberService memberService;
+	
+	private final LessonService lessonService;
 	
 	// Create New Member
 	@PostMapping
@@ -77,8 +82,9 @@ public class MemberController {
 	@GetMapping("/employee/{employeeId}")
 	public ResponseEntity<List<MemberInfo>> getMemberByEmployeeId(@PathVariable long employeeId) {
 		log.info("getMemberByEmployeeId. id={}", employeeId);
-		List<MemberInfo> memberInfo = memberService.getMemberByEmployeeId(employeeId);
-		return ResponseEntity.ok(memberInfo);
+//		List<MemberInfo> memberInfo = memberService.getMemberByEmployeeId(employeeId);
+		List<MemberInfo> memberInfoList = lessonService.getMemberListByEmployeeId(employeeId);
+		return ResponseEntity.ok(memberInfoList);
 	}
 	
 	@GetMapping("/branch/employee/{employeeId}")

@@ -1,12 +1,9 @@
 package com.shp.fms.chat.mongo;
 
-import java.util.List;
-
 import org.springframework.data.mongodb.repository.MongoRepository;
 
-public interface MongoChatUserRepository extends MongoRepository<ChatUserDocument, String> {
+import com.shp.fms.chat.mongo.document.ChatUserDocument;
 
-	List<ChatUserDocument> findAllBy_id(String roomId);
+public interface MongoChatUserRepository extends MongoRepository<ChatUserDocument, String> {
 	
-	void deleteByRoomIdAndUserName(String roomId, String userName);
 }

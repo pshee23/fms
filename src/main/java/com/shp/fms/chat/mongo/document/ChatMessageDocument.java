@@ -1,4 +1,4 @@
-package com.shp.fms.chat.mongo;
+package com.shp.fms.chat.mongo.document;
 
 import java.time.LocalDateTime;
 
@@ -15,12 +15,12 @@ import lombok.Data;
 @Document(collection = "chat_message")
 public class ChatMessageDocument {
 	@Id
-	private String _id;
+	private String _id;			// chat message document unique id
 	
 	private String roomId;
 	
-	private String userName;
-	private String message;
+	private String userName;	// sender id
+	private String message;		// content
 	
 	@LastModifiedDate
 	private LocalDateTime updDate;

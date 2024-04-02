@@ -4,9 +4,10 @@ import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.stereotype.Controller;
 
-import com.shp.fms.chat.ChatMessage.MessageType;
 import com.shp.fms.chat.firebase.FirebaseNotificationService;
-import com.shp.fms.chat.mongo.ChatRoomDocument;
+import com.shp.fms.chat.model.ChatMessage;
+import com.shp.fms.chat.model.ChatMessage.MessageType;
+import com.shp.fms.chat.mongo.document.ChatRoomDocument;
 import com.shp.fms.service.MongoDbService;
 
 import lombok.RequiredArgsConstructor;
@@ -19,7 +20,6 @@ public class ChatController {
 
 	 private final RedisMessagePublisher redisPublisher;
 	 private final ChatRoomRepository roomRepository;
-	 private final ChatUserRepository userRepository;
 
 	 private final MongoDbService mongoService;
 	 private final FirebaseNotificationService notificationService;
@@ -36,29 +36,25 @@ public class ChatController {
 		 log.info("######## message. charMessage={}", message);
 		 String roomId = message.getRoomId();
 		 String sender = message.getSender();
+		 MessageType type = message.getType();
 		
 		 // Websocket에 발행된 메시지를 redis로 발행한다(publish)
 		 ChannelTopic topic = roomRepository.getTopic(roomId);
 	     if(topic == null) {
 	    	 log.error("ChannelTopic Error??. message={}", message);
 	     } else {
-	    	 
-			 if (ChatMessage.MessageType.JOIN.equals(message.getType())) {
-				 // 채팅방 입장 (Foreground)
-		         roomRepository.enterChatRoom(roomId, sender);
-		         userRepository.updateUserState(roomId, sender, MessageType.JOIN);
-		     } else if(ChatMessage.MessageType.LEAVE.equals(message.getType())) {
-		    	 // 채팅방 퇴장 (Background)
-		    	 roomRepository.leaveChatRoom(roomId, sender);
-		    	 userRepository.updateUserState(roomId, sender, MessageType.LEAVE);
+			 if (ChatMessage.MessageType.JOIN.equals(type)) { // 채팅방 입장 (Foreground)
+				 mongoService.enterChatRoom(roomId, sender);
+		     } else if(ChatMessage.MessageType.LEAVE.equals(type)) { // 채팅방 퇴장 (Background)
+		    	 mongoService.leaveChatRoom(roomId, sender);
 		     } 
 			 
 	    	 redisPublisher.publish(topic, message);
 
-	         mongoService.registerChatMessage(message.getRoomId(), message.getSender(), message.getContent());
+	         mongoService.registerChatMessage(roomId, sender, message.getContent());
 	         
-	         if(ChatMessage.MessageType.CHAT.equals(message.getType())) {
-	         	ChatRoomDocument roomDoc = mongoService.findChatRoomByRoomId(message.getRoomId());
+	         if(ChatMessage.MessageType.CHAT.equals(type)) {
+	         	ChatRoomDocument roomDoc = mongoService.findChatRoomByRoomId(roomId);
 	         	if(roomDoc != null) {
 	         		notificationService.sendNotificationByToken(message, roomDoc);        		
 	         	}

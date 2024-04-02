@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.shp.fms.chat.model.ChatMessage;
 import com.shp.fms.service.MongoDbService;
 
 import lombok.AllArgsConstructor;

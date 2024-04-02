@@ -14,11 +14,11 @@ public class LessonMapper {
 
 	public LessonInfo mapToLessonInfo(Lesson lesson) {
 		return LessonInfo.builder()
-				.lessonId(lesson.getLessonId())
+				.lessonId(lesson.getId())
 				.lessonName(lesson.getName())
-				.memberId(lesson.getMember().getMemberId())
+				.memberId(lesson.getMember().getId())
 				.memberName(lesson.getMember().getName())
-				.employeeId(lesson.getEmployee().getEmployeeId())
+				.employeeId(lesson.getEmployee().getId())
 				.employeeName(lesson.getEmployee().getName())
 				.startDateTime(lesson.getStartDateTime())
 				.totalCount(lesson.getTotalCount())

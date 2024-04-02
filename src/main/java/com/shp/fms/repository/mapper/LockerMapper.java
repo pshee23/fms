@@ -18,7 +18,7 @@ public class LockerMapper {
 		return LockerInfo.builder()
 				.lockerId(locker.getLockerId())
 				.branchId(locker.getBranch().getBranchId())
-				.memberId(locker.getMember().getMemberId())
+				.memberId(locker.getMember().getId())
 				.startDate(locker.getStartDate())
 				.endDate(locker.getEndDate())
 				.build();
